@@ -13,11 +13,11 @@ class NetworkService {
 
   SharedPreferences prefs;
 
-  Future<TopTracksPagingResponse> fetchUserTopTracks() async {
+  Future<TopTracksPagingResponse> fetchUserTopTracks(String nextUrl) async {
     try {
       final token = await getToken();
       final response = await get(
-        Uri.parse("${_baseUrl}me/top/tracks"),
+        Uri.parse(nextUrl ?? "${_baseUrl}me/top/tracks"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -25,7 +25,8 @@ class NetworkService {
       var decodeJson = jsonDecode(response.body);
       TopTracksPagingResponse tracksPagingResponse =
           TopTracksPagingResponse.fromJson(decodeJson);
-      print("RESPUESTA_TOP:::${response.body}");
+      // print("RESPUESTA_TOP:::${response.body}");
+      print('requestURL: $nextUrl');
       return tracksPagingResponse;
     } catch (e) {
       return null;
@@ -71,6 +72,15 @@ class NetworkService {
         await getSpotifyAuthenticationToken();
     print('TOKEN: $token');
     return token;
+  }
+
+  Future<bool> connectToSpotify() async {
+    var connected = await SpotifySdk.connectToSpotifyRemote(
+        clientId: clientId, redirectUrl: redirectUrl);
+
+    print('connected? $connected');
+
+    return connected;
   }
 
   Future<SharedPreferences> getSharedPreferences() async {

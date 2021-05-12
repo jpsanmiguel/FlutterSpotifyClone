@@ -8,8 +8,14 @@ import 'package:spotify_clone/presentation/screens/home_screen.dart';
 
 class AppRouter {
   final Repository repository;
+  final SavedTracksCubit savedTracksCubit;
+  final TopTracksCubit topTracksCubit;
 
-  AppRouter({@required this.repository}) : super();
+  AppRouter({
+    @required this.savedTracksCubit,
+    @required this.topTracksCubit,
+    @required this.repository,
+  }) : super();
 
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -17,12 +23,12 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
                   providers: [
-                    BlocProvider(
-                        create: (context) =>
-                            TopTracksCubit(repository: repository)),
-                    BlocProvider(
-                        create: (context) =>
-                            SavedTracksCubit(repository: repository)),
+                    BlocProvider.value(
+                      value: topTracksCubit,
+                    ),
+                    BlocProvider.value(
+                      value: savedTracksCubit,
+                    ),
                   ],
                   child: HomeScreen(),
                 ));

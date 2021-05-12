@@ -8,12 +8,12 @@ class Repository {
 
   Repository({@required this.networkService}) : super();
 
-  Future<TopTracksPagingResponse> fetchUserTopTracks() async {
+  Future<TopTracksPagingResponse> fetchUserTopTracks(String nextUrl) async {
     TopTracksPagingResponse response =
-        await networkService.fetchUserTopTracks();
+        await networkService.fetchUserTopTracks(nextUrl);
     if (response.error != null) {
       await getSpotifyAuthenticationToken();
-      response = await networkService.fetchUserTopTracks();
+      response = await networkService.fetchUserTopTracks(nextUrl);
     }
     return response;
   }

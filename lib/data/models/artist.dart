@@ -1,4 +1,9 @@
 class Artist {
-  Artist.fromJson(Map<String, dynamic> json) {}
-  Map<String, dynamic> toJson() {}
+  String name;
+  String uri;
+
+  Artist.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    uri = json['uri'];
+  }
 }
