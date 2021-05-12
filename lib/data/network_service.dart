@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotify_clone/data/response/tracks_paging_response.dart';
+import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
+import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 class NetworkService {
@@ -12,7 +13,7 @@ class NetworkService {
 
   SharedPreferences prefs;
 
-  Future<TracksPagingResponse> fetchUserTopTracks() async {
+  Future<TopTracksPagingResponse> fetchUserTopTracks() async {
     try {
       final token = await getToken();
       final response = await get(
@@ -22,16 +23,35 @@ class NetworkService {
         },
       );
       var decodeJson = jsonDecode(response.body);
-      TracksPagingResponse tracksPagingResponse =
-          TracksPagingResponse.fromJson(decodeJson);
-      print("RESPUESTA:::${response.body}");
+      TopTracksPagingResponse tracksPagingResponse =
+          TopTracksPagingResponse.fromJson(decodeJson);
+      print("RESPUESTA_TOP:::${response.body}");
       return tracksPagingResponse;
     } catch (e) {
       return null;
     }
   }
 
-  Future getSpotifyAuthenticationToken() async {
+  Future<SavedTracksPagingResponse> fetchUserSavedTracks() async {
+    try {
+      final token = await getToken();
+      final response = await get(
+        Uri.parse("${_baseUrl}me/tracks"),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+      var decodeJson = jsonDecode(response.body);
+      SavedTracksPagingResponse tracksPagingResponse =
+          SavedTracksPagingResponse.fromJson(decodeJson);
+      print("RESPUESTA_SAVED:::${response.body}");
+      return tracksPagingResponse;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<String> getSpotifyAuthenticationToken() async {
     String token = await SpotifySdk.getAuthenticationToken(
         clientId: clientId,
         redirectUrl: redirectUrl,
@@ -43,6 +63,14 @@ class NetworkService {
             'playlist-modify-public,user-read-currently-playing');
 
     await (await getSharedPreferences()).setString('token', token);
+    return token;
+  }
+
+  Future<String> getToken() async {
+    String token = (await getSharedPreferences()).getString('token') ??
+        await getSpotifyAuthenticationToken();
+    print('TOKEN: $token');
+    return token;
   }
 
   Future<SharedPreferences> getSharedPreferences() async {
@@ -50,10 +78,5 @@ class NetworkService {
       return await SharedPreferences.getInstance();
     }
     return prefs;
-  }
-
-  Future<String> getToken() async {
-    return (await getSharedPreferences()).getString('token') ??
-        await getSpotifyAuthenticationToken();
   }
 }
