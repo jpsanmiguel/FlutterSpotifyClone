@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/data/repository.dart';
-import 'package:spotify_clone/logic/cubit/tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/screens/home_screen.dart';
 
 class AppRouter {
@@ -14,8 +15,15 @@ class AppRouter {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => TracksCubit(repository: repository),
+            builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                        create: (context) =>
+                            TopTracksCubit(repository: repository)),
+                    BlocProvider(
+                        create: (context) =>
+                            SavedTracksCubit(repository: repository)),
+                  ],
                   child: HomeScreen(),
                 ));
       default:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_clone/logic/cubit/tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,7 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext homeScreenContext) {
-    BlocProvider.of<TracksCubit>(context).fetchUserTopTracks();
+    BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
+    BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
 
     return Scaffold(
       appBar: AppBar(
