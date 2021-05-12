@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/data/network_service.dart';
+import 'package:spotify_clone/data/repository.dart';
+import 'package:spotify_clone/presentation/router/app_router.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  NetworkService networkService = NetworkService();
+  Repository repository = Repository(networkService: networkService);
+  runApp(MyApp(
+    appRouter: AppRouter(repository: repository),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final AppRouter appRouter;
+
+  const MyApp({Key key, @required this.appRouter}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,7 +33,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      onGenerateRoute: appRouter.onGenerateRoute,
     );
   }
 }
