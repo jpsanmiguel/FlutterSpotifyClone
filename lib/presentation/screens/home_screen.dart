@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_clone/logic/cubit/tracks_cubit.dart';
-import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:spotify_clone/data/models/track.dart';
+import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key, this.title, this.color}) : super(key: key);
@@ -14,12 +15,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var clientId = '407d613826f145328e1d271f7efc7ac5';
-  var redirectUrl = 'http://example.com/callback/';
+  final _scrollController = ScrollController();
+  final _scrollThreshold = 300.0;
+  double _historicMaxScroll = 0.0;
+
+  _HomeScreenState() {
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   Widget build(BuildContext homeScreenContext) {
-    BlocProvider.of<TracksCubit>(context).fetchUserTopTracks();
+    BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
+    BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
 
     return Scaffold(
       appBar: AppBar(
@@ -31,215 +38,63 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () => Navigator.pushNamed(context, '/settings')),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // BlocBuilder<InternetCubit, InternetState>(
-            //   builder: (internetCubitBuilderContext, state) {
-            //     if (state is InternetConnected &&
-            //         state.connectionType == ConnectionType.Wifi) {
-            //       return Text(
-            //         'Wi-Fi',
-            //         style: Theme.of(internetCubitBuilderContext)
-            //             .textTheme
-            //             .headline3
-            //             .copyWith(
-            //               color: Colors.green,
-            //             ),
-            //       );
-            //     } else if (state is InternetConnected &&
-            //         state.connectionType == ConnectionType.Mobile) {
-            //       return Text(
-            //         'Mobile',
-            //         style: Theme.of(internetCubitBuilderContext)
-            //             .textTheme
-            //             .headline3
-            //             .copyWith(
-            //               color: Colors.red,
-            //             ),
-            //       );
-            //     } else if (state is InternetDisconnected) {
-            //       return Text(
-            //         'Disconnected',
-            //         style: Theme.of(internetCubitBuilderContext)
-            //             .textTheme
-            //             .headline3
-            //             .copyWith(
-            //               color: Colors.grey,
-            //             ),
-            //       );
-            //     }
-            //     return CircularProgressIndicator();
-            //   },
-            // ),
-            Divider(
-              height: 5,
-            ),
-            // BlocConsumer<CounterCubit, CounterState>(
-            //   listener: (counterCubitListenerContext, state) {
-            //     if (state.wasIncremented == true) {
-            //       Scaffold.of(counterCubitListenerContext).showSnackBar(
-            //         SnackBar(
-            //           content: Text('Incremented!'),
-            //           duration: Duration(milliseconds: 300),
-            //         ),
-            //       );
-            //     } else if (state.wasIncremented == false) {
-            //       Scaffold.of(counterCubitListenerContext).showSnackBar(
-            //         SnackBar(
-            //           content: Text('Decremented!'),
-            //           duration: Duration(milliseconds: 300),
-            //         ),
-            //       );
-            //     }
-            //   },
-            //   builder: (counterCubiBuilderContext, state) {
-            //     if (state.counterValue < 0) {
-            //       return Text(
-            //         'BRR, NEGATIVE ' + state.counterValue.toString(),
-            //         style:
-            //             Theme.of(counterCubiBuilderContext).textTheme.headline4,
-            //       );
-            //     } else if (state.counterValue % 2 == 0) {
-            //       return Text(
-            //         'YAAAY ' + state.counterValue.toString(),
-            //         style:
-            //             Theme.of(counterCubiBuilderContext).textTheme.headline4,
-            //       );
-            //     } else if (state.counterValue == 5) {
-            //       return Text(
-            //         'HMM, NUMBER 5',
-            //         style:
-            //             Theme.of(counterCubiBuilderContext).textTheme.headline4,
-            //       );
-            //     } else
-            //       return Text(
-            //         state.counterValue.toString(),
-            //         style:
-            //             Theme.of(counterCubiBuilderContext).textTheme.headline4,
-            //       );
-            //   },
-            // ),
-            SizedBox(
-              height: 24,
-            ),
-            // Builder(
-            //   builder: (context) {
-            //     final counterState = context.watch<CounterCubit>().state;
-            //     final internetState = context.watch<InternetCubit>().state;
-
-            //     if (internetState is InternetConnected &&
-            //         internetState.connectionType == ConnectionType.Mobile) {
-            //       return Text(
-            //         'Counter: ' +
-            //             counterState.counterValue.toString() +
-            //             ' Internet: Mobile',
-            //         style: Theme.of(context).textTheme.headline6,
-            //       );
-            //     } else if (internetState is InternetConnected &&
-            //         internetState.connectionType == ConnectionType.Wifi) {
-            //       return Text(
-            //         'Counter: ' +
-            //             counterState.counterValue.toString() +
-            //             ' Internet: Wifi',
-            //         style: Theme.of(context).textTheme.headline6,
-            //       );
-            //     } else {
-            //       return Text(
-            //         'Counter: ' +
-            //             counterState.counterValue.toString() +
-            //             ' Internet: Disconnected',
-            //         style: Theme.of(context).textTheme.headline6,
-            //       );
-            //     }
-            //   },
-            // ),
-            SizedBox(
-              height: 24,
-            ),
-            // Builder(
-            //   builder: (context) {
-            //     final counterValue = context
-            //         .select((CounterCubit cubit) => cubit.state.counterValue);
-            //     return Text(
-            //       'Counter: ' + counterValue.toString(),
-            //       style: Theme.of(context).textTheme.headline6,
-            //     );
-            //   },
-            // ),
-            SizedBox(
-              height: 24,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FloatingActionButton(
-                  heroTag: Text('${widget.title}'),
-                  onPressed: () {
-                    print("Pressed decrement");
-                    // BlocProvider.of<CounterCubit>(context).decrement();
-                    // context.bloc<CounterCubit>().decrement();
-                  },
-                  tooltip: 'Decrement',
-                  child: Icon(Icons.remove),
-                ),
-                FloatingActionButton(
-                  heroTag: Text('${widget.title} 2nd'),
-                  onPressed: () {
-                    print("Pressed increment");
-                    // BlocProvider.of<CounterCubit>(context).increment();
-                    // context.read<CounterCubit>().increment();
-                  },
-                  tooltip: 'Increment',
-                  child: Icon(Icons.add),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            Builder(
-              builder: (materialButtonContext) => MaterialButton(
-                color: Colors.redAccent,
-                child: Text(
-                  'Connect to Spotify!',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  var connected = await SpotifySdk.connectToSpotifyRemote(
-                      clientId: clientId, redirectUrl: redirectUrl);
-
-                  print('connected? $connected');
-                },
-              ),
-            ),
-            // SizedBox(
-            //   height: 24,
-            // ),
-            MaterialButton(
-              color: Colors.greenAccent,
-              child: Text(
-                'Get auth token!',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () async {
-                var authenticationToken = await SpotifySdk.getAuthenticationToken(
-                    clientId: clientId,
-                    redirectUrl: redirectUrl,
-                    scope: 'app-remote-control, '
-                        'user-modify-playback-state, '
-                        'user-library-read, '
-                        'playlist-read-private, '
-                        'user-top-read, '
-                        'playlist-modify-public,user-read-currently-playing');
-
-                print('authenticationToken? $authenticationToken');
+      body: BlocBuilder<TopTracksCubit, TopTracksState>(
+        builder: (context, state) {
+          if (state is TopTracksLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is TopTracksLoadedMore) {
+            int length = state.topTracksPagingResponse.tracks.length;
+            return ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return _buildTopTrack(
+                    state.topTracksPagingResponse.tracks[index]);
               },
-            ),
-          ],
-        ),
+              itemCount: length,
+              controller: _scrollController,
+            );
+
+            // return SingleChildScrollView(
+            //   controller: _scrollController,
+            //   child: Column(
+            //     children: state.topTracksPagingResponse.tracks
+            //         .map((track) => _buildTopTrack(track))
+            //         .toList(),
+            //   ),
+            // );
+          } else {
+            return Container();
+          }
+        },
       ),
     );
+  }
+
+  Widget _buildTopTrack(Track track) {
+    return ListTile(
+      contentPadding: EdgeInsets.all(8.0),
+      leading: Image.network('${track.getImageUrl()}'),
+      title: Text(track.name),
+      subtitle: Text(track.getArtistsNames()),
+    );
+  }
+
+  void _onScroll() async {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    // if (currentScroll >= maxScroll - _scrollThreshold &&
+    //     _historicMaxScroll != maxScroll) {
+    if (currentScroll == maxScroll) {
+      _historicMaxScroll = maxScroll;
+      print('call to fetch');
+      BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

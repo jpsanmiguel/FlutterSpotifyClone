@@ -27,17 +27,11 @@ class Track {
     uri = json['uri'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = Map();
+  String getImageUrl() {
+    return album.images[0].url;
+  }
 
-    if (artists != null) {
-      json['artists'] = artists.map((artist) => artist.toJson()).toList();
-    }
-    json['id'] = id;
-    json['is_playable'] = isPlayable;
-    json['name'] = name;
-    json['uri'] = uri;
-
-    return json;
+  String getArtistsNames() {
+    return artists.map((artist) => artist.name).join(", ");
   }
 }

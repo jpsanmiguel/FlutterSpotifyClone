@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/data/network_service.dart';
-import 'package:spotify_clone/data/response/tracks_paging_response.dart';
+import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
+import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 
 class Repository {
   final NetworkService networkService;
 
   Repository({@required this.networkService}) : super();
 
-  Future<TracksPagingResponse> fetchUserTopTracks() async {
-    TracksPagingResponse response = await networkService.fetchUserTopTracks();
+  Future<TopTracksPagingResponse> fetchUserTopTracks(String nextUrl) async {
+    TopTracksPagingResponse response =
+        await networkService.fetchUserTopTracks(nextUrl);
     if (response.error != null) {
       await getSpotifyAuthenticationToken();
-      response = await networkService.fetchUserTopTracks();
+      response = await networkService.fetchUserTopTracks(nextUrl);
+    }
+    return response;
+  }
+
+  Future<SavedTracksPagingResponse> fetchUserSavedTracks() async {
+    SavedTracksPagingResponse response =
+        await networkService.fetchUserSavedTracks();
+    if (response.error != null) {
+      await getSpotifyAuthenticationToken();
+      response = await networkService.fetchUserSavedTracks();
     }
     return response;
   }

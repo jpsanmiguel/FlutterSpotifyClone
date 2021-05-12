@@ -1,7 +1,7 @@
 import 'package:spotify_clone/data/models/error.dart';
 import 'package:spotify_clone/data/models/track.dart';
 
-class TracksPagingResponse {
+class SavedTracksPagingResponse {
   List<Track> tracks;
   int total;
   int limit;
@@ -10,7 +10,7 @@ class TracksPagingResponse {
   String next;
   ErrorModel error;
 
-  TracksPagingResponse({
+  SavedTracksPagingResponse({
     this.tracks,
     this.total,
     this.limit,
@@ -20,7 +20,7 @@ class TracksPagingResponse {
     this.error,
   });
 
-  TracksPagingResponse.fromJson(Map<String, dynamic> json) {
+  SavedTracksPagingResponse.fromJson(Map<String, dynamic> json) {
     tracks = <Track>[];
     if (json['items'] != null && json['items'].toString().isNotEmpty) {
       json['items'].forEach((track) => tracks.add(Track.fromJson(track)));
