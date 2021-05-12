@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/repository.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
@@ -38,7 +39,10 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: blackColor,
+        backgroundColor: greyColor,
+        scaffoldBackgroundColor: greyColor,
+        accentColor: greenColor,
       ),
       onGenerateRoute: appRouter.onGenerateRoute,
     );
