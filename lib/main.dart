@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,7 +49,27 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
+  void _incrementCounter() async {
+    var clientId = '407d613826f145328e1d271f7efc7ac5';
+    var redirectUrl = 'http://example.com/callback/';
+
+    var connected = await SpotifySdk.connectToSpotifyRemote(
+        clientId: clientId, redirectUrl: redirectUrl);
+
+    print('connected? $connected');
+
+    var authenticationToken = await SpotifySdk.getAuthenticationToken(
+        clientId: clientId,
+        redirectUrl: redirectUrl,
+        scope: 'app-remote-control, '
+            'user-modify-playback-state, '
+            'user-library-read, '
+            'playlist-read-private, '
+            'user-top-read, '
+            'playlist-modify-public,user-read-currently-playing');
+
+    print('authenticationToken? $authenticationToken');
+
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
