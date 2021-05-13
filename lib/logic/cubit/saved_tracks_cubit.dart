@@ -72,4 +72,13 @@ class SavedTracksCubit extends Cubit<SavedTracksState> {
           hasReachedEnd: hasReachedEnd));
     }
   }
+
+  void resetSavedTracks() async {
+    emit(SavedTracksInitial());
+    nextUrl = null;
+    hasReachedEnd = false;
+    tracks = [];
+    savedTracksPagingResponse = null;
+    fetchUserSavedTracks();
+  }
 }
