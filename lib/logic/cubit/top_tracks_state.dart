@@ -7,6 +7,14 @@ class TopTracksInitial extends TopTracksState {}
 
 class TopTracksLoading extends TopTracksState {}
 
+class TopTracksLoadingMore extends TopTracksState {
+  final TopTracksPagingResponse topTracksPagingResponse;
+  final bool hasReachedEnd;
+
+  TopTracksLoadingMore(
+      {@required this.hasReachedEnd, @required this.topTracksPagingResponse});
+}
+
 class TopTracksLoadedMore extends TopTracksState {
   final TopTracksPagingResponse topTracksPagingResponse;
   final bool hasReachedEnd;

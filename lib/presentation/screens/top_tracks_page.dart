@@ -7,22 +7,21 @@ import 'package:spotify_clone/logic/cubit/spotify_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key, this.title, this.color}) : super(key: key);
-
-  final String title;
-  final Color color;
+class TopTracksPage extends StatefulWidget {
+  TopTracksPage({Key key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _TopTracksPageState createState() => _TopTracksPageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _TopTracksPageState extends State<TopTracksPage> {
   final _scrollController = ScrollController();
 
-  _HomeScreenState() {
+  _TopTracksPageState() {
     _scrollController.addListener(_onScroll);
   }
+
+  var _scrollThreshold = 0.0;
 
   @override
   Widget build(BuildContext homeScreenContext) {
@@ -32,12 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: widget.color,
-        title: Image.asset(
-          'assets/images/logo.png',
-          fit: BoxFit.contain,
-          height: 32.0,
-        ),
+        title: Text('Top tracks'),
+        // title: Image.asset(
+        //   'assets/images/logo.png',
+        //   fit: BoxFit.contain,
+        //   height: 32.0,
+        // ),
         centerTitle: true,
       ),
       body: Column(
@@ -54,26 +53,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       return TrackWidget(
-                        backgroundColor: greyColor,
+                        backgroundColor: blackColor,
                         icon: Icons.favorite,
                         iconColor: greenColor,
                         onItemPressed: play,
                         track: state.topTracksPagingResponse.tracks[index],
                         loading: false,
+                        isPlaying: false,
                       );
                     },
                     itemCount: length,
                     controller: _scrollController,
                   );
-
-                  // return SingleChildScrollView(
-                  //   controller: _scrollController,
-                  //   child: Column(
-                  //     children: state.topTracksPagingResponse.tracks
-                  //         .map((track) => _buildTopTrack(track))
-                  //         .toList(),
-                  //   ),
-                  // );
+                } else if (state is TopTracksLoadingMore) {
+                  int length = state.topTracksPagingResponse.tracks.length;
+                  return ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return TrackWidget(
+                        backgroundColor: blackColor,
+                        icon: Icons.favorite,
+                        iconColor: greenColor,
+                        onItemPressed: play,
+                        track: state.topTracksPagingResponse.tracks[index],
+                        loading: false,
+                        isPlaying: false,
+                      );
+                    },
+                    itemCount: length,
+                    controller: _scrollController,
+                  );
                 } else {
                   return Container();
                 }
@@ -107,26 +115,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         } else if (state is SpotifyPlayerPlaying) {
                           return TrackWidget(
-                            backgroundColor: blackColor,
+                            backgroundColor: darkGreyColor,
                             icon: Icons.pause,
                             iconColor: whiteColor,
                             onIconPressed: pause,
                             track: state.track,
                             loading: false,
+                            isPlaying: true,
                           );
                         } else if (state is SpotifyPlayerPaused) {
                           return TrackWidget(
-                            backgroundColor: blackColor,
+                            backgroundColor: darkGreyColor,
                             icon: Icons.play_arrow,
                             iconColor: whiteColor,
                             onIconPressed: resume,
                             track: state.track,
                             loading: false,
+                            isPlaying: true,
                           );
                         } else if (state is SpotifyPlayerLoading) {
                           return TrackWidget(
-                            backgroundColor: blackColor,
+                            backgroundColor: darkGreyColor,
                             loading: true,
+                            isPlaying: true,
                           );
                         } else {
                           return Container();
@@ -158,8 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onScroll() async {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    if (currentScroll == maxScroll) {
-      print('call to fetch');
+    if (_scrollThreshold == 0.0) _scrollThreshold = maxScroll / 2;
+    if (currentScroll >= maxScroll - _scrollThreshold) {
       BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
     }
   }
