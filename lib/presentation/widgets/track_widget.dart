@@ -10,17 +10,19 @@ class TrackWidget extends StatelessWidget {
   final Function onItemPressed;
   final Function onIconPressed;
   final bool loading;
+  final bool isPlaying;
 
-  const TrackWidget(
-      {Key key,
-      this.track,
-      @required this.backgroundColor,
-      this.icon,
-      this.iconColor,
-      this.onItemPressed,
-      this.onIconPressed,
-      this.loading})
-      : super(key: key);
+  const TrackWidget({
+    Key key,
+    this.track,
+    @required this.backgroundColor,
+    this.icon,
+    this.iconColor,
+    this.onItemPressed,
+    this.onIconPressed,
+    this.loading,
+    this.isPlaying,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,14 @@ class TrackWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
+          border: isPlaying
+              ? Border(
+                  bottom: BorderSide(
+                    color: blackColor,
+                    width: 1.0,
+                  ),
+                )
+              : Border(),
         ),
         padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0),
         child: Row(

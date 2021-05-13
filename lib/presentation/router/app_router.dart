@@ -5,7 +5,7 @@ import 'package:spotify_clone/data/repository.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
-import 'package:spotify_clone/presentation/screens/home_screen.dart';
+import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
 
 class AppRouter {
   final Repository repository;
@@ -34,7 +34,7 @@ class AppRouter {
                     ),
                     BlocProvider.value(value: spotifyConnectionCubit)
                   ],
-                  child: HomeScreen(),
+                  child: TopTracksPage(),
                 ));
       default:
         return null;
