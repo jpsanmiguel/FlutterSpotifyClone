@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
@@ -34,5 +35,17 @@ class Repository {
 
   Future<bool> connectToSpotifyRemote() async {
     return await networkService.connectToSpotifyRemote();
+  }
+
+  Future play(Track track) async {
+    return await networkService.play(track);
+  }
+
+  Future pause() async {
+    return await networkService.pause();
+  }
+
+  Future resume() async {
+    return await networkService.resume();
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -88,5 +89,17 @@ class NetworkService {
       return await SharedPreferences.getInstance();
     }
     return prefs;
+  }
+
+  Future play(Track track) async {
+    return await SpotifySdk.play(spotifyUri: track.uri);
+  }
+
+  Future pause() async {
+    return await SpotifySdk.pause();
+  }
+
+  Future resume() async {
+    return await SpotifySdk.resume();
   }
 }

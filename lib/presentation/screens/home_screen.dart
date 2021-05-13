@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/spotify_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
+import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext homeScreenContext) {
     BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
     BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
-    BlocProvider.of<TopTracksCubit>(context).connectToSpotifyRemote();
 
     return Scaffold(
       appBar: AppBar(
@@ -40,75 +41,131 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: true,
       ),
-      body: BlocBuilder<TopTracksCubit, TopTracksState>(
-        builder: (context, state) {
-          if (state is TopTracksLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is TopTracksLoadedMore) {
-            int length = state.topTracksPagingResponse.tracks.length;
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return _buildTopTrack(
-                    state.topTracksPagingResponse.tracks[index]);
-              },
-              itemCount: length,
-              controller: _scrollController,
-            );
+      body: Stack(
+        children: [
+          BlocBuilder<TopTracksCubit, TopTracksState>(
+            builder: (context, state) {
+              if (state is TopTracksLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is TopTracksLoadedMore) {
+                int length = state.topTracksPagingResponse.tracks.length;
+                return ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    return index != length
+                        ? TrackWidget(
+                            backgroundColor: greyColor,
+                            icon: Icons.favorite,
+                            iconColor: greenColor,
+                            onItemPressed: play,
+                            track: state.topTracksPagingResponse.tracks[index],
+                          )
+                        : Container(
+                            height: 80.0,
+                          );
+                  },
+                  itemCount: length + 1,
+                  controller: _scrollController,
+                );
 
-            // return SingleChildScrollView(
-            //   controller: _scrollController,
-            //   child: Column(
-            //     children: state.topTracksPagingResponse.tracks
-            //         .map((track) => _buildTopTrack(track))
-            //         .toList(),
-            //   ),
-            // );
-          } else {
-            return Container();
-          }
-        },
+                // return SingleChildScrollView(
+                //   controller: _scrollController,
+                //   child: Column(
+                //     children: state.topTracksPagingResponse.tracks
+                //         .map((track) => _buildTopTrack(track))
+                //         .toList(),
+                //   ),
+                // );
+              } else {
+                return Container();
+              }
+            },
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Wrap(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    BlocBuilder<SpotifyPlayerCubit, SpotifyPlayerState>(
+                      builder: (context, state) {
+                        if (state is SpotifyPlayerInitial) {
+                          return Container();
+                        } else if (state is SpotifyPlayerConnecting) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: blackColor,
+                            ),
+                            height: 50.0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  child: CircularProgressIndicator(),
+                                  height: 20.0,
+                                  width: 20.0,
+                                ),
+                                SizedBox(
+                                  height: 20.0,
+                                  width: 20.0,
+                                ),
+                                Text('Connecting...'),
+                              ],
+                            ),
+                          );
+                        } else if (state is SpotifyPlayerConnected) {
+                          return Container(
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                              color: blackColor,
+                            ),
+                            child: Center(
+                              child: Text('Connected!'),
+                            ),
+                          );
+                        } else if (state is SpotifyPlayerPlaying) {
+                          return TrackWidget(
+                            backgroundColor: blackColor,
+                            icon: Icons.pause,
+                            iconColor: whiteColor,
+                            onIconPressed: pause,
+                            track: state.track,
+                          );
+                        } else if (state is SpotifyPlayerPaused) {
+                          return TrackWidget(
+                            backgroundColor: blackColor,
+                            icon: Icons.play_arrow,
+                            iconColor: whiteColor,
+                            onIconPressed: resume,
+                            track: state.track,
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTopTrack(Track track) {
-    return Container(
-      decoration: BoxDecoration(
-        color: greyColor,
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.all(8.0),
-        leading: Image.network('${track.getImageUrl()}'),
-        title: Text(
-          track.name,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Text(
-          track.getArtistsNames(),
-          style: TextStyle(
-            color: textColor,
-          ),
-        ),
-        trailing: Icon(
-          Icons.favorite,
-          color: greenColor,
-        ),
-        onTap: () async {
-          play(track.uri);
-        },
-      ),
-    );
+  Future<void> play(Track track) async {
+    BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
   }
 
-  Future<void> play(String uri) async {
-    try {
-      await SpotifySdk.play(spotifyUri: uri);
-    } on PlatformException catch (e) {}
+  Future<void> pause(Track track) async {
+    BlocProvider.of<SpotifyPlayerCubit>(context).pause(track);
+  }
+
+  Future<void> resume(Track track) async {
+    BlocProvider.of<SpotifyPlayerCubit>(context).resume(track);
   }
 
   void _onScroll() async {
