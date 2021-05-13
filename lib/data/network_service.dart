@@ -27,18 +27,18 @@ class NetworkService {
       TopTracksPagingResponse tracksPagingResponse =
           TopTracksPagingResponse.fromJson(decodeJson);
       // print("RESPUESTA_TOP:::${response.body}");
-      print('requestURL: $nextUrl');
+      print('topUrl: $nextUrl');
       return tracksPagingResponse;
     } catch (e) {
       return null;
     }
   }
 
-  Future<SavedTracksPagingResponse> fetchUserSavedTracks() async {
+  Future<SavedTracksPagingResponse> fetchUserSavedTracks(String nextUrl) async {
     try {
       final token = await getToken();
       final response = await get(
-        Uri.parse("${_baseUrl}me/tracks"),
+        Uri.parse(nextUrl ?? "${_baseUrl}me/tracks"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -46,7 +46,8 @@ class NetworkService {
       var decodeJson = jsonDecode(response.body);
       SavedTracksPagingResponse tracksPagingResponse =
           SavedTracksPagingResponse.fromJson(decodeJson);
-      print("RESPUESTA_SAVED:::${response.body}");
+      // print("RESPUESTA_SAVED:::${response.body}");
+      print('savedUrl: $nextUrl');
       return tracksPagingResponse;
     } catch (e) {
       return null;
@@ -105,5 +106,13 @@ class NetworkService {
 
   Future resume() async {
     return await SpotifySdk.resume();
+  }
+
+  Future removeFromLibrary(Track track) async {
+    return await SpotifySdk.removeFromLibrary(spotifyUri: track.uri);
+  }
+
+  Future addToLibrary(Track track) async {
+    return await SpotifySdk.addToLibrary(spotifyUri: track.uri);
   }
 }

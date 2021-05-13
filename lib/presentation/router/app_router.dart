@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/data/repository.dart';
+import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
 import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
 
 class AppRouter {
@@ -15,6 +16,10 @@ class AppRouter {
       case '/':
         return MaterialPageRoute(
           builder: (_) => TopTracksPage(),
+        );
+      case '/saved':
+        return MaterialPageRoute(
+          builder: (_) => SavedTracksPage(),
         );
       default:
         return null;

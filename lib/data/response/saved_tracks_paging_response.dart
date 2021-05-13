@@ -1,8 +1,8 @@
 import 'package:spotify_clone/data/models/error.dart';
-import 'package:spotify_clone/data/models/track.dart';
+import 'package:spotify_clone/data/models/saved_track.dart';
 
 class SavedTracksPagingResponse {
-  List<Track> tracks;
+  List<SavedTrack> tracks;
   int total;
   int limit;
   int offset;
@@ -21,9 +21,9 @@ class SavedTracksPagingResponse {
   });
 
   SavedTracksPagingResponse.fromJson(Map<String, dynamic> json) {
-    tracks = <Track>[];
+    tracks = <SavedTrack>[];
     if (json['items'] != null && json['items'].toString().isNotEmpty) {
-      json['items'].forEach((track) => tracks.add(Track.fromJson(track)));
+      json['items'].forEach((track) => tracks.add(SavedTrack.fromJson(track)));
     }
     if (json['error'] != null) {
       error = ErrorModel.fromJson(json['error']);

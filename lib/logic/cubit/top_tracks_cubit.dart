@@ -42,8 +42,4 @@ class TopTracksCubit extends Cubit<TopTracksState> {
       }
     }
   }
-
-  Future<bool> connectToSpotifyRemote() async {
-    return await repository.connectToSpotifyRemote();
-  }
 }

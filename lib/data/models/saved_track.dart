@@ -12,6 +12,7 @@ class SavedTrack {
     addedAt = json['added_at'];
     if (json['track'] != null) {
       track = Track.fromJson(json['track']);
+      track.inLibrary = true;
     }
   }
 }
