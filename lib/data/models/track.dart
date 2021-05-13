@@ -10,6 +10,7 @@ class Track {
   List<Artist> artists;
   String name;
   String uri;
+  bool inLibrary = false;
 
   Track({this.album, this.artists, this.name, this.uri});
 

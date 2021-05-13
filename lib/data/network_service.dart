@@ -107,4 +107,12 @@ class NetworkService {
   Future resume() async {
     return await SpotifySdk.resume();
   }
+
+  Future removeFromLibrary(Track track) async {
+    return await SpotifySdk.removeFromLibrary(spotifyUri: track.uri);
+  }
+
+  Future addToLibrary(Track track) async {
+    return await SpotifySdk.addToLibrary(spotifyUri: track.uri);
+  }
 }

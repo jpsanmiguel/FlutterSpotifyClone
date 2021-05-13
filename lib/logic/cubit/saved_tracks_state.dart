@@ -25,6 +25,16 @@ class SavedTracksLoadedMore extends SavedTracksState {
     @required this.hasReachedEnd,
     @required this.savedTracksPagingResponse,
   });
+
+  SavedTracksLoadedMore copyWith(
+      {SavedTracksPagingResponse savedTracksPagingResponse,
+      bool hasReachedEnd}) {
+    return SavedTracksLoadedMore(
+      savedTracksPagingResponse:
+          savedTracksPagingResponse ?? this.savedTracksPagingResponse,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+    );
+  }
 }
 
 class SavedTracksLoaded extends SavedTracksState {

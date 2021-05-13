@@ -44,4 +44,32 @@ class SavedTracksCubit extends Cubit<SavedTracksState> {
       }
     }
   }
+
+  Future removeFromLibrary(Track track) async {
+    await repository.removeFromLibrary(track);
+    track.inLibrary = false;
+    if (state is SavedTracksLoaded) {
+      emit(SavedTracksLoaded(
+          savedTracksPagingResponse: savedTracksPagingResponse));
+    }
+    if (state is SavedTracksLoadedMore) {
+      emit(SavedTracksLoadedMore(
+          savedTracksPagingResponse: savedTracksPagingResponse,
+          hasReachedEnd: hasReachedEnd));
+    }
+  }
+
+  Future addToLibrary(Track track) async {
+    await repository.addToLibrary(track);
+    track.inLibrary = true;
+    if (state is SavedTracksLoaded) {
+      emit(SavedTracksLoaded(
+          savedTracksPagingResponse: savedTracksPagingResponse));
+    }
+    if (state is SavedTracksLoadedMore) {
+      emit(SavedTracksLoadedMore(
+          savedTracksPagingResponse: savedTracksPagingResponse,
+          hasReachedEnd: hasReachedEnd));
+    }
+  }
 }

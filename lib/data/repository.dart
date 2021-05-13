@@ -49,4 +49,12 @@ class Repository {
   Future resume() async {
     return await networkService.resume();
   }
+
+  Future removeFromLibrary(Track track) async {
+    return await networkService.removeFromLibrary(track);
+  }
+
+  Future addToLibrary(Track track) async {
+    return await networkService.addToLibrary(track);
+  }
 }

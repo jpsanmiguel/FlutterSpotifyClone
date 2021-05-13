@@ -49,13 +49,18 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                   int length = state.savedTracksPagingResponse.tracks.length;
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
+                      Track track =
+                          state.savedTracksPagingResponse.tracks[index].track;
                       return TrackWidget(
                         backgroundColor: blackColor,
-                        icon: Icons.favorite,
+                        icon: track.inLibrary
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                         iconColor: greenColor,
+                        onIconPressed:
+                            track.inLibrary ? removeFromLibrary : addToLibrary,
                         onItemPressed: play,
-                        track:
-                            state.savedTracksPagingResponse.tracks[index].track,
+                        track: track,
                         loading: false,
                         isPlaying: false,
                       );
@@ -67,13 +72,16 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                   int length = state.savedTracksPagingResponse.tracks.length;
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
+                      Track track =
+                          state.savedTracksPagingResponse.tracks[index].track;
                       return TrackWidget(
                         backgroundColor: blackColor,
                         icon: Icons.favorite,
                         iconColor: greenColor,
+                        onIconPressed:
+                            track.inLibrary ? removeFromLibrary : addToLibrary,
                         onItemPressed: play,
-                        track:
-                            state.savedTracksPagingResponse.tracks[index].track,
+                        track: track,
                         loading: false,
                         isPlaying: false,
                       );
@@ -94,6 +102,14 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
 
   Future<void> play(Track track) async {
     BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
+  }
+
+  Future<void> removeFromLibrary(Track track) async {
+    await BlocProvider.of<SavedTracksCubit>(context).removeFromLibrary(track);
+  }
+
+  Future<void> addToLibrary(Track track) async {
+    await BlocProvider.of<SavedTracksCubit>(context).addToLibrary(track);
   }
 
   void _onScroll() async {

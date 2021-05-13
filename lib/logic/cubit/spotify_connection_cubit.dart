@@ -57,7 +57,6 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   void listenToPlayerState() {
     Stream stream = SpotifySdk.subscribePlayerState();
     stream.listen((playerState) {
-      print('Anything!');
       if (playerState != null && playerState is PlayerState) {
         if (playerState.track != null) {
           if (playerState.isPaused) {
