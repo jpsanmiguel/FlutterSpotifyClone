@@ -30,6 +30,7 @@ class Repository {
   }
 
   Future getSpotifyAuthenticationToken() async {
+    await networkService.resetToken();
     await networkService.getToken();
   }
 

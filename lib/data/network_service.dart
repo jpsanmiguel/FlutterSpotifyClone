@@ -75,6 +75,10 @@ class NetworkService {
     return token;
   }
 
+  Future resetToken() async {
+    await (await getSharedPreferences()).remove('token');
+  }
+
   Future<bool> connectToSpotifyRemote() async {
     var connected = await SpotifySdk.connectToSpotifyRemote(
         clientId: clientId, redirectUrl: redirectUrl);
