@@ -18,7 +18,7 @@ class NetworkService {
     try {
       final token = await getToken();
       final response = await get(
-        Uri.parse(nextUrl ?? "${_baseUrl}me/top/tracks"),
+        Uri.parse(nextUrl ?? "${_baseUrl}me/top/tracks?time_range=short_term"),
         headers: {
           'Authorization': 'Bearer $token',
         },

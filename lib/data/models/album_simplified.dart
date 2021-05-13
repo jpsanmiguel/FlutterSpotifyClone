@@ -1,4 +1,5 @@
 import 'package:spotify_clone/data/models/image.dart';
+import 'package:spotify_sdk/models/album.dart' as Spotify;
 
 class AlbumSimplified {
   List<Image> images;
@@ -24,5 +25,11 @@ class AlbumSimplified {
     releaseDate = json['release_date'];
     totalTracks = json['total_tracks'];
     uri = json['uri'];
+  }
+
+  AlbumSimplified.fromSpotifySdkAlbum(Spotify.Album album, String url) {
+    name = album.name;
+    uri = album.uri;
+    images = [Image(url: url)];
   }
 }

@@ -22,3 +22,5 @@ class SpotifyPlayerPaused extends SpotifyPlayerState {
 
   SpotifyPlayerPaused({@required this.track});
 }
+
+class SpotifyPlayerLoading extends SpotifyPlayerState {}
