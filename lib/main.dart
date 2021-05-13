@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/repository.dart';
@@ -16,19 +17,26 @@ void main() {
   SpotifyPlayerCubit spotifyConnectionCubit =
       SpotifyPlayerCubit(repository: repository);
   runApp(MyApp(
-    appRouter: AppRouter(
-      repository: repository,
-      topTracksCubit: topTracksCubit,
-      savedTracksCubit: savedTracksCubit,
-      spotifyConnectionCubit: spotifyConnectionCubit,
-    ),
+    appRouter: AppRouter(repository: repository),
+    topTracksCubit: topTracksCubit,
+    savedTracksCubit: savedTracksCubit,
+    spotifyConnectionCubit: spotifyConnectionCubit,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final AppRouter appRouter;
+  final SavedTracksCubit savedTracksCubit;
+  final TopTracksCubit topTracksCubit;
+  final SpotifyPlayerCubit spotifyConnectionCubit;
 
-  const MyApp({Key key, @required this.appRouter}) : super(key: key);
+  const MyApp({
+    Key key,
+    @required this.appRouter,
+    @required this.spotifyConnectionCubit,
+    @required this.savedTracksCubit,
+    @required this.topTracksCubit,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,8 +55,19 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: blackColor,
         accentColor: greenColor,
       ),
-      home: HomePage(
-        appRouter: appRouter,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: topTracksCubit,
+          ),
+          BlocProvider.value(
+            value: savedTracksCubit,
+          ),
+          BlocProvider.value(value: spotifyConnectionCubit)
+        ],
+        child: HomePage(
+          appRouter: appRouter,
+        ),
       ),
     );
   }

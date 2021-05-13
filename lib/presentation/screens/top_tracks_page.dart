@@ -21,6 +21,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
     _scrollController.addListener(_onScroll);
   }
 
+  var _scrollThreshold = 0.0;
+
   @override
   Widget build(BuildContext homeScreenContext) {
     BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
@@ -63,15 +65,23 @@ class _TopTracksPageState extends State<TopTracksPage> {
                     itemCount: length,
                     controller: _scrollController,
                   );
-
-                  // return SingleChildScrollView(
-                  //   controller: _scrollController,
-                  //   child: Column(
-                  //     children: state.topTracksPagingResponse.tracks
-                  //         .map((track) => _buildTopTrack(track))
-                  //         .toList(),
-                  //   ),
-                  // );
+                } else if (state is TopTracksLoadingMore) {
+                  int length = state.topTracksPagingResponse.tracks.length;
+                  return ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return TrackWidget(
+                        backgroundColor: blackColor,
+                        icon: Icons.favorite,
+                        iconColor: greenColor,
+                        onItemPressed: play,
+                        track: state.topTracksPagingResponse.tracks[index],
+                        loading: false,
+                        isPlaying: false,
+                      );
+                    },
+                    itemCount: length,
+                    controller: _scrollController,
+                  );
                 } else {
                   return Container();
                 }
@@ -159,8 +169,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
   void _onScroll() async {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    if (currentScroll == maxScroll) {
-      print('call to fetch');
+    if (_scrollThreshold == 0.0) _scrollThreshold = maxScroll / 2;
+    if (currentScroll >= maxScroll - _scrollThreshold) {
       BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
     }
   }

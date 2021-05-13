@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _bottomNavigationBar() {
     return BottomNavigationBar(
-      backgroundColor: blackColor,
+      backgroundColor: darkGreyColor,
       type: BottomNavigationBarType.fixed,
       selectedItemColor: greenColor,
       unselectedItemColor: lightGreyColor,

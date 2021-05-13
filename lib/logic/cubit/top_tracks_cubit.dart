@@ -14,23 +14,32 @@ class TopTracksCubit extends Cubit<TopTracksState> {
   String nextUrl;
   bool hasReachedEnd = false;
   List<Track> tracks = [];
+  TopTracksPagingResponse topTracksPagingResponse;
 
   void fetchUserTopTracks() async {
-    if (!hasReachedEnd) {
-      if (tracks.isEmpty) {
-        emit(TopTracksLoading());
+    if (!(state is TopTracksLoadingMore)) {
+      if (!hasReachedEnd) {
+        if (tracks.isEmpty) {
+          emit(TopTracksLoading());
+        } else {
+          emit(TopTracksLoadingMore(
+              hasReachedEnd: hasReachedEnd,
+              topTracksPagingResponse: topTracksPagingResponse));
+        }
+        print('call to fetch');
+        topTracksPagingResponse = await repository.fetchUserTopTracks(nextUrl);
+        nextUrl = topTracksPagingResponse.next;
+        if (topTracksPagingResponse.next == null) {
+          hasReachedEnd = true;
+        }
+        tracks = tracks + topTracksPagingResponse.tracks;
+
+        final fullTracksPagingResponse = topTracksPagingResponse;
+        fullTracksPagingResponse.tracks = tracks;
+        emit(TopTracksLoadedMore(
+            topTracksPagingResponse: fullTracksPagingResponse,
+            hasReachedEnd: hasReachedEnd));
       }
-      final tracksPagingResponse = await repository.fetchUserTopTracks(nextUrl);
-      nextUrl = tracksPagingResponse.next;
-      if (tracksPagingResponse.next == null) {
-        hasReachedEnd = true;
-      }
-      tracks = tracks + tracksPagingResponse.tracks;
-      final fullTracksPagingResponse = tracksPagingResponse;
-      fullTracksPagingResponse.tracks = tracks;
-      emit(TopTracksLoadedMore(
-          topTracksPagingResponse: fullTracksPagingResponse,
-          hasReachedEnd: hasReachedEnd));
     }
   }
 
