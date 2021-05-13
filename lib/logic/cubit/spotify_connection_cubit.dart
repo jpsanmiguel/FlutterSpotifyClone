@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/repository.dart';
+import 'package:spotify_sdk/models/player_state.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
 
 part 'spotify_connection_state.dart';
 
@@ -27,7 +29,6 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
 
   void play(Track track) async {
     if (connected) {
-      emit(SpotifyPlayerPlaying(track: track));
       await repository.play(track);
     } else {
       await connectToSpotifyRemote();
@@ -37,7 +38,6 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
 
   void pause(Track track) async {
     if (connected) {
-      emit(SpotifyPlayerPaused(track: track));
       await repository.pause();
     } else {
       await connectToSpotifyRemote();
@@ -47,11 +47,32 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
 
   void resume(Track track) async {
     if (connected) {
-      emit(SpotifyPlayerPlaying(track: track));
       await repository.resume();
     } else {
       await connectToSpotifyRemote();
       resume(track);
     }
+  }
+
+  void listenToPlayerState() {
+    Stream stream = SpotifySdk.subscribePlayerState();
+    stream.listen((playerState) {
+      print('Anything!');
+      if (playerState != null && playerState is PlayerState) {
+        if (playerState.track != null) {
+          if (playerState.isPaused) {
+            emit(SpotifyPlayerPaused(
+                track: Track.fromSpotifySdkTrack(playerState.track)));
+          } else {
+            emit(SpotifyPlayerPlaying(
+                track: Track.fromSpotifySdkTrack(playerState.track)));
+          }
+        } else {
+          emit(SpotifyPlayerLoading());
+        }
+      } else {
+        emit(SpotifyPlayerInitial());
+      }
+    });
   }
 }
