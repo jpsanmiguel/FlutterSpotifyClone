@@ -27,7 +27,6 @@ class _TopTracksPageState extends State<TopTracksPage> {
   Widget build(BuildContext homeScreenContext) {
     BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
     BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
-    BlocProvider.of<SpotifyPlayerCubit>(context).connectToSpotifyRemote();
 
     return Scaffold(
       appBar: AppBar(
@@ -88,67 +87,6 @@ class _TopTracksPageState extends State<TopTracksPage> {
               },
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Wrap(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    BlocBuilder<SpotifyPlayerCubit, SpotifyPlayerState>(
-                      builder: (context, state) {
-                        if (state is SpotifyPlayerInitial) {
-                          return Container();
-                        } else if (state is SpotifyPlayerConnecting) {
-                          return Container();
-                        } else if (state is SpotifyPlayerConnected) {
-                          BlocProvider.of<SpotifyPlayerCubit>(context)
-                              .listenToPlayerState();
-                          return Container(
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                              color: blackColor,
-                            ),
-                            child: Center(
-                              child: Text('Connected!'),
-                            ),
-                          );
-                        } else if (state is SpotifyPlayerPlaying) {
-                          return TrackWidget(
-                            backgroundColor: darkGreyColor,
-                            icon: Icons.pause,
-                            iconColor: whiteColor,
-                            onIconPressed: pause,
-                            track: state.track,
-                            loading: false,
-                            isPlaying: true,
-                          );
-                        } else if (state is SpotifyPlayerPaused) {
-                          return TrackWidget(
-                            backgroundColor: darkGreyColor,
-                            icon: Icons.play_arrow,
-                            iconColor: whiteColor,
-                            onIconPressed: resume,
-                            track: state.track,
-                            loading: false,
-                            isPlaying: true,
-                          );
-                        } else if (state is SpotifyPlayerLoading) {
-                          return TrackWidget(
-                            backgroundColor: darkGreyColor,
-                            loading: true,
-                            isPlaying: true,
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -156,14 +94,6 @@ class _TopTracksPageState extends State<TopTracksPage> {
 
   Future<void> play(Track track) async {
     BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
-  }
-
-  Future<void> pause(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).pause(track);
-  }
-
-  Future<void> resume(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).resume(track);
   }
 
   void _onScroll() async {
