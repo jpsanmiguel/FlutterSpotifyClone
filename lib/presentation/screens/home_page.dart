@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
         _navigatorKey.currentState.pushReplacementNamed("/");
         break;
       case 1:
-        _navigatorKey.currentState.pushReplacementNamed("/");
+        _navigatorKey.currentState.pushReplacementNamed("/saved");
         break;
     }
     setState(() {

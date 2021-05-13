@@ -19,12 +19,12 @@ class Repository {
     return response;
   }
 
-  Future<SavedTracksPagingResponse> fetchUserSavedTracks() async {
+  Future<SavedTracksPagingResponse> fetchUserSavedTracks(String nextUrl) async {
     SavedTracksPagingResponse response =
-        await networkService.fetchUserSavedTracks();
+        await networkService.fetchUserSavedTracks(nextUrl);
     if (response.error != null) {
       await getSpotifyAuthenticationToken();
-      response = await networkService.fetchUserSavedTracks();
+      response = await networkService.fetchUserSavedTracks(nextUrl);
     }
     return response;
   }

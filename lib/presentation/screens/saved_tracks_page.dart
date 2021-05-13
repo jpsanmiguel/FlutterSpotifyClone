@@ -4,20 +4,19 @@ import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
-class TopTracksPage extends StatefulWidget {
-  TopTracksPage({Key key}) : super(key: key);
+class SavedTracksPage extends StatefulWidget {
+  SavedTracksPage({Key key}) : super(key: key);
 
   @override
-  _TopTracksPageState createState() => _TopTracksPageState();
+  _SavedTracksPageState createState() => _SavedTracksPageState();
 }
 
-class _TopTracksPageState extends State<TopTracksPage> {
+class _SavedTracksPageState extends State<SavedTracksPage> {
   final _scrollController = ScrollController();
 
-  _TopTracksPageState() {
+  _SavedTracksPageState() {
     _scrollController.addListener(_onScroll);
   }
 
@@ -25,11 +24,11 @@ class _TopTracksPageState extends State<TopTracksPage> {
 
   @override
   Widget build(BuildContext homeScreenContext) {
-    BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
+    BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Top tracks'),
+        title: Text('Saved tracks'),
         // title: Image.asset(
         //   'assets/images/logo.png',
         //   fit: BoxFit.contain,
@@ -40,14 +39,14 @@ class _TopTracksPageState extends State<TopTracksPage> {
       body: Column(
         children: [
           Expanded(
-            child: BlocBuilder<TopTracksCubit, TopTracksState>(
+            child: BlocBuilder<SavedTracksCubit, SavedTracksState>(
               builder: (context, state) {
-                if (state is TopTracksLoading) {
+                if (state is SavedTracksLoading) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (state is TopTracksLoadedMore) {
-                  int length = state.topTracksPagingResponse.tracks.length;
+                } else if (state is SavedTracksLoadedMore) {
+                  int length = state.savedTracksPagingResponse.tracks.length;
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       return TrackWidget(
@@ -55,7 +54,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
                         icon: Icons.favorite,
                         iconColor: greenColor,
                         onItemPressed: play,
-                        track: state.topTracksPagingResponse.tracks[index],
+                        track:
+                            state.savedTracksPagingResponse.tracks[index].track,
                         loading: false,
                         isPlaying: false,
                       );
@@ -63,8 +63,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
                     itemCount: length,
                     controller: _scrollController,
                   );
-                } else if (state is TopTracksLoadingMore) {
-                  int length = state.topTracksPagingResponse.tracks.length;
+                } else if (state is SavedTracksLoadingMore) {
+                  int length = state.savedTracksPagingResponse.tracks.length;
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       return TrackWidget(
@@ -72,7 +72,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
                         icon: Icons.favorite,
                         iconColor: greenColor,
                         onItemPressed: play,
-                        track: state.topTracksPagingResponse.tracks[index],
+                        track:
+                            state.savedTracksPagingResponse.tracks[index].track,
                         loading: false,
                         isPlaying: false,
                       );
@@ -100,7 +101,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
     final currentScroll = _scrollController.position.pixels;
     if (_scrollThreshold == 0.0) _scrollThreshold = maxScroll / 2;
     if (currentScroll >= maxScroll - _scrollThreshold) {
-      BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
+      BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
     }
   }
 
