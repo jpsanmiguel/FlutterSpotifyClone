@@ -3,6 +3,7 @@ import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/repository.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/spotify_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/router/app_router.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -12,11 +13,14 @@ void main() {
   Repository repository = Repository(networkService: networkService);
   TopTracksCubit topTracksCubit = TopTracksCubit(repository: repository);
   SavedTracksCubit savedTracksCubit = SavedTracksCubit(repository: repository);
+  SpotifyPlayerCubit spotifyConnectionCubit =
+      SpotifyPlayerCubit(repository: repository);
   runApp(MyApp(
     appRouter: AppRouter(
       repository: repository,
       topTracksCubit: topTracksCubit,
       savedTracksCubit: savedTracksCubit,
+      spotifyConnectionCubit: spotifyConnectionCubit,
     ),
   ));
 }

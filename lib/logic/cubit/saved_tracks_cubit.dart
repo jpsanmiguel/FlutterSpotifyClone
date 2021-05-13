@@ -11,6 +11,7 @@ class SavedTracksCubit extends Cubit<SavedTracksState> {
   SavedTracksCubit({@required this.repository}) : super(SavedTracksInitial());
 
   void fetchUserSavedTracks() async {
+    emit(SavedTracksLoading());
     final savedTracksPagingResponse = await repository.fetchUserSavedTracks();
     emit(SavedTracksLoaded(
         savedTracksPagingResponse: savedTracksPagingResponse));
