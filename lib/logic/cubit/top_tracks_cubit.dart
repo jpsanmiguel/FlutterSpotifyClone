@@ -42,4 +42,13 @@ class TopTracksCubit extends Cubit<TopTracksState> {
       }
     }
   }
+
+  void resetSavedTracks() async {
+    emit(TopTracksInitial());
+    nextUrl = null;
+    hasReachedEnd = false;
+    tracks = [];
+    topTracksPagingResponse = null;
+    fetchUserTopTracks();
+  }
 }

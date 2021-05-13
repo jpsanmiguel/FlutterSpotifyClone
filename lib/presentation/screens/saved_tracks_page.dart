@@ -36,66 +36,71 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
         // ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: BlocBuilder<SavedTracksCubit, SavedTracksState>(
-              builder: (context, state) {
-                if (state is SavedTracksLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is SavedTracksLoadedMore) {
-                  int length = state.savedTracksPagingResponse.tracks.length;
-                  return ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      Track track =
-                          state.savedTracksPagingResponse.tracks[index].track;
-                      return TrackWidget(
-                        backgroundColor: blackColor,
-                        icon: track.inLibrary
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        iconColor: greenColor,
-                        onIconPressed:
-                            track.inLibrary ? removeFromLibrary : addToLibrary,
-                        onItemPressed: play,
-                        track: track,
-                        loading: false,
-                        isPlaying: false,
-                      );
-                    },
-                    itemCount: length,
-                    controller: _scrollController,
-                  );
-                } else if (state is SavedTracksLoadingMore) {
-                  int length = state.savedTracksPagingResponse.tracks.length;
-                  return ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      Track track =
-                          state.savedTracksPagingResponse.tracks[index].track;
-                      return TrackWidget(
-                        backgroundColor: blackColor,
-                        icon: Icons.favorite,
-                        iconColor: greenColor,
-                        onIconPressed:
-                            track.inLibrary ? removeFromLibrary : addToLibrary,
-                        onItemPressed: play,
-                        track: track,
-                        loading: false,
-                        isPlaying: false,
-                      );
-                    },
-                    itemCount: length,
-                    controller: _scrollController,
-                  );
-                } else {
-                  return Container();
-                }
-              },
+      body: RefreshIndicator(
+        onRefresh: _pullRefresh,
+        child: Column(
+          children: [
+            Expanded(
+              child: BlocBuilder<SavedTracksCubit, SavedTracksState>(
+                builder: (context, state) {
+                  if (state is SavedTracksLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is SavedTracksLoadedMore) {
+                    int length = state.savedTracksPagingResponse.tracks.length;
+                    return ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        Track track =
+                            state.savedTracksPagingResponse.tracks[index].track;
+                        return TrackWidget(
+                          backgroundColor: blackColor,
+                          icon: track.inLibrary
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          iconColor: greenColor,
+                          onIconPressed: track.inLibrary
+                              ? removeFromLibrary
+                              : addToLibrary,
+                          onItemPressed: play,
+                          track: track,
+                          loading: false,
+                          isPlaying: false,
+                        );
+                      },
+                      itemCount: length,
+                      controller: _scrollController,
+                    );
+                  } else if (state is SavedTracksLoadingMore) {
+                    int length = state.savedTracksPagingResponse.tracks.length;
+                    return ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        Track track =
+                            state.savedTracksPagingResponse.tracks[index].track;
+                        return TrackWidget(
+                          backgroundColor: blackColor,
+                          icon: Icons.favorite,
+                          iconColor: greenColor,
+                          onIconPressed: track.inLibrary
+                              ? removeFromLibrary
+                              : addToLibrary,
+                          onItemPressed: play,
+                          track: track,
+                          loading: false,
+                          isPlaying: false,
+                        );
+                      },
+                      itemCount: length,
+                      controller: _scrollController,
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -119,6 +124,10 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
     if (currentScroll >= maxScroll - _scrollThreshold) {
       BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
     }
+  }
+
+  Future<void> _pullRefresh() async {
+    BlocProvider.of<SavedTracksCubit>(context).resetSavedTracks();
   }
 
   @override

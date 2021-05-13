@@ -36,52 +36,55 @@ class _TopTracksPageState extends State<TopTracksPage> {
         // ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: BlocBuilder<TopTracksCubit, TopTracksState>(
-              builder: (context, state) {
-                if (state is TopTracksLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is TopTracksLoadedMore) {
-                  int length = state.topTracksPagingResponse.tracks.length;
-                  return ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return TrackWidget(
-                        backgroundColor: blackColor,
-                        onItemPressed: play,
-                        track: state.topTracksPagingResponse.tracks[index],
-                        loading: false,
-                        isPlaying: false,
-                      );
-                    },
-                    itemCount: length,
-                    controller: _scrollController,
-                  );
-                } else if (state is TopTracksLoadingMore) {
-                  int length = state.topTracksPagingResponse.tracks.length;
-                  return ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return TrackWidget(
-                        backgroundColor: blackColor,
-                        onItemPressed: play,
-                        track: state.topTracksPagingResponse.tracks[index],
-                        loading: false,
-                        isPlaying: false,
-                      );
-                    },
-                    itemCount: length,
-                    controller: _scrollController,
-                  );
-                } else {
-                  return Container();
-                }
-              },
+      body: RefreshIndicator(
+        onRefresh: _pullRefresh,
+        child: Column(
+          children: [
+            Expanded(
+              child: BlocBuilder<TopTracksCubit, TopTracksState>(
+                builder: (context, state) {
+                  if (state is TopTracksLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is TopTracksLoadedMore) {
+                    int length = state.topTracksPagingResponse.tracks.length;
+                    return ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        return TrackWidget(
+                          backgroundColor: blackColor,
+                          onItemPressed: play,
+                          track: state.topTracksPagingResponse.tracks[index],
+                          loading: false,
+                          isPlaying: false,
+                        );
+                      },
+                      itemCount: length,
+                      controller: _scrollController,
+                    );
+                  } else if (state is TopTracksLoadingMore) {
+                    int length = state.topTracksPagingResponse.tracks.length;
+                    return ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        return TrackWidget(
+                          backgroundColor: blackColor,
+                          onItemPressed: play,
+                          track: state.topTracksPagingResponse.tracks[index],
+                          loading: false,
+                          isPlaying: false,
+                        );
+                      },
+                      itemCount: length,
+                      controller: _scrollController,
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -97,6 +100,10 @@ class _TopTracksPageState extends State<TopTracksPage> {
     if (currentScroll >= maxScroll - _scrollThreshold) {
       BlocProvider.of<TopTracksCubit>(context).fetchUserTopTracks();
     }
+  }
+
+  Future<void> _pullRefresh() async {
+    BlocProvider.of<TopTracksCubit>(context).resetSavedTracks();
   }
 
   @override

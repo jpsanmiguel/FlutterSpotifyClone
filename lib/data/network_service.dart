@@ -18,7 +18,8 @@ class NetworkService {
     try {
       final token = await getToken();
       final response = await get(
-        Uri.parse(nextUrl ?? "${_baseUrl}me/top/tracks?time_range=short_term"),
+        Uri.parse(nextUrl ??
+            "${_baseUrl}me/top/tracks?time_range=short_term&limit=50"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -38,7 +39,7 @@ class NetworkService {
     try {
       final token = await getToken();
       final response = await get(
-        Uri.parse(nextUrl ?? "${_baseUrl}me/tracks"),
+        Uri.parse(nextUrl ?? "${_baseUrl}me/tracks?limit=50"),
         headers: {
           'Authorization': 'Bearer $token',
         },
