@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
-import 'package:spotify_clone/logic/cubit/spotify_connection_cubit.dart';
+import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class SavedTracksPage extends StatefulWidget {

@@ -1,4 +1,4 @@
-part of 'spotify_connection_cubit.dart';
+part of 'spotify_player_cubit.dart';
 
 @immutable
 abstract class SpotifyPlayerState {}
@@ -7,7 +7,11 @@ class SpotifyPlayerInitial extends SpotifyPlayerState {}
 
 class SpotifyPlayerConnecting extends SpotifyPlayerState {}
 
-class SpotifyPlayerConnectionFailed extends SpotifyPlayerState {}
+class SpotifyPlayerConnectionFailed extends SpotifyPlayerState {
+  final String error;
+
+  SpotifyPlayerConnectionFailed({@required this.error});
+}
 
 class SpotifyPlayerConnected extends SpotifyPlayerState {}
 
@@ -24,3 +28,5 @@ class SpotifyPlayerPaused extends SpotifyPlayerState {
 }
 
 class SpotifyPlayerLoading extends SpotifyPlayerState {}
+
+class SpotifyPlayerNotConnected extends SpotifyPlayerState {}
