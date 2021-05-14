@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   int _currentTabIndex = 0;
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +92,21 @@ class _HomePageState extends State<HomePage> {
                       },
                       listener: (context, state) {
                         if (state is SpotifyPlayerConnectionFailed) {
+                          loading = false;
                           final snackBar = SnackBar(
                             content: Text(state.error),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else if (state is SpotifyPlayerLoading) {
+                          loading = true;
+                          Future.delayed(Duration(seconds: 5), () {
+                            if (loading) {
+                              BlocProvider.of<SpotifyPlayerCubit>(context)
+                                  .errorPlayingTrack('Error reproduciendo...');
+                            }
+                          });
+                        } else {
+                          loading = false;
                         }
                       },
                     ),
