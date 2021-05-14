@@ -130,23 +130,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _bottomNavigationBar() {
-    return BottomNavigationBar(
-      backgroundColor: darkGreyColor,
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: greenColor,
-      unselectedItemColor: lightGreyColor,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.thumb_up),
-          label: "Top tracks",
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: blackColor,
+            width: 1.0,
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: "Saved tracks",
-        )
-      ],
-      onTap: _onTap,
-      currentIndex: _currentTabIndex,
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: darkGreyColor,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: greenColor,
+        unselectedItemColor: lightGreyColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.thumb_up),
+            label: "Top tracks",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: "Saved tracks",
+          )
+        ],
+        onTap: _onTap,
+        currentIndex: _currentTabIndex,
+      ),
     );
   }
 

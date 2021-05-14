@@ -33,14 +33,6 @@ class TrackWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: isPlaying
-              ? Border(
-                  bottom: BorderSide(
-                    color: blackColor,
-                    width: 1.0,
-                  ),
-                )
-              : Border(),
         ),
         padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0),
         child: Row(

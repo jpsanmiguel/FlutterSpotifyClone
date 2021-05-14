@@ -65,6 +65,25 @@ class MyApp extends StatelessWidget {
         primaryColor: greenColor,
         accentColor: greenColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: lightGreyColor),
+            //  when the TextFormField in unfocused
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: greenColor),
+            //  when the TextFormField in focused
+          ),
+          border: UnderlineInputBorder(),
+        ),
+        brightness: Brightness.dark,
+        snackBarTheme: SnackBarThemeData(
+          actionTextColor: textColor,
+          backgroundColor: darkGreyColor,
+          contentTextStyle: TextStyle(
+            color: textColor,
+          ),
+        ),
       ),
       home: MultiBlocProvider(
         providers: [

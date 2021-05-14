@@ -28,12 +28,13 @@ class _TopTracksPageState extends State<TopTracksPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Top tracks'),
-        // title: Image.asset(
-        //   'assets/images/logo.png',
-        //   fit: BoxFit.contain,
-        //   height: 32.0,
-        // ),
+        title: Text(
+          'Saved tracks',
+          style: TextStyle(
+            color: textColor,
+          ),
+        ),
+        backgroundColor: darkGreyColor,
         centerTitle: true,
       ),
       body: RefreshIndicator(
