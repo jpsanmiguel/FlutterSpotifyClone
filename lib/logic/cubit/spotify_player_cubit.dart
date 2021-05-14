@@ -1,11 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/repository.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
-part 'spotify_connection_state.dart';
+part 'spotify_player_state.dart';
 
 class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   final Repository repository;
@@ -18,11 +19,16 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   void connectToSpotifyRemote() async {
     if (!connected) {
       emit(SpotifyPlayerConnecting());
-      if (await repository.connectToSpotifyRemote()) {
-        connected = true;
-        emit(SpotifyPlayerConnected());
-      } else {
-        emit(SpotifyPlayerConnectionFailed());
+      try {
+        connected = await repository.connectToSpotifyRemote();
+        if (connected) {
+          emit(SpotifyPlayerConnected());
+        } else {
+          emit(SpotifyPlayerConnectionFailed(
+              error: 'No se pudo conectar al reproductor de Spotify.'));
+        }
+      } on PlatformException catch (e) {
+        emit(SpotifyPlayerConnectionFailed(error: e.message));
       }
     }
   }
@@ -73,5 +79,9 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
         emit(SpotifyPlayerInitial());
       }
     });
+  }
+
+  void stateNotConnected() {
+    emit(SpotifyPlayerNotConnected());
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/logic/cubit/spotify_connection_cubit.dart';
+import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
 import 'package:spotify_clone/presentation/router/app_router.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    BlocBuilder<SpotifyPlayerCubit, SpotifyPlayerState>(
+                    BlocConsumer<SpotifyPlayerCubit, SpotifyPlayerState>(
                       builder: (context, state) {
                         if (state is SpotifyPlayerInitial) {
                           return Container();
@@ -87,6 +87,14 @@ class _HomePageState extends State<HomePage> {
                           );
                         } else {
                           return Container();
+                        }
+                      },
+                      listener: (context, state) {
+                        if (state is SpotifyPlayerConnectionFailed) {
+                          final snackBar = SnackBar(
+                            content: Text(state.error),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       },
                     ),
