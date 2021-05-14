@@ -28,7 +28,7 @@ class TopTracksLoadedMore extends TopTracksState {
 }
 
 class TopTracksLoaded extends TopTracksState {
-  final TopTracksPagingResponse savedTracksPagingResponse;
+  final TopTracksPagingResponse topTracksPagingResponse;
 
-  TopTracksLoaded({@required this.savedTracksPagingResponse});
+  TopTracksLoaded({@required this.topTracksPagingResponse});
 }

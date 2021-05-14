@@ -51,10 +51,19 @@ class _TopTracksPageState extends State<TopTracksPage> {
                     int length = state.topTracksPagingResponse.tracks.length;
                     return ListView.builder(
                       itemBuilder: (BuildContext context, int index) {
+                        Track track =
+                            state.topTracksPagingResponse.tracks[index];
                         return TrackWidget(
                           backgroundColor: blackColor,
+                          icon: track.inLibrary
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          iconColor: greenColor,
+                          onIconPressed: track.inLibrary
+                              ? removeFromLibrary
+                              : addToLibrary,
                           onItemPressed: play,
-                          track: state.topTracksPagingResponse.tracks[index],
+                          track: track,
                           loading: false,
                           isPlaying: false,
                         );
@@ -89,6 +98,14 @@ class _TopTracksPageState extends State<TopTracksPage> {
     );
   }
 
+  Future<void> removeFromLibrary(Track track) async {
+    await BlocProvider.of<TopTracksCubit>(context).removeFromLibrary(track);
+  }
+
+  Future<void> addToLibrary(Track track) async {
+    await BlocProvider.of<TopTracksCubit>(context).addToLibrary(track);
+  }
+
   Future<void> play(Track track) async {
     BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
   }
@@ -103,7 +120,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   Future<void> _pullRefresh() async {
-    BlocProvider.of<TopTracksCubit>(context).resetSavedTracks();
+    BlocProvider.of<TopTracksCubit>(context).resetTopTracks();
   }
 
   @override

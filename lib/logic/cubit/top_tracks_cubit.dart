@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/data/repository.dart';
+import 'package:spotify_clone/data/spotify_repository.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 
 part 'top_tracks_state.dart';
@@ -43,7 +43,33 @@ class TopTracksCubit extends Cubit<TopTracksState> {
     }
   }
 
-  void resetSavedTracks() async {
+  Future removeFromLibrary(Track track) async {
+    await repository.removeFromLibrary(track);
+    track.inLibrary = false;
+    if (state is TopTracksLoaded) {
+      emit(TopTracksLoaded(topTracksPagingResponse: topTracksPagingResponse));
+    }
+    if (state is TopTracksLoadedMore) {
+      emit(TopTracksLoadedMore(
+          topTracksPagingResponse: topTracksPagingResponse,
+          hasReachedEnd: hasReachedEnd));
+    }
+  }
+
+  Future addToLibrary(Track track) async {
+    await repository.addToLibrary(track);
+    track.inLibrary = true;
+    if (state is TopTracksLoaded) {
+      emit(TopTracksLoaded(topTracksPagingResponse: topTracksPagingResponse));
+    }
+    if (state is TopTracksLoadedMore) {
+      emit(TopTracksLoadedMore(
+          topTracksPagingResponse: topTracksPagingResponse,
+          hasReachedEnd: hasReachedEnd));
+    }
+  }
+
+  void resetTopTracks() async {
     emit(TopTracksInitial());
     nextUrl = null;
     hasReachedEnd = false;
