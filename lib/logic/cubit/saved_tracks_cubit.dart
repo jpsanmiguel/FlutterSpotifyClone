@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/saved_track.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/data/repository.dart';
+import 'package:spotify_clone/data/spotify_repository.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 
 part 'saved_tracks_state.dart';

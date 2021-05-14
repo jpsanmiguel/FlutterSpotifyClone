@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/data/repository.dart';
+import 'package:spotify_clone/data/spotify_repository.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 

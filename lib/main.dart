@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/network_service.dart';
-import 'package:spotify_clone/data/repository.dart';
+import 'package:spotify_clone/data/spotify_repository.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/router/app_router.dart';
 import 'package:spotify_clone/presentation/screens/home_page.dart';
+import 'package:spotify_clone/presentation/screens/login_page.dart';
 
 void main() {
   NetworkService networkService = NetworkService();
@@ -51,9 +52,13 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: darkGreyColor,
+        focusColor: greenColor,
+        primarySwatch: greenColor,
         scaffoldBackgroundColor: blackColor,
+        hintColor: hintTextColor,
+        primaryColor: greenColor,
         accentColor: greenColor,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MultiBlocProvider(
         providers: [
@@ -65,6 +70,7 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider.value(value: spotifyConnectionCubit)
         ],
+        // child: LoginPage(),
         child: HomePage(
           appRouter: appRouter,
         ),
