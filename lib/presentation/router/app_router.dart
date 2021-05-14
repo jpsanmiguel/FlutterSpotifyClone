@@ -1,25 +1,43 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/data/auth_repository.dart';
 import 'package:spotify_clone/data/spotify_repository.dart';
-import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
-import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
+import 'package:spotify_clone/presentation/router/bottom_router.dart';
+import 'package:spotify_clone/presentation/screens/home_page.dart';
+import 'package:spotify_clone/presentation/screens/login_page.dart';
+import 'package:spotify_clone/presentation/screens/register_page.dart';
 
 class AppRouter {
-  final SpotifyRepository repository;
+  final SpotifyRepository spotifyRepository;
+  final AuthRepository authRepository;
 
   AppRouter({
-    @required this.repository,
+    @required this.spotifyRepository,
+    @required this.authRepository,
   }) : super();
 
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(
-          builder: (_) => TopTracksPage(),
+          builder: (_) => LoginPage(
+            authRepository: authRepository,
+          ),
         );
-      case '/saved':
+      case '/home':
         return MaterialPageRoute(
-          builder: (_) => SavedTracksPage(),
+          builder: (_) => HomePage(
+            bottomRouter: BottomRouter(
+              spotifyRepository: spotifyRepository,
+              authRepository: authRepository,
+            ),
+          ),
+        );
+      case '/register':
+        return MaterialPageRoute(
+          builder: (_) => RegisterPage(
+            authRepository: authRepository,
+          ),
         );
       default:
         return null;

@@ -29,11 +29,20 @@ class _TopTracksPageState extends State<TopTracksPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Saved tracks',
+          'Top tracks',
           style: TextStyle(
             color: textColor,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: textColor,
+            ),
+            onPressed: () => print('log out pressed!'),
+          ),
+        ],
         backgroundColor: darkGreyColor,
         centerTitle: true,
       ),

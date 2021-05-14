@@ -3,22 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
-import 'package:spotify_clone/presentation/router/app_router.dart';
+import 'package:spotify_clone/presentation/router/bottom_router.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.appRouter}) : super(key: key);
+  HomePage({Key key, @required this.bottomRouter}) : super(key: key);
 
-  final AppRouter appRouter;
+  final BottomRouter bottomRouter;
 
   @override
-  _HomePageState createState() => _HomePageState(appRouter: appRouter);
+  _HomePageState createState() => _HomePageState(bottomRouter: bottomRouter);
 }
 
 class _HomePageState extends State<HomePage> {
-  final AppRouter appRouter;
+  final BottomRouter bottomRouter;
 
-  _HomePageState({this.appRouter});
+  _HomePageState({this.bottomRouter});
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   int _currentTabIndex = 0;
@@ -33,7 +33,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
             child: Navigator(
-                key: _navigatorKey, onGenerateRoute: appRouter.onGenerateRoute),
+                key: _navigatorKey,
+                onGenerateRoute: bottomRouter.onGenerateRoute),
           ),
           Align(
             alignment: Alignment.bottomCenter,

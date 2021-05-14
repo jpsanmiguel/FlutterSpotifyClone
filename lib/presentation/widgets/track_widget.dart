@@ -58,7 +58,7 @@ class TrackWidget extends StatelessWidget {
                   children: [
                     Container(
                       child: Text(
-                        loading ? 'Cargando...' : track.name,
+                        loading ? 'Cargando...' : '${track.name}',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16.0,
@@ -67,7 +67,7 @@ class TrackWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      loading ? 'Cargando...' : track.getArtistsNames(),
+                      loading ? 'Cargando...' : '${track.getArtistsNames()}',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: 12.0,

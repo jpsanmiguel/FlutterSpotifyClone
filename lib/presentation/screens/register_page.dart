@@ -2,35 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/auth_repository.dart';
-import 'package:spotify_clone/logic/bloc/login_bloc.dart';
+import 'package:spotify_clone/logic/bloc/register_bloc.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
 
-class LoginPage extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final AuthRepository authRepository;
 
-  LoginPage({Key key, @required this.authRepository}) : super(key: key);
+  RegisterPage({Key key, @required this.authRepository}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (context) => LoginBloc(
+        create: (context) => RegisterBloc(
           authRepository: authRepository,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _loginForm(),
-            _signUpButton(context),
+            _registerForm(),
+            _signInButton(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _loginForm() {
-    return BlocListener<LoginBloc, LoginState>(
+  Widget _registerForm() {
+    return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
         final formSubmissionState = state.formSubmissionState;
         if (formSubmissionState is FormSubmissionFailed) {
@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
             children: [
               _emailField(),
               _passwordField(),
-              _loginButton(),
+              _registerButton(),
             ],
           ),
         ),
@@ -57,7 +57,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _emailField() {
-    return BlocBuilder<LoginBloc, LoginState>(
+    return BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {
         return TextFormField(
           decoration: InputDecoration(
@@ -70,8 +70,8 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
-          onChanged: (email) => context.read<LoginBloc>().add(
-                LoginEmailChanged(email: email),
+          onChanged: (email) => context.read<RegisterBloc>().add(
+                RegisterEmailChanged(email: email),
               ),
           validator: state.validateEmail,
           keyboardType: TextInputType.emailAddress,
@@ -81,7 +81,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _passwordField() {
-    return BlocBuilder<LoginBloc, LoginState>(
+    return BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {
         return TextFormField(
           obscureText: true,
@@ -91,8 +91,8 @@ class LoginPage extends StatelessWidget {
             ),
             labelText: 'Contraseña',
           ),
-          onChanged: (password) => context.read<LoginBloc>().add(
-                LoginPasswordChanged(password: password),
+          onChanged: (password) => context.read<RegisterBloc>().add(
+                RegisterPasswordChanged(password: password),
               ),
           validator: state.validatePassword,
           keyboardType: TextInputType.visiblePassword,
@@ -101,31 +101,31 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _loginButton() {
-    return BlocBuilder<LoginBloc, LoginState>(
+  Widget _registerButton() {
+    return BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {
         return state.formSubmissionState is FormSubmissionSubmitting
             ? CircularProgressIndicator()
             : ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
-                    context.read<LoginBloc>().add(
-                          LoginSubmitted(),
+                    context.read<RegisterBloc>().add(
+                          RegisterSubmitted(),
                         );
                   }
                 },
-                child: Text('Iniciar sesión'),
+                child: Text('Registrarse'),
               );
       },
     );
   }
 
-  Widget _signUpButton(BuildContext context) {
+  Widget _signInButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pushReplacementNamed(context, '/register');
+        Navigator.pushReplacementNamed(context, '/');
       },
-      child: Text('Registrarse'),
+      child: Text('Iniciar sesion'),
     );
   }
 

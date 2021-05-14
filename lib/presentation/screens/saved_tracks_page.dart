@@ -34,6 +34,15 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
             color: textColor,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: textColor,
+            ),
+            onPressed: () => print('log out pressed!'),
+          ),
+        ],
         backgroundColor: darkGreyColor,
         centerTitle: true,
       ),
