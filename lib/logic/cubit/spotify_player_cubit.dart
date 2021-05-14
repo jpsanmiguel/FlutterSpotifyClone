@@ -84,4 +84,8 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   void stateNotConnected() {
     emit(SpotifyPlayerNotConnected());
   }
+
+  void errorPlayingTrack(String error) {
+    emit(SpotifyPlayerConnectionFailed(error: error));
+  }
 }
