@@ -5,7 +5,7 @@ import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
 import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
 
 class AppRouter {
-  final Repository repository;
+  final SpotifyRepository repository;
 
   AppRouter({
     @required this.repository,

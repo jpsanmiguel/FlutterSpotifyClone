@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/data/auth_repository.dart';
 import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/spotify_repository.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
@@ -12,13 +13,16 @@ import 'package:spotify_clone/presentation/screens/login_page.dart';
 
 void main() {
   NetworkService networkService = NetworkService();
-  Repository repository = Repository(networkService: networkService);
+  AuthRepository authRepository = AuthRepository();
+  SpotifyRepository repository =
+      SpotifyRepository(networkService: networkService);
   TopTracksCubit topTracksCubit = TopTracksCubit(repository: repository);
   SavedTracksCubit savedTracksCubit = SavedTracksCubit(repository: repository);
   SpotifyPlayerCubit spotifyConnectionCubit =
       SpotifyPlayerCubit(repository: repository);
   runApp(MyApp(
     appRouter: AppRouter(repository: repository),
+    authRepository: authRepository,
     topTracksCubit: topTracksCubit,
     savedTracksCubit: savedTracksCubit,
     spotifyConnectionCubit: spotifyConnectionCubit,
@@ -30,10 +34,12 @@ class MyApp extends StatelessWidget {
   final SavedTracksCubit savedTracksCubit;
   final TopTracksCubit topTracksCubit;
   final SpotifyPlayerCubit spotifyConnectionCubit;
+  final AuthRepository authRepository;
 
   const MyApp({
     Key key,
     @required this.appRouter,
+    @required this.authRepository,
     @required this.spotifyConnectionCubit,
     @required this.savedTracksCubit,
     @required this.topTracksCubit,
@@ -70,10 +76,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider.value(value: spotifyConnectionCubit)
         ],
-        // child: LoginPage(),
-        child: HomePage(
-          appRouter: appRouter,
+        child: LoginPage(
+          authRepository: authRepository,
         ),
+        // child: HomePage(
+        //   appRouter: appRouter,
+        // ),
       ),
     );
   }

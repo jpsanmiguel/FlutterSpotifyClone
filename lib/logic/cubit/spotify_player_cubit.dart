@@ -9,7 +9,7 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 part 'spotify_player_state.dart';
 
 class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
-  final Repository repository;
+  final SpotifyRepository repository;
 
   SpotifyPlayerCubit({@required this.repository})
       : super(SpotifyPlayerInitial());

@@ -1,9 +1,10 @@
 class AuthRepository {
   Future<void> login() async {
     print('attempting login');
-    Future.delayed(
+    await Future.delayed(
       Duration(seconds: 3),
     );
     print('logged in!');
+    throw Exception('A exception, lol');
   }
 }
