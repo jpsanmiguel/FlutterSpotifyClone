@@ -8,7 +8,7 @@ import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 part 'saved_tracks_state.dart';
 
 class SavedTracksCubit extends Cubit<SavedTracksState> {
-  final Repository repository;
+  final SpotifyRepository repository;
 
   SavedTracksCubit({@required this.repository}) : super(SavedTracksInitial());
 

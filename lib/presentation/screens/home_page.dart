@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
-import 'package:spotify_clone/presentation/router/app_router.dart';
+import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
+import 'package:spotify_clone/presentation/navigation/router/bottom_router.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.appRouter}) : super(key: key);
+  HomePage({Key key, @required this.bottomRouter}) : super(key: key);
 
-  final AppRouter appRouter;
+  final BottomRouter bottomRouter;
 
   @override
-  _HomePageState createState() => _HomePageState(appRouter: appRouter);
+  _HomePageState createState() => _HomePageState(bottomRouter: bottomRouter);
 }
 
 class _HomePageState extends State<HomePage> {
-  final AppRouter appRouter;
+  final BottomRouter bottomRouter;
 
-  _HomePageState({this.appRouter});
+  _HomePageState({this.bottomRouter});
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   int _currentTabIndex = 0;
@@ -33,7 +33,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
             child: Navigator(
-                key: _navigatorKey, onGenerateRoute: appRouter.onGenerateRoute),
+                key: _navigatorKey,
+                onGenerateRoute: bottomRouter.onGenerateRoute),
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -130,23 +131,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _bottomNavigationBar() {
-    return BottomNavigationBar(
-      backgroundColor: darkGreyColor,
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: greenColor,
-      unselectedItemColor: lightGreyColor,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.thumb_up),
-          label: "Top tracks",
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            color: blackColor,
+            width: 1.0,
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: "Saved tracks",
-        )
-      ],
-      onTap: _onTap,
-      currentIndex: _currentTabIndex,
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: darkGreyColor,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: greenColor,
+        unselectedItemColor: lightGreyColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.thumb_up),
+            label: "Top tracks",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: "Saved tracks",
+          )
+        ],
+        onTap: _onTap,
+        currentIndex: _currentTabIndex,
+      ),
     );
   }
 

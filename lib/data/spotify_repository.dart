@@ -4,10 +4,10 @@ import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 
-class Repository {
+class SpotifyRepository {
   final NetworkService networkService;
 
-  Repository({@required this.networkService}) : super();
+  SpotifyRepository({@required this.networkService}) : super();
 
   Future<TopTracksPagingResponse> fetchUserTopTracks(String nextUrl) async {
     TopTracksPagingResponse response =

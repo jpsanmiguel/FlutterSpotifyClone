@@ -33,14 +33,6 @@ class TrackWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: isPlaying
-              ? Border(
-                  bottom: BorderSide(
-                    color: blackColor,
-                    width: 1.0,
-                  ),
-                )
-              : Border(),
         ),
         padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0),
         child: Row(
@@ -66,7 +58,7 @@ class TrackWidget extends StatelessWidget {
                   children: [
                     Container(
                       child: Text(
-                        loading ? 'Cargando...' : track.name,
+                        loading ? 'Cargando...' : '${track.name}',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16.0,
@@ -75,7 +67,7 @@ class TrackWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      loading ? 'Cargando...' : track.getArtistsNames(),
+                      loading ? 'Cargando...' : '${track.getArtistsNames()}',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: 12.0,

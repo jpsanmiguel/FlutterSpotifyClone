@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
-import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
+import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
+import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class SavedTracksPage extends StatefulWidget {
@@ -28,12 +29,22 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Saved tracks'),
-        // title: Image.asset(
-        //   'assets/images/logo.png',
-        //   fit: BoxFit.contain,
-        //   height: 32.0,
-        // ),
+        title: Text(
+          'Saved tracks',
+          style: TextStyle(
+            color: textColor,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              color: textColor,
+            ),
+            onPressed: () => context.read<SessionCubit>().signOut(),
+          ),
+        ],
+        backgroundColor: darkGreyColor,
         centerTitle: true,
       ),
       body: RefreshIndicator(

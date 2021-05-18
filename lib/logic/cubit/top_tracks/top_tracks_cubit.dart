@@ -7,7 +7,7 @@ import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 part 'top_tracks_state.dart';
 
 class TopTracksCubit extends Cubit<TopTracksState> {
-  final Repository repository;
+  final SpotifyRepository repository;
 
   TopTracksCubit({@required this.repository}) : super(TopTracksInitial());
 
