@@ -41,7 +41,7 @@ class AuthRepository {
     }
   }
 
-  Future<bool> register({
+  Future<bool> signUp({
     @required String email,
     @required String password,
     @required String username,
@@ -58,6 +58,21 @@ class AuthRepository {
         options: options,
       );
 
+      return result.isSignUpComplete;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<bool> confirmSignUp({
+    @required String email,
+    @required String confirmationCode,
+  }) async {
+    try {
+      final result = await Amplify.Auth.confirmSignUp(
+        username: email.trim(),
+        confirmationCode: confirmationCode.trim(),
+      );
       return result.isSignUpComplete;
     } catch (e) {
       throw e;

@@ -8,16 +8,15 @@ import 'package:spotify_clone/logic/form_submission_state.dart';
 
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final AuthRepository authRepository;
 
-  LoginPage({Key key, @required this.authRepository}) : super(key: key);
+  LoginPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
         create: (context) => LoginBloc(
-          authRepository: authRepository,
+          authRepository: context.read<AuthRepository>(),
           authCubit: context.read<AuthCubit>(),
         ),
         child: Stack(

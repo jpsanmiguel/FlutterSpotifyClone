@@ -39,21 +39,27 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   void showAuth() => emit(UnautheticatedSessionState());
+
   void showSession(AuthCredentials authCredentials) async {
-    User user = await dataRepository.getUserById(authCredentials.userId);
+    try {
+      User user = await dataRepository.getUserById(authCredentials.userId);
 
-    if (user == null) {
-      user = await dataRepository.createUser(
-        userId: authCredentials.userId,
-        email: authCredentials.email,
+      if (user == null) {
+        user = await dataRepository.createUser(
+          userId: authCredentials.userId,
+          email: authCredentials.email,
+          username: authCredentials.username,
+        );
+      }
+
+      emit(
+        AuthenticatedSessionState(
+          user: user,
+        ),
       );
+    } catch (e) {
+      emit(UnautheticatedSessionState());
     }
-
-    emit(
-      AuthenticatedSessionState(
-        user: user,
-      ),
-    );
   }
 
   void signOut() {

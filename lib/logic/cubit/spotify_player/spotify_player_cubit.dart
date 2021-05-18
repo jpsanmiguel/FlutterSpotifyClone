@@ -9,9 +9,9 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 part 'spotify_player_state.dart';
 
 class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
-  final SpotifyRepository repository;
+  final SpotifyRepository spotifyRepository;
 
-  SpotifyPlayerCubit({@required this.repository})
+  SpotifyPlayerCubit({@required this.spotifyRepository})
       : super(SpotifyPlayerInitial());
 
   bool connected = false;
@@ -20,7 +20,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
     if (!connected) {
       emit(SpotifyPlayerConnecting());
       try {
-        connected = await repository.connectToSpotifyRemote();
+        connected = await spotifyRepository.connectToSpotifyRemote();
         if (connected) {
           emit(SpotifyPlayerConnected());
         } else {
@@ -35,7 +35,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
 
   void play(Track track) async {
     if (connected) {
-      await repository.play(track);
+      await spotifyRepository.play(track);
     } else {
       emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
@@ -43,7 +43,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
 
   void pause(Track track) async {
     if (connected) {
-      await repository.pause();
+      await spotifyRepository.pause();
     } else {
       emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
@@ -51,7 +51,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
 
   void resume(Track track) async {
     if (connected) {
-      await repository.resume();
+      await spotifyRepository.resume();
     } else {
       emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }

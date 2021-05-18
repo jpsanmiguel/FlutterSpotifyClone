@@ -11,9 +11,24 @@ class AuthCubit extends Cubit<AuthState> {
     @required this.sessionCubit,
   }) : super(LoginAuthState());
 
+  AuthCredentials credentials;
+
   void showLogin() => emit(LoginAuthState());
 
   void showSignUp() => emit(SignUpAuthState());
+
+  void showConfirmSignUp({
+    String username,
+    String email,
+    String password,
+  }) {
+    credentials = AuthCredentials(
+      username: username,
+      email: email,
+      password: password,
+    );
+    emit(ConfirmSignUpAuthState());
+  }
 
   void launchSession(AuthCredentials authCredentials) {
     sessionCubit.showSession(authCredentials);

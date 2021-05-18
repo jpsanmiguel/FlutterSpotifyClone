@@ -7,9 +7,10 @@ import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 part 'top_tracks_state.dart';
 
 class TopTracksCubit extends Cubit<TopTracksState> {
-  final SpotifyRepository repository;
+  final SpotifyRepository spotifyRepository;
 
-  TopTracksCubit({@required this.repository}) : super(TopTracksInitial());
+  TopTracksCubit({@required this.spotifyRepository})
+      : super(TopTracksInitial());
 
   String nextUrl;
   bool hasReachedEnd = false;
@@ -27,7 +28,8 @@ class TopTracksCubit extends Cubit<TopTracksState> {
               topTracksPagingResponse: topTracksPagingResponse));
         }
         print('call to fetch');
-        topTracksPagingResponse = await repository.fetchUserTopTracks(nextUrl);
+        topTracksPagingResponse =
+            await spotifyRepository.fetchUserTopTracks(nextUrl);
         nextUrl = topTracksPagingResponse.next;
         if (topTracksPagingResponse.next == null) {
           hasReachedEnd = true;
@@ -44,7 +46,7 @@ class TopTracksCubit extends Cubit<TopTracksState> {
   }
 
   Future removeFromLibrary(Track track) async {
-    await repository.removeFromLibrary(track);
+    await spotifyRepository.removeFromLibrary(track);
     track.inLibrary = false;
     if (state is TopTracksLoaded) {
       emit(TopTracksLoaded(topTracksPagingResponse: topTracksPagingResponse));
@@ -57,7 +59,7 @@ class TopTracksCubit extends Cubit<TopTracksState> {
   }
 
   Future addToLibrary(Track track) async {
-    await repository.addToLibrary(track);
+    await spotifyRepository.addToLibrary(track);
     track.inLibrary = true;
     if (state is TopTracksLoaded) {
       emit(TopTracksLoaded(topTracksPagingResponse: topTracksPagingResponse));

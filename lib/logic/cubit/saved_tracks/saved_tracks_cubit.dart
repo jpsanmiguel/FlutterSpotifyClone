@@ -8,9 +8,10 @@ import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 part 'saved_tracks_state.dart';
 
 class SavedTracksCubit extends Cubit<SavedTracksState> {
-  final SpotifyRepository repository;
+  final SpotifyRepository spotifyRepository;
 
-  SavedTracksCubit({@required this.repository}) : super(SavedTracksInitial());
+  SavedTracksCubit({@required this.spotifyRepository})
+      : super(SavedTracksInitial());
 
   String nextUrl;
   bool hasReachedEnd = false;
@@ -29,7 +30,7 @@ class SavedTracksCubit extends Cubit<SavedTracksState> {
         }
         print('call to fetch');
         savedTracksPagingResponse =
-            await repository.fetchUserSavedTracks(nextUrl);
+            await spotifyRepository.fetchUserSavedTracks(nextUrl);
         nextUrl = savedTracksPagingResponse.next;
         if (savedTracksPagingResponse.next == null) {
           hasReachedEnd = true;
@@ -46,7 +47,7 @@ class SavedTracksCubit extends Cubit<SavedTracksState> {
   }
 
   Future removeFromLibrary(Track track) async {
-    await repository.removeFromLibrary(track);
+    await spotifyRepository.removeFromLibrary(track);
     track.inLibrary = false;
     if (state is SavedTracksLoaded) {
       emit(SavedTracksLoaded(
@@ -60,7 +61,7 @@ class SavedTracksCubit extends Cubit<SavedTracksState> {
   }
 
   Future addToLibrary(Track track) async {
-    await repository.addToLibrary(track);
+    await spotifyRepository.addToLibrary(track);
     track.inLibrary = true;
     if (state is SavedTracksLoaded) {
       emit(SavedTracksLoaded(
