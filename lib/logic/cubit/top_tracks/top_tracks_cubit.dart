@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/data/spotify_repository.dart';
+import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
 
 part 'top_tracks_state.dart';

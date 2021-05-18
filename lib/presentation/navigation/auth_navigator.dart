@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_clone/data/auth_repository.dart';
+import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/presentation/screens/login_page.dart';
 import 'package:spotify_clone/presentation/screens/register_page.dart';

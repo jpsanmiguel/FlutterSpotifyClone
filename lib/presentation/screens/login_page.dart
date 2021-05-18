@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
-import 'package:spotify_clone/data/auth_repository.dart';
+import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/logic/bloc/login/login_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
