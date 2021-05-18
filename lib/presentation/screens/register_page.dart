@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/auth_repository.dart';
 import 'package:spotify_clone/logic/bloc/register/register_bloc.dart';
+import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -17,9 +18,10 @@ class RegisterPage extends StatelessWidget {
       body: BlocProvider(
         create: (context) => RegisterBloc(
           authRepository: authRepository,
+          authCubit: context.read<AuthCubit>(),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
           children: [
             _registerForm(),
             _signInButton(context),
@@ -45,6 +47,7 @@ class RegisterPage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 36.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _emailField(),
               _passwordField(),
@@ -121,11 +124,32 @@ class RegisterPage extends StatelessWidget {
   }
 
   Widget _signInButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.pushReplacementNamed(context, '/');
-      },
-      child: Text('Iniciar sesion'),
+    return SafeArea(
+      child: TextButton(
+          onPressed: () {
+            context.read<AuthCubit>().showLogin();
+          },
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                color: textColor,
+              ),
+              children: [
+                TextSpan(
+                  text: '¿No tienes una cuenta? ',
+                ),
+                TextSpan(
+                  text: 'Regístrate acá',
+                  style: TextStyle(
+                    color: greenColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          )
+          // Text('¿No tienes una cuenta? Regístrate acá'),
+          ),
     );
   }
 

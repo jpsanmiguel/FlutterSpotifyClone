@@ -1,19 +1,36 @@
+import 'package:flutter/material.dart';
+
 class AuthRepository {
-  Future<void> login() async {
+  Future<String> attemptAutoLogin() async {
+    await Future.delayed(Duration(seconds: 3));
+    throw Exception('not signed in');
+  }
+
+  Future<String> login({
+    @required String email,
+    @required String password,
+  }) async {
     print('attempting login');
     await Future.delayed(
       Duration(seconds: 3),
     );
-    print('logged in!');
-    // throw Exception('A exception, lol');
+    return 'logged in!';
   }
 
-  Future<void> register() async {
+  Future<String> register({
+    @required String email,
+    @required String password,
+  }) async {
     print('attempting register');
     await Future.delayed(
       Duration(seconds: 3),
     );
-    print('registered!');
-    // throw Exception('A exception, lol');
+    return 'registered!';
+  }
+
+  Future<void> signOut() async {
+    await Future.delayed(
+      Duration(seconds: 2),
+    );
   }
 }

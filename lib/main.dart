@@ -4,29 +4,40 @@ import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/auth_repository.dart';
 import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/spotify_repository.dart';
+import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks/top_tracks_cubit.dart';
-import 'package:spotify_clone/presentation/router/app_router.dart';
+import 'package:spotify_clone/presentation/navigation/app_navigator.dart';
+import 'package:spotify_clone/presentation/navigation/app_router.dart';
+import 'package:spotify_clone/presentation/navigation/auth_navigator.dart';
+import 'package:spotify_clone/presentation/navigation/router/bottom_router.dart';
 
 void main() {
   NetworkService networkService = NetworkService();
   AuthRepository authRepository = AuthRepository();
-  SpotifyRepository repository =
+  SpotifyRepository spotifyRepository =
       SpotifyRepository(networkService: networkService);
-  TopTracksCubit topTracksCubit = TopTracksCubit(repository: repository);
-  SavedTracksCubit savedTracksCubit = SavedTracksCubit(repository: repository);
+  TopTracksCubit topTracksCubit = TopTracksCubit(repository: spotifyRepository);
+  SavedTracksCubit savedTracksCubit =
+      SavedTracksCubit(repository: spotifyRepository);
   SpotifyPlayerCubit spotifyConnectionCubit =
-      SpotifyPlayerCubit(repository: repository);
+      SpotifyPlayerCubit(repository: spotifyRepository);
+  SessionCubit sessionCubit = SessionCubit(authRepository: authRepository);
+  BottomRouter bottomRouter = BottomRouter(
+      spotifyRepository: spotifyRepository, authRepository: authRepository);
   runApp(MyApp(
     appRouter: AppRouter(
-      spotifyRepository: repository,
+      spotifyRepository: spotifyRepository,
       authRepository: authRepository,
     ),
     authRepository: authRepository,
     topTracksCubit: topTracksCubit,
     savedTracksCubit: savedTracksCubit,
     spotifyConnectionCubit: spotifyConnectionCubit,
+    sessionCubit: sessionCubit,
+    bottomRouter: bottomRouter,
   ));
 }
 
@@ -36,6 +47,8 @@ class MyApp extends StatelessWidget {
   final TopTracksCubit topTracksCubit;
   final SpotifyPlayerCubit spotifyConnectionCubit;
   final AuthRepository authRepository;
+  final SessionCubit sessionCubit;
+  final BottomRouter bottomRouter;
 
   const MyApp({
     Key key,
@@ -44,6 +57,8 @@ class MyApp extends StatelessWidget {
     @required this.spotifyConnectionCubit,
     @required this.savedTracksCubit,
     @required this.topTracksCubit,
+    @required this.sessionCubit,
+    @required this.bottomRouter,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -55,7 +70,12 @@ class MyApp extends StatelessWidget {
         BlocProvider.value(
           value: savedTracksCubit,
         ),
-        BlocProvider.value(value: spotifyConnectionCubit)
+        BlocProvider.value(
+          value: spotifyConnectionCubit,
+        ),
+        BlocProvider.value(
+          value: sessionCubit,
+        ),
       ],
       child: MaterialApp(
         title: 'Spotify Clone',
@@ -96,7 +116,10 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        onGenerateRoute: appRouter.onGenerateRoute,
+        home: AppNavigator(
+          authRepository: authRepository,
+          bottomRouter: bottomRouter,
+        ),
         // home: MultiBlocProvider(
         //   providers: [
         //     BlocProvider.value(
