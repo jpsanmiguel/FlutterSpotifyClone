@@ -4,9 +4,9 @@ import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/auth_repository.dart';
 import 'package:spotify_clone/data/network_service.dart';
 import 'package:spotify_clone/data/spotify_repository.dart';
-import 'package:spotify_clone/logic/cubit/saved_tracks_cubit.dart';
-import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
-import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
+import 'package:spotify_clone/logic/cubit/top_tracks/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/router/app_router.dart';
 
 void main() {

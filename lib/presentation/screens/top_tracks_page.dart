@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/logic/cubit/spotify_player_cubit.dart';
-import 'package:spotify_clone/logic/cubit/top_tracks_cubit.dart';
+import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
+import 'package:spotify_clone/logic/cubit/top_tracks/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class TopTracksPage extends StatefulWidget {
