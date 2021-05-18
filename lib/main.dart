@@ -1,22 +1,25 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotify_clone/amplifyconfiguration.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
+import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/data/services/network_service.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
-import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks/top_tracks_cubit.dart';
+import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/presentation/navigation/app_navigator.dart';
-import 'package:spotify_clone/presentation/navigation/app_router.dart';
-import 'package:spotify_clone/presentation/navigation/auth_navigator.dart';
-import 'package:spotify_clone/presentation/navigation/router/bottom_router.dart';
+import 'package:spotify_clone/presentation/screens/splash_page.dart';
 
 void main() {
   NetworkService networkService = NetworkService();
-  AuthRepository authRepository = AuthRepository();
   SpotifyRepository spotifyRepository =
       SpotifyRepository(networkService: networkService);
   TopTracksCubit topTracksCubit = TopTracksCubit(repository: spotifyRepository);
@@ -24,57 +27,50 @@ void main() {
       SavedTracksCubit(repository: spotifyRepository);
   SpotifyPlayerCubit spotifyConnectionCubit =
       SpotifyPlayerCubit(repository: spotifyRepository);
-  SessionCubit sessionCubit = SessionCubit(authRepository: authRepository);
-  BottomRouter bottomRouter = BottomRouter(
-      spotifyRepository: spotifyRepository, authRepository: authRepository);
   runApp(MyApp(
-    appRouter: AppRouter(
-      spotifyRepository: spotifyRepository,
-      authRepository: authRepository,
-    ),
-    authRepository: authRepository,
     topTracksCubit: topTracksCubit,
     savedTracksCubit: savedTracksCubit,
     spotifyConnectionCubit: spotifyConnectionCubit,
-    sessionCubit: sessionCubit,
-    bottomRouter: bottomRouter,
+    spotifyRepository: spotifyRepository,
   ));
 }
 
-class MyApp extends StatelessWidget {
-  final AppRouter appRouter;
+class MyApp extends StatefulWidget {
   final SavedTracksCubit savedTracksCubit;
   final TopTracksCubit topTracksCubit;
   final SpotifyPlayerCubit spotifyConnectionCubit;
-  final AuthRepository authRepository;
-  final SessionCubit sessionCubit;
-  final BottomRouter bottomRouter;
+  final SpotifyRepository spotifyRepository;
 
   const MyApp({
     Key key,
-    @required this.appRouter,
-    @required this.authRepository,
     @required this.spotifyConnectionCubit,
     @required this.savedTracksCubit,
     @required this.topTracksCubit,
-    @required this.sessionCubit,
-    @required this.bottomRouter,
+    @required this.spotifyRepository,
   }) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _finishedConfiguring = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _configureAmplify();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider.value(
-          value: topTracksCubit,
+        RepositoryProvider(
+          create: (context) => AuthRepository(),
         ),
-        BlocProvider.value(
-          value: savedTracksCubit,
-        ),
-        BlocProvider.value(
-          value: spotifyConnectionCubit,
-        ),
-        BlocProvider.value(
-          value: sessionCubit,
+        RepositoryProvider(
+          create: (context) => DataRepository(),
         ),
       ],
       child: MaterialApp(
@@ -116,10 +112,30 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: AppNavigator(
-          authRepository: authRepository,
-          bottomRouter: bottomRouter,
-        ),
+        home: _finishedConfiguring
+            ? MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: widget.topTracksCubit,
+                  ),
+                  BlocProvider.value(
+                    value: widget.savedTracksCubit,
+                  ),
+                  BlocProvider.value(
+                    value: widget.spotifyConnectionCubit,
+                  ),
+                  BlocProvider(
+                    create: (context) => SessionCubit(
+                      authRepository: context.read<AuthRepository>(),
+                      dataRepository: context.read<DataRepository>(),
+                    ),
+                  ),
+                ],
+                child: AppNavigator(
+                  spotifyRepository: widget.spotifyRepository,
+                ),
+              )
+            : SplashPage(),
         // home: MultiBlocProvider(
         //   providers: [
         //     BlocProvider.value(
@@ -139,5 +155,23 @@ class MyApp extends StatelessWidget {
         // ),
       ),
     );
+  }
+
+  Future<void> _configureAmplify() async {
+    try {
+      await Amplify.addPlugins([
+        AmplifyAuthCognito(),
+        AmplifyDataStore(modelProvider: ModelProvider.instance),
+        AmplifyAPI(),
+      ]);
+
+      await Amplify.configure(amplifyconfig);
+
+      setState(() {
+        _finishedConfiguring = true;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }

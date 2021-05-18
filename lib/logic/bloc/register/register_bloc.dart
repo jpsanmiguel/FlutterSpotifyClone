@@ -29,11 +29,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       yield state.copyWith(formSubmissionState: FormSubmissionSubmitting());
 
       try {
-        final userId = await authRepository.register(
+        await authRepository.register(
+          email: state.email,
+          password: state.password,
+          username: 'Sanmi',
+        );
+        yield state.copyWith(formSubmissionState: FormSubmissionSuccess());
+        final userId = await authRepository.login(
           email: state.email,
           password: state.password,
         );
-        yield state.copyWith(formSubmissionState: FormSubmissionSuccess());
         authCubit.launchSession(
           AuthCredentials(
             email: state.email,

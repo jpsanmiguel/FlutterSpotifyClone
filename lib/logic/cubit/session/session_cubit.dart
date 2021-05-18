@@ -1,29 +1,57 @@
+import 'package:amplify_api/amplify_api.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
+import 'package:spotify_clone/data/repositories/data_repository.dart';
+import 'package:spotify_clone/models/ModelProvider.dart';
 
 part 'session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   final AuthRepository authRepository;
-  SessionCubit({@required this.authRepository}) : super(UnkownSessionState()) {
+  final DataRepository dataRepository;
+
+  SessionCubit({
+    @required this.authRepository,
+    @required this.dataRepository,
+  }) : super(UnkownSessionState()) {
     attemptAutoLogin();
   }
 
   void attemptAutoLogin() async {
     try {
       final userId = await authRepository.attemptAutoLogin();
+      if (userId == null) {
+        throw Exception('User not logged in');
+      }
+      User user = await dataRepository.getUserById(userId);
+      if (user == null) {
+        user = await dataRepository.createUser(
+          userId: userId,
+          username: 'User-${UUID()}',
+        );
+      }
+      emit(AuthenticatedSessionState(user: user));
     } on Exception {
       emit(UnautheticatedSessionState());
     }
   }
 
   void showAuth() => emit(UnautheticatedSessionState());
-  void showSession(AuthCredentials authCredentials) {
+  void showSession(AuthCredentials authCredentials) async {
+    User user = await dataRepository.getUserById(authCredentials.userId);
+
+    if (user == null) {
+      user = await dataRepository.createUser(
+        userId: authCredentials.userId,
+        email: authCredentials.email,
+      );
+    }
+
     emit(
       AuthenticatedSessionState(
-        user: authCredentials.email,
+        user: user,
       ),
     );
   }

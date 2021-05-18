@@ -24,11 +24,11 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
         if (connected) {
           emit(SpotifyPlayerConnected());
         } else {
-          emit(SpotifyPlayerConnectionFailed(
+          emit(SpotifyPlayerError(
               error: 'No se pudo conectar al reproductor de Spotify.'));
         }
       } on PlatformException catch (e) {
-        emit(SpotifyPlayerConnectionFailed(error: e.message));
+        emit(SpotifyPlayerError(error: e.message));
       }
     }
   }
@@ -37,8 +37,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
     if (connected) {
       await repository.play(track);
     } else {
-      await connectToSpotifyRemote();
-      play(track);
+      emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
   }
 
@@ -46,8 +45,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
     if (connected) {
       await repository.pause();
     } else {
-      await connectToSpotifyRemote();
-      pause(track);
+      emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
   }
 
@@ -55,8 +53,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
     if (connected) {
       await repository.resume();
     } else {
-      await connectToSpotifyRemote();
-      resume(track);
+      emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
   }
 
@@ -86,6 +83,6 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   }
 
   void errorPlayingTrack(String error) {
-    emit(SpotifyPlayerConnectionFailed(error: error));
+    emit(SpotifyPlayerError(error: error));
   }
 }

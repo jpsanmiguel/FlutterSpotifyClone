@@ -136,10 +136,10 @@ class RegisterPage extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '¿No tienes una cuenta? ',
+                  text: '¿Ya tienes una cuenta? ',
                 ),
                 TextSpan(
-                  text: 'Regístrate acá',
+                  text: 'Inicia sesión acá',
                   style: TextStyle(
                     color: greenColor,
                     fontWeight: FontWeight.bold,

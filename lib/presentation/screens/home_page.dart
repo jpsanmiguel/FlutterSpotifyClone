@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                       listener: (context, state) {
-                        if (state is SpotifyPlayerConnectionFailed) {
+                        if (state is SpotifyPlayerError) {
                           loading = false;
                           final snackBar = SnackBar(
                             content: Text(state.error),

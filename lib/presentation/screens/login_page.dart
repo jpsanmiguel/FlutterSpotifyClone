@@ -38,8 +38,6 @@ class LoginPage extends StatelessWidget {
         if (formSubmissionState is FormSubmissionFailed) {
           _showExceptionSnackBar(
               context, formSubmissionState.exception.toString());
-        } else if (formSubmissionState is FormSubmissionSuccess) {
-          Navigator.pushReplacementNamed(context, '/home');
         }
       },
       child: Form(
@@ -136,10 +134,10 @@ class LoginPage extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '¿Ya tienes una cuenta? ',
+                  text: '¿No tienes una cuenta? ',
                 ),
                 TextSpan(
-                  text: 'Inicia sesión acá',
+                  text: 'Regístrate acá',
                   style: TextStyle(
                     color: greenColor,
                     fontWeight: FontWeight.bold,

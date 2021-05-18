@@ -7,10 +7,10 @@ class SpotifyPlayerInitial extends SpotifyPlayerState {}
 
 class SpotifyPlayerConnecting extends SpotifyPlayerState {}
 
-class SpotifyPlayerConnectionFailed extends SpotifyPlayerState {
+class SpotifyPlayerError extends SpotifyPlayerState {
   final String error;
 
-  SpotifyPlayerConnectionFailed({@required this.error});
+  SpotifyPlayerError({@required this.error});
 }
 
 class SpotifyPlayerConnected extends SpotifyPlayerState {}

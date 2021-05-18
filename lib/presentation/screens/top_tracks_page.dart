@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/data/models/auth_credentials.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/logic/cubit/top_tracks/top_tracks_cubit.dart';
+import 'package:spotify_clone/models/User.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class TopTracksPage extends StatefulWidget {
-  TopTracksPage({Key key}) : super(key: key);
+  final User user;
+  TopTracksPage({
+    Key key,
+    @required this.user,
+  }) : super(key: key);
 
   @override
-  _TopTracksPageState createState() => _TopTracksPageState();
+  _TopTracksPageState createState() => _TopTracksPageState(user: user);
 }
 
 class _TopTracksPageState extends State<TopTracksPage> {
+  final User user;
   final _scrollController = ScrollController();
 
-  _TopTracksPageState() {
+  _TopTracksPageState({@required this.user}) {
     _scrollController.addListener(_onScroll);
   }
 
@@ -30,7 +37,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Top tracks',
+          'Top tracks of ${user.username}',
           style: TextStyle(
             color: textColor,
           ),
