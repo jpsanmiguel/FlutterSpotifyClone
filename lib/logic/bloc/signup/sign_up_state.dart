@@ -1,26 +1,37 @@
-part of 'register_bloc.dart';
+part of 'sign_up_bloc.dart';
 
-class RegisterState {
+class SignUpState {
   final String email;
   final String password;
+  final String username;
   final FormSubmissionState formSubmissionState;
 
-  RegisterState({
+  SignUpState({
     this.email = '',
     this.password = '',
+    this.username = '',
     this.formSubmissionState = const InitialFormState(),
   });
 
-  RegisterState copyWith({
+  SignUpState copyWith({
     String email,
     String password,
+    String username,
     FormSubmissionState formSubmissionState,
   }) {
-    return RegisterState(
+    return SignUpState(
       email: email ?? this.email,
       password: password ?? this.password,
+      username: username ?? this.username,
       formSubmissionState: formSubmissionState ?? this.formSubmissionState,
     );
+  }
+
+  String validateUsername(String username) {
+    if (username.isEmpty) {
+      return 'El usuario no puede ser vacío';
+    }
+    return null;
   }
 
   String validateEmail(String email) {

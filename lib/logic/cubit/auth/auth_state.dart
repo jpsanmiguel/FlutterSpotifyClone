@@ -20,3 +20,5 @@ class SignedUpAuthState extends AuthState {
 
   SignedUpAuthState({@required this.authCredentials});
 }
+
+class ConfirmSignUpAuthState extends AuthState {}

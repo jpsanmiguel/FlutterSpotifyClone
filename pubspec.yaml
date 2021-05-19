@@ -23,6 +23,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  amplify_api: ^0.1.5
+  amplify_auth_cognito: ^0.1.5
+  amplify_datastore: ^0.1.5
+  amplify_flutter: ^0.1.5
   cupertino_icons: ^1.0.2
   flutter_bloc: ^7.0.0
   http: ^0.13.3

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
-import 'package:spotify_clone/data/auth_repository.dart';
+import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/logic/bloc/login/login_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
 
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  final AuthRepository authRepository;
 
-  LoginPage({Key key, @required this.authRepository}) : super(key: key);
+  LoginPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
         create: (context) => LoginBloc(
-          authRepository: authRepository,
+          authRepository: context.read<AuthRepository>(),
           authCubit: context.read<AuthCubit>(),
         ),
         child: Stack(
@@ -38,8 +37,6 @@ class LoginPage extends StatelessWidget {
         if (formSubmissionState is FormSubmissionFailed) {
           _showExceptionSnackBar(
               context, formSubmissionState.exception.toString());
-        } else if (formSubmissionState is FormSubmissionSuccess) {
-          Navigator.pushReplacementNamed(context, '/home');
         }
       },
       child: Form(
@@ -136,10 +133,10 @@ class LoginPage extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '¿Ya tienes una cuenta? ',
+                  text: '¿No tienes una cuenta? ',
                 ),
                 TextSpan(
-                  text: 'Inicia sesión acá',
+                  text: 'Regístrate acá',
                   style: TextStyle(
                     color: greenColor,
                     fontWeight: FontWeight.bold,

@@ -2,16 +2,16 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/track.dart';
-import 'package:spotify_clone/data/spotify_repository.dart';
+import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 part 'spotify_player_state.dart';
 
 class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
-  final SpotifyRepository repository;
+  final SpotifyRepository spotifyRepository;
 
-  SpotifyPlayerCubit({@required this.repository})
+  SpotifyPlayerCubit({@required this.spotifyRepository})
       : super(SpotifyPlayerInitial());
 
   bool connected = false;
@@ -20,43 +20,40 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
     if (!connected) {
       emit(SpotifyPlayerConnecting());
       try {
-        connected = await repository.connectToSpotifyRemote();
+        connected = await spotifyRepository.connectToSpotifyRemote();
         if (connected) {
           emit(SpotifyPlayerConnected());
         } else {
-          emit(SpotifyPlayerConnectionFailed(
+          emit(SpotifyPlayerError(
               error: 'No se pudo conectar al reproductor de Spotify.'));
         }
       } on PlatformException catch (e) {
-        emit(SpotifyPlayerConnectionFailed(error: e.message));
+        emit(SpotifyPlayerError(error: e.message));
       }
     }
   }
 
   void play(Track track) async {
     if (connected) {
-      await repository.play(track);
+      await spotifyRepository.play(track);
     } else {
-      await connectToSpotifyRemote();
-      play(track);
+      emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
   }
 
   void pause(Track track) async {
     if (connected) {
-      await repository.pause();
+      await spotifyRepository.pause();
     } else {
-      await connectToSpotifyRemote();
-      pause(track);
+      emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
   }
 
   void resume(Track track) async {
     if (connected) {
-      await repository.resume();
+      await spotifyRepository.resume();
     } else {
-      await connectToSpotifyRemote();
-      resume(track);
+      emit(SpotifyPlayerError(error: 'Not connected to spotify!'));
     }
   }
 
@@ -86,6 +83,6 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   }
 
   void errorPlayingTrack(String error) {
-    emit(SpotifyPlayerConnectionFailed(error: error));
+    emit(SpotifyPlayerError(error: error));
   }
 }
