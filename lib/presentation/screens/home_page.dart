@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
-import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/presentation/navigation/router/bottom_router.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
@@ -34,19 +32,9 @@ class _HomePageState extends State<HomePage> {
     return BlocListener<InternetConnectionCubit, InternetConnectionState>(
       listener: (context, state) {
         if (state is InternetConnectedState) {
-          context.read<SavedTracksCubit>().interneConnection(
-                state.connectionType,
-              );
-          // context.read<TopTracksCubit>().interneConnection(
-          //       state.connectionType,
-          //     );
+          print('Internet connection!');
         } else if (state is InternetDisconnectedState) {
-          context.read<SavedTracksCubit>().interneConnection(
-                ConnectionType.None,
-              );
-          // context.read<TopTracksCubit>().interneConnection(
-          //       ConnectionType.None,
-          //     );
+          print('No internet connection!');
         }
       },
       child: Scaffold(

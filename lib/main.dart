@@ -13,12 +13,13 @@ import 'package:spotify_clone/data/services/network_service.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/presentation/navigation/app_navigator.dart';
 import 'package:spotify_clone/presentation/screens/splash_page.dart';
+
+import 'logic/bloc/saved_tracks/saved_tracks_bloc.dart';
 
 void main() {
   runApp(
@@ -102,10 +103,6 @@ class _MyAppState extends State<MyApp> {
           ? MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) => SavedTracksCubit(
-                      spotifyRepository: context.read<SpotifyRepository>()),
-                ),
-                BlocProvider(
                   create: (context) => SpotifyPlayerCubit(
                       spotifyRepository: context.read<SpotifyRepository>()),
                 ),
@@ -121,9 +118,15 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
                 BlocProvider(
-                    create: (context) => TopTracksBloc(
-                          spotifyRepository: context.read<SpotifyRepository>(),
-                        )..add(TopTracksFetched()))
+                  create: (context) => TopTracksBloc(
+                    spotifyRepository: context.read<SpotifyRepository>(),
+                  )..add(TopTracksFetched()),
+                ),
+                BlocProvider(
+                  create: (context) => SavedTracksBloc(
+                    spotifyRepository: context.read<SpotifyRepository>(),
+                  )..add(SavedTracksFetched()),
+                ),
               ],
               child: AppNavigator(
                 spotifyRepository: context.read<SpotifyRepository>(),
