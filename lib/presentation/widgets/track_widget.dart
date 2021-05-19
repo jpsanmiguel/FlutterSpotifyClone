@@ -94,44 +94,5 @@ class TrackWidget extends StatelessWidget {
         ),
       ),
     );
-    // return Container(
-    //   decoration: BoxDecoration(
-    //     color: backgroundColor,
-    //   ),
-    //   child: ListTile(
-    //     leading: Image.network('${track.getImageUrl()}'),
-    //     title: Text(
-    //       '${track.name}',
-    //       style: TextStyle(
-    //         color: textColor,
-    //         fontWeight: FontWeight.bold,
-    //       ),
-    //     ),
-    //     subtitle: Text(
-    //       '${track.getArtistsNames()}',
-    //       style: TextStyle(
-    //         color: textColor,
-    //       ),
-    //     ),
-    //     trailing: InkWell(
-    //       child: Icon(
-    //         icon,
-    //         color: iconColor,
-    //       ),
-    //       onTap: () async {
-    //         onIconPressed != null
-    //             ? onIconPressed(track)
-    //             : print('Nothing to do in icon!');
-    //       },
-    //     ),
-    //     onTap: () async {
-    //       onItemPressed != null
-    //           ? onItemPressed(track)
-    //           : print('Nothing to do!');
-    //     },
-    //     isThreeLine: false,
-    //     dense: true,
-    //   ),
-    // );
   }
 }

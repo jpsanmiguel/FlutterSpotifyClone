@@ -9,3 +9,9 @@ enum ConnectionType {
   Mobile,
   None,
 }
+
+enum TracksStatus {
+  Initial,
+  Success,
+  Failure,
+}

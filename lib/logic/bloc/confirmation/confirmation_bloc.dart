@@ -46,7 +46,6 @@ class ConfirmationBloc extends Bloc<ConfirmationEvent, ConfirmationState> {
 
         yield state.copyWith(formSubmissionState: FormSubmissionSuccess());
       } catch (e) {
-        print(e);
         yield state.copyWith(formSubmissionState: FormSubmissionFailed(e));
       }
     }

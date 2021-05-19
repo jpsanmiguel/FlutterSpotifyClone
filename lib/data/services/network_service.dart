@@ -28,8 +28,6 @@ class NetworkService {
       var decodeJson = jsonDecode(response.body);
       TopTracksPagingResponse tracksPagingResponse =
           TopTracksPagingResponse.fromJson(decodeJson);
-      // print("RESPUESTA_TOP:::${response.body}");
-      print('topUrl: $nextUrl');
       return tracksPagingResponse;
     } catch (e) {
       return null;
@@ -48,8 +46,6 @@ class NetworkService {
       var decodeJson = jsonDecode(response.body);
       SavedTracksPagingResponse tracksPagingResponse =
           SavedTracksPagingResponse.fromJson(decodeJson);
-      // print("RESPUESTA_SAVED:::${response.body}");
-      print('savedUrl: $nextUrl');
       return tracksPagingResponse;
     } catch (e) {
       return null;
@@ -85,8 +81,6 @@ class NetworkService {
   Future<bool> connectToSpotifyRemote() async {
     var connected = await SpotifySdk.connectToSpotifyRemote(
         clientId: clientId, redirectUrl: redirectUrl);
-
-    print('connected? $connected');
 
     return connected;
   }

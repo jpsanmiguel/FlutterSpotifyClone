@@ -33,7 +33,7 @@ class SavedTracksCubit extends Cubit<SavedTracksState> {
           }
           print('call to fetch');
           savedTracksPagingResponse =
-              await spotifyRepository.fetchUserSavedTracks(nextUrl);
+              await spotifyRepository.fetchUserSavedTracks(nextUrl: nextUrl);
           nextUrl = savedTracksPagingResponse.next;
           if (savedTracksPagingResponse.next == null) {
             hasReachedEnd = true;

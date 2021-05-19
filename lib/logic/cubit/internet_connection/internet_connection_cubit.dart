@@ -21,14 +21,11 @@ class InternetConnectionCubit extends Cubit<InternetConnectionState> {
     return connectivityStreamSubscription =
         connectivity.onConnectivityChanged.listen((connectivityResult) {
       if (connectivityResult == ConnectivityResult.wifi) {
-        print('connection: Wifi');
         emit(InternetConnectedState(connectionType: ConnectionType.Wifi));
       } else if (connectivityResult == ConnectivityResult.mobile) {
-        print('connection: Mobile');
         emit(InternetConnectedState(connectionType: ConnectionType.Mobile));
       } else if (connectivityResult == ConnectivityResult.none) {
         emit(InternetDisconnectedState());
-        print('connection: none');
       }
     });
   }
