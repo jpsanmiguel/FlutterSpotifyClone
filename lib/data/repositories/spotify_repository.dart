@@ -9,7 +9,7 @@ class SpotifyRepository {
 
   SpotifyRepository({@required this.networkService}) : super();
 
-  Future<TopTracksPagingResponse> fetchUserTopTracks(String nextUrl) async {
+  Future<TopTracksPagingResponse> fetchUserTopTracks({String nextUrl}) async {
     TopTracksPagingResponse response =
         await networkService.fetchUserTopTracks(nextUrl);
     if (response.error != null) {
@@ -19,7 +19,8 @@ class SpotifyRepository {
     return response;
   }
 
-  Future<SavedTracksPagingResponse> fetchUserSavedTracks(String nextUrl) async {
+  Future<SavedTracksPagingResponse> fetchUserSavedTracks(
+      {String nextUrl}) async {
     SavedTracksPagingResponse response =
         await networkService.fetchUserSavedTracks(nextUrl);
     if (response.error != null) {
