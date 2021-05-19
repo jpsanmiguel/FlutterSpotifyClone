@@ -6,7 +6,6 @@ import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
-import 'package:rxdart/rxdart.dart';
 
 part 'saved_tracks_event.dart';
 part 'saved_tracks_state.dart';
@@ -16,15 +15,6 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
   SavedTracksBloc({
     @required this.spotifyRepository,
   }) : super(SavedTracksState());
-
-  @override
-  Stream<Transition<SavedTracksEvent, SavedTracksState>> transformEvents(
-      Stream<SavedTracksEvent> events, transitionFn) {
-    return super.transformEvents(
-      events.debounceTime(Duration(seconds: 1)),
-      transitionFn,
-    );
-  }
 
   @override
   Stream<SavedTracksState> mapEventToState(
@@ -37,12 +27,15 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         yield state.copyWith(status: TracksStatus.Failure);
       }
     } else if (event is SavedTracksAddTrackToLibrary) {
-      await spotifyRepository.addToLibrary(event.track);
       event.track.inLibrary = true;
       yield state.copyWith();
+      event.track.inLibrary = await spotifyRepository.addToLibrary(event.track);
+      yield state.copyWith();
     } else if (event is SavedTracksRemoveTrackToLibrary) {
-      await spotifyRepository.removeFromLibrary(event.track);
       event.track.inLibrary = false;
+      yield state.copyWith();
+      event.track.inLibrary =
+          await spotifyRepository.removeFromLibrary(event.track);
       yield state.copyWith();
     } else if (event is SavedTracksReset) {
       yield state.copyWith(

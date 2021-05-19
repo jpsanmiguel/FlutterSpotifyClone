@@ -51,11 +51,11 @@ class SpotifyRepository {
     return await networkService.resume();
   }
 
-  Future removeFromLibrary(Track track) async {
+  Future<bool> removeFromLibrary(Track track) async {
     return await networkService.removeFromLibrary(track);
   }
 
-  Future addToLibrary(Track track) async {
+  Future<bool> addToLibrary(Track track) async {
     return await networkService.addToLibrary(track);
   }
 }

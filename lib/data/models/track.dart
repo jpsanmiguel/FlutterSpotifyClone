@@ -6,15 +6,17 @@ import 'package:spotify_clone/utils/functions.dart';
 import 'package:spotify_sdk/models/track.dart' as Spotify;
 
 class Track {
+  String id;
   AlbumSimplified album;
   List<Artist> artists;
   String name;
   String uri;
   bool inLibrary = false;
 
-  Track({this.album, this.artists, this.name, this.uri});
+  Track({this.id, this.album, this.artists, this.name, this.uri});
 
   Track.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     if (json['album'] != null) {
       album = AlbumSimplified.fromJson(json['album']);
     }

@@ -6,7 +6,6 @@ import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
-import 'package:rxdart/rxdart.dart';
 
 part 'top_tracks_event.dart';
 part 'top_tracks_state.dart';
@@ -18,32 +17,21 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
   }) : super(TopTracksState());
 
   @override
-  Stream<Transition<TopTracksEvent, TopTracksState>> transformEvents(
-      Stream<TopTracksEvent> events, transitionFn) {
-    return super.transformEvents(
-      events.debounceTime(Duration(seconds: 1)),
-      transitionFn,
-    );
-  }
-
-  @override
   Stream<TopTracksState> mapEventToState(
     TopTracksEvent event,
   ) async* {
     if (event is TopTracksFetched) {
-      print('called top tracks fetched!');
       try {
         yield await _mapTopTracksFetchedToState(state);
       } catch (e) {
         yield state.copyWith(status: TracksStatus.Failure);
       }
     } else if (event is TopTracksAddTrackToLibrary) {
-      await spotifyRepository.addToLibrary(event.track);
-      event.track.inLibrary = true;
+      event.track.inLibrary = await spotifyRepository.addToLibrary(event.track);
       yield state.copyWith();
     } else if (event is TopTracksRemoveTrackToLibrary) {
-      await spotifyRepository.removeFromLibrary(event.track);
-      event.track.inLibrary = false;
+      event.track.inLibrary =
+          await spotifyRepository.removeFromLibrary(event.track);
       yield state.copyWith();
     } else if (event is TopTracksReset) {
       yield state.copyWith(

@@ -6,7 +6,6 @@ import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/saved_tracks/saved_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_loader.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
@@ -22,9 +21,13 @@ class SavedTracksPage extends StatefulWidget {
 
 class _SavedTracksPageState extends State<SavedTracksPage> {
   final _scrollController = ScrollController();
+  SavedTracksBloc _savedTracksBloc;
 
-  _SavedTracksPageState() {
+  @override
+  void initState() {
+    super.initState();
     _scrollController.addListener(_onScroll);
+    _savedTracksBloc = context.read<SavedTracksBloc>();
   }
 
   @override
@@ -50,8 +53,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                                 if (state is InternetConnectedState) {
                                   return ElevatedButton(
                                     onPressed: () {
-                                      context.read<SavedTracksBloc>()
-                                        ..add(SavedTracksReset());
+                                      _savedTracksBloc..add(SavedTracksReset());
                                     },
                                     child: Text('Retry'),
                                   );
@@ -116,19 +118,19 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
   }
 
   Future<void> removeFromLibrary(Track track) async {
-    context.read<SavedTracksBloc>().add(
-          SavedTracksRemoveTrackToLibrary(track: track),
-        );
+    _savedTracksBloc.add(
+      SavedTracksRemoveTrackToLibrary(track: track),
+    );
   }
 
   Future<void> addToLibrary(Track track) async {
-    context.read<SavedTracksBloc>().add(
-          SavedTracksAddTrackToLibrary(track: track),
-        );
+    _savedTracksBloc.add(
+      SavedTracksAddTrackToLibrary(track: track),
+    );
   }
 
   void _onScroll() async {
-    if (_isBottom) context.read<SavedTracksBloc>().add(SavedTracksFetched());
+    if (_isBottom) _savedTracksBloc.add(SavedTracksFetched());
   }
 
   bool get _isBottom {
@@ -139,7 +141,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
   }
 
   Future<void> _pullRefresh() async {
-    context.read<SavedTracksBloc>()..add(SavedTracksReset());
+    _savedTracksBloc..add(SavedTracksReset());
   }
 
   @override

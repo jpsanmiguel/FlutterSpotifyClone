@@ -28,10 +28,31 @@ class NetworkService {
       var decodeJson = jsonDecode(response.body);
       TopTracksPagingResponse tracksPagingResponse =
           TopTracksPagingResponse.fromJson(decodeJson);
+      await checkUserTopTracksInSavedTracks(tracksPagingResponse);
       return tracksPagingResponse;
     } catch (e) {
       return null;
     }
+  }
+
+  Future<TopTracksPagingResponse> checkUserTopTracksInSavedTracks(
+      TopTracksPagingResponse topTracksPagingResponse) async {
+    try {
+      final token = await getToken();
+      final songIds =
+          topTracksPagingResponse.tracks.map((track) => track.id).join(",");
+      final response = await get(
+        Uri.parse("${_baseUrl}me/tracks/contains?ids=$songIds"),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+      var decodeJson = jsonDecode(response.body);
+      topTracksPagingResponse.tracks.asMap().forEach((index, element) {
+        element.inLibrary = (decodeJson[index] as bool);
+      });
+      print(decodeJson);
+    } catch (e) {}
   }
 
   Future<SavedTracksPagingResponse> fetchUserSavedTracks(String nextUrl) async {
@@ -97,11 +118,21 @@ class NetworkService {
     return await SpotifySdk.resume();
   }
 
-  Future removeFromLibrary(Track track) async {
-    return await SpotifySdk.removeFromLibrary(spotifyUri: track.uri);
+  Future<bool> removeFromLibrary(Track track) async {
+    try {
+      await SpotifySdk.removeFromLibrary(spotifyUri: track.uri);
+      return false;
+    } catch (e) {
+      return true;
+    }
   }
 
-  Future addToLibrary(Track track) async {
-    return await SpotifySdk.addToLibrary(spotifyUri: track.uri);
+  Future<bool> addToLibrary(Track track) async {
+    try {
+      await SpotifySdk.addToLibrary(spotifyUri: track.uri);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
