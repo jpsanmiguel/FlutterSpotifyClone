@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
+import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
+import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
+import 'package:spotify_clone/logic/cubit/top_tracks/top_tracks_cubit.dart';
 import 'package:spotify_clone/presentation/navigation/router/bottom_router.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
@@ -28,97 +32,137 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     BlocProvider.of<SpotifyPlayerCubit>(context).connectToSpotifyRemote();
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Navigator(
-                key: _navigatorKey,
-                onGenerateRoute: bottomRouter.onGenerateRoute),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Wrap(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    BlocConsumer<SpotifyPlayerCubit, SpotifyPlayerState>(
-                      builder: (context, state) {
-                        if (state is SpotifyPlayerInitial) {
-                          return Container();
-                        } else if (state is SpotifyPlayerConnecting) {
-                          return Container();
-                        } else if (state is SpotifyPlayerConnected) {
-                          BlocProvider.of<SpotifyPlayerCubit>(context)
-                              .listenToPlayerState();
-                          return Container(
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                              color: blackColor,
-                            ),
-                            child: Center(
-                              child: Text('Connected!'),
-                            ),
-                          );
-                        } else if (state is SpotifyPlayerPlaying) {
-                          return TrackWidget(
-                            backgroundColor: darkGreyColor,
-                            icon: Icons.pause,
-                            iconColor: whiteColor,
-                            onIconPressed: pause,
-                            track: state.track,
-                            loading: false,
-                            isPlaying: true,
-                          );
-                        } else if (state is SpotifyPlayerPaused) {
-                          return TrackWidget(
-                            backgroundColor: darkGreyColor,
-                            icon: Icons.play_arrow,
-                            iconColor: whiteColor,
-                            onIconPressed: resume,
-                            track: state.track,
-                            loading: false,
-                            isPlaying: true,
-                          );
-                        } else if (state is SpotifyPlayerLoading) {
-                          return TrackWidget(
-                            backgroundColor: darkGreyColor,
-                            loading: true,
-                            isPlaying: true,
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                      listener: (context, state) {
-                        if (state is SpotifyPlayerError) {
-                          loading = false;
-                          final snackBar = SnackBar(
-                            content: Text(state.error),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        } else if (state is SpotifyPlayerLoading) {
-                          loading = true;
-                          Future.delayed(Duration(seconds: 5), () {
-                            if (loading) {
-                              BlocProvider.of<SpotifyPlayerCubit>(context)
-                                  .errorPlayingTrack('Error reproduciendo...');
-                            }
-                          });
-                        } else {
-                          loading = false;
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
+    return BlocListener<InternetConnectionCubit, InternetConnectionState>(
+      listener: (context, state) {
+        if (state is InternetConnectedState) {
+          context.read<SavedTracksCubit>().interneConnection(
+                state.connectionType,
+              );
+          context.read<TopTracksCubit>().interneConnection(
+                state.connectionType,
+              );
+        } else if (state is InternetDisconnectedState) {
+          context.read<SavedTracksCubit>().interneConnection(
+                ConnectionType.None,
+              );
+          context.read<TopTracksCubit>().interneConnection(
+                ConnectionType.None,
+              );
+        }
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: Navigator(
+                  key: _navigatorKey,
+                  onGenerateRoute: bottomRouter.onGenerateRoute),
             ),
-          ),
-        ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Wrap(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      BlocBuilder<InternetConnectionCubit,
+                          InternetConnectionState>(
+                        builder: (context, state) {
+                          if (state is InternetDisconnectedState) {
+                            return Container(
+                              margin: EdgeInsets.all(4.0),
+                              child: Text(
+                                'No internet connection!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                      BlocConsumer<SpotifyPlayerCubit, SpotifyPlayerState>(
+                        builder: (context, state) {
+                          if (state is SpotifyPlayerInitial) {
+                            return Container();
+                          } else if (state is SpotifyPlayerConnecting) {
+                            return Container();
+                          } else if (state is SpotifyPlayerConnected) {
+                            BlocProvider.of<SpotifyPlayerCubit>(context)
+                                .listenToPlayerState();
+                            return Container(
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                color: blackColor,
+                              ),
+                              child: Center(
+                                child: Text('Connected!'),
+                              ),
+                            );
+                          } else if (state is SpotifyPlayerPlaying) {
+                            return TrackWidget(
+                              backgroundColor: darkGreyColor,
+                              icon: Icons.pause,
+                              iconColor: whiteColor,
+                              onIconPressed: pause,
+                              track: state.track,
+                              loading: false,
+                              isPlaying: true,
+                            );
+                          } else if (state is SpotifyPlayerPaused) {
+                            return TrackWidget(
+                              backgroundColor: darkGreyColor,
+                              icon: Icons.play_arrow,
+                              iconColor: whiteColor,
+                              onIconPressed: resume,
+                              track: state.track,
+                              loading: false,
+                              isPlaying: true,
+                            );
+                          } else if (state is SpotifyPlayerLoading) {
+                            return TrackWidget(
+                              backgroundColor: darkGreyColor,
+                              loading: true,
+                              isPlaying: true,
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                        listener: (context, state) {
+                          if (state is SpotifyPlayerError) {
+                            loading = false;
+                            final snackBar = SnackBar(
+                              content: Text(state.error),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } else if (state is SpotifyPlayerLoading) {
+                            loading = true;
+                            Future.delayed(Duration(seconds: 5), () {
+                              if (loading) {
+                                BlocProvider.of<SpotifyPlayerCubit>(context)
+                                    .errorPlayingTrack(
+                                        'Error reproduciendo...');
+                              }
+                            });
+                          } else {
+                            loading = false;
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: _bottomNavigationBar(),
       ),
-      bottomNavigationBar: _bottomNavigationBar(),
     );
   }
 

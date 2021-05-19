@@ -2,6 +2,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/amplifyconfiguration.dart';
@@ -10,6 +11,7 @@ import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/data/services/network_service.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
+import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/saved_tracks/saved_tracks_cubit.dart';
 import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
@@ -115,6 +117,11 @@ class _MyAppState extends State<MyApp> {
                   create: (context) => SessionCubit(
                     authRepository: context.read<AuthRepository>(),
                     dataRepository: context.read<DataRepository>(),
+                  ),
+                ),
+                BlocProvider(
+                  create: (context) => InternetConnectionCubit(
+                    connectivity: Connectivity(),
                   ),
                 ),
               ],

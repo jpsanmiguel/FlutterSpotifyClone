@@ -35,9 +35,9 @@ class User extends Model {
   }
 
   const User._internal(
-      {@required this.id, @required this.email, this.username});
+      {@required this.id, @required this.email, @required this.username});
 
-  factory User({String id, @required String email, String username}) {
+  factory User({String id, @required String email, @required String username}) {
     return User._internal(
         id: id == null ? UUID.getUUID() : id, email: email, username: username);
   }
@@ -112,7 +112,7 @@ class User extends Model {
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         key: User.USERNAME,
-        isRequired: false,
+        isRequired: true,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
   });
 }

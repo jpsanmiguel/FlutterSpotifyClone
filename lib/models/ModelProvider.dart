@@ -22,7 +22,7 @@ export 'User.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "90c1d0fa530ee2a81f58c219ca7b90fa";
+  String version = "b1a62d173b42fe36e60bdf0fe2121442";
   @override
   List<ModelSchema> modelSchemas = [User.schema];
   static final ModelProvider _instance = ModelProvider();

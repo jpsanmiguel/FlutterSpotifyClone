@@ -42,3 +42,5 @@ class SavedTracksLoaded extends SavedTracksState {
 
   SavedTracksLoaded({@required this.savedTracksPagingResponse});
 }
+
+class SavedTracksNoInternetConnection extends SavedTracksState {}

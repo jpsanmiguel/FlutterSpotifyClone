@@ -3,3 +3,9 @@ enum ImageSize {
   Medium,
   Large,
 }
+
+enum ConnectionType {
+  Wifi,
+  Mobile,
+  None,
+}
