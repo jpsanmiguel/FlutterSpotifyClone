@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
+import 'package:spotify_clone/utils/functions.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 class NetworkService {
@@ -88,13 +89,6 @@ class NetworkService {
     print('connected? $connected');
 
     return connected;
-  }
-
-  Future<SharedPreferences> getSharedPreferences() async {
-    if (prefs == null) {
-      return await SharedPreferences.getInstance();
-    }
-    return prefs;
   }
 
   Future play(Track track) async {

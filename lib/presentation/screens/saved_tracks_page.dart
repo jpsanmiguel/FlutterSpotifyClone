@@ -25,7 +25,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
 
   @override
   Widget build(BuildContext homeScreenContext) {
-    BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
+    context.read<SavedTracksCubit>().fetchUserSavedTracks();
 
     return Scaffold(
       appBar: AppBar(
@@ -117,15 +117,15 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
   }
 
   Future<void> play(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
+    context.read<SpotifyPlayerCubit>().play(track);
   }
 
   Future<void> removeFromLibrary(Track track) async {
-    await BlocProvider.of<SavedTracksCubit>(context).removeFromLibrary(track);
+    context.read<SavedTracksCubit>().removeFromLibrary(track);
   }
 
   Future<void> addToLibrary(Track track) async {
-    await BlocProvider.of<SavedTracksCubit>(context).addToLibrary(track);
+    context.read<SavedTracksCubit>().addToLibrary(track);
   }
 
   void _onScroll() async {
@@ -133,12 +133,12 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
     final currentScroll = _scrollController.position.pixels;
     if (_scrollThreshold == 0.0) _scrollThreshold = maxScroll / 2;
     if (currentScroll >= maxScroll - _scrollThreshold) {
-      BlocProvider.of<SavedTracksCubit>(context).fetchUserSavedTracks();
+      context.read<SavedTracksCubit>().fetchUserSavedTracks();
     }
   }
 
   Future<void> _pullRefresh() async {
-    BlocProvider.of<SavedTracksCubit>(context).resetSavedTracks();
+    context.read<SavedTracksCubit>().resetSavedTracks();
   }
 
   @override
