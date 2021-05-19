@@ -32,7 +32,11 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
   ) async* {
     if (event is TopTracksFetched) {
       print('called top tracks fetched!');
-      yield await _mapTopTracksFetchedToState(state);
+      try {
+        yield await _mapTopTracksFetchedToState(state);
+      } catch (e) {
+        yield state.copyWith(status: TracksStatus.Failure);
+      }
     } else if (event is TopTracksAddTrackToLibrary) {
       await spotifyRepository.addToLibrary(event.track);
       event.track.inLibrary = true;
