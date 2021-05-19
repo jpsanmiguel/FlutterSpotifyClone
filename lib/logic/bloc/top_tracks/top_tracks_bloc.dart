@@ -41,6 +41,13 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
       await spotifyRepository.removeFromLibrary(event.track);
       event.track.inLibrary = false;
       yield state.copyWith();
+    } else if (event is TopTracksReset) {
+      yield state.copyWith(
+        hasReachedEnd: false,
+        topTracksPagingResponse: null,
+        status: TracksStatus.Initial,
+      );
+      add(TopTracksFetched());
     }
   }
 

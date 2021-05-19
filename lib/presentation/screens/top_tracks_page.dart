@@ -135,8 +135,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   Future<void> _pullRefresh() async {
-    print('do something!');
-    // BlocProvider.of<TopTracksCubit>(context).resetTopTracks();
+    context.read<TopTracksBloc>()..add(TopTracksReset());
   }
 
   @override
