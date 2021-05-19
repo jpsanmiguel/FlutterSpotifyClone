@@ -29,7 +29,6 @@ class ConfirmationBloc extends Bloc<ConfirmationEvent, ConfirmationState> {
     } else if (event is ConfirmationSubmitted) {
       yield state.copyWith(formSubmissionState: FormSubmissionSubmitting());
 
-      print('email: ${authCubit.credentials.email}');
       try {
         await authRepository.confirmSignUp(
           email: authCubit.credentials.email,
