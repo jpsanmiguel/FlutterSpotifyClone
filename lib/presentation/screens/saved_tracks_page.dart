@@ -6,53 +6,30 @@ import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/saved_tracks/saved_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
+import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
-import 'package:spotify_clone/models/User.dart';
 import 'package:spotify_clone/presentation/widgets/track_loader.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class SavedTracksPage extends StatefulWidget {
-  final User user;
   SavedTracksPage({
     Key key,
-    @required this.user,
   }) : super(key: key);
 
   @override
-  _SavedTracksPageState createState() => _SavedTracksPageState(user: user);
+  _SavedTracksPageState createState() => _SavedTracksPageState();
 }
 
 class _SavedTracksPageState extends State<SavedTracksPage> {
-  final User user;
   final _scrollController = ScrollController();
 
-  _SavedTracksPageState({@required this.user}) {
+  _SavedTracksPageState() {
     _scrollController.addListener(_onScroll);
   }
 
   @override
   Widget build(BuildContext homeScreenContext) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Saved tracks of ${user.username}',
-          style: TextStyle(
-            color: textColor,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.logout,
-              color: textColor,
-            ),
-            onPressed: () => context.read<SessionCubit>().signOut(),
-          ),
-        ],
-        backgroundColor: darkGreyColor,
-        centerTitle: true,
-      ),
       body: RefreshIndicator(
         onRefresh: _pullRefresh,
         child: Column(

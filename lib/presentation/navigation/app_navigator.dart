@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
-import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
+import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/presentation/navigation/auth_navigator.dart';
 import 'package:spotify_clone/presentation/navigation/router/bottom_router.dart';
 import 'package:spotify_clone/presentation/screens/home_page.dart';
@@ -18,7 +18,7 @@ class AppNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SessionCubit, SessionState>(
+    return BlocBuilder<AuthSessionCubit, AuthSessionState>(
       builder: (context, state) {
         return Navigator(
           pages: [
@@ -27,7 +27,7 @@ class AppNavigator extends StatelessWidget {
               MaterialPage(
                 child: BlocProvider(
                   create: (context) =>
-                      AuthCubit(sessionCubit: context.read<SessionCubit>()),
+                      AuthCubit(sessionCubit: context.read<AuthSessionCubit>()),
                   child: AuthNavigator(
                     authRepository: context.read<AuthRepository>(),
                   ),
@@ -36,10 +36,10 @@ class AppNavigator extends StatelessWidget {
             if (state is AuthenticatedSessionState)
               MaterialPage(
                 child: HomePage(
+                  user: state.user,
                   bottomRouter: BottomRouter(
                     spotifyRepository: spotifyRepository,
                     authRepository: context.read<AuthRepository>(),
-                    user: state.user,
                   ),
                 ),
               ),

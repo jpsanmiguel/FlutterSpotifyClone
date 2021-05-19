@@ -13,7 +13,7 @@ import 'package:spotify_clone/data/services/network_service.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
+import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/presentation/navigation/app_navigator.dart';
@@ -107,7 +107,7 @@ class _MyAppState extends State<MyApp> {
                       spotifyRepository: context.read<SpotifyRepository>()),
                 ),
                 BlocProvider(
-                  create: (context) => SessionCubit(
+                  create: (context) => AuthSessionCubit(
                     authRepository: context.read<AuthRepository>(),
                     dataRepository: context.read<DataRepository>(),
                   ),

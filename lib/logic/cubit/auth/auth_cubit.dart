@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
-import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
+import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final SessionCubit sessionCubit;
+  final AuthSessionCubit sessionCubit;
   AuthCubit({
     @required this.sessionCubit,
   }) : super(LoginAuthState());

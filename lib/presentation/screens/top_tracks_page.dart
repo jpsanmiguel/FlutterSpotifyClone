@@ -6,52 +6,29 @@ import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
+import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
-import 'package:spotify_clone/models/User.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class TopTracksPage extends StatefulWidget {
-  final User user;
   TopTracksPage({
     Key key,
-    @required this.user,
   }) : super(key: key);
 
   @override
-  _TopTracksPageState createState() => _TopTracksPageState(user: user);
+  _TopTracksPageState createState() => _TopTracksPageState();
 }
 
 class _TopTracksPageState extends State<TopTracksPage> {
-  final User user;
   final _scrollController = ScrollController();
 
-  _TopTracksPageState({@required this.user}) {
+  _TopTracksPageState() {
     _scrollController.addListener(_onScroll);
   }
 
   @override
   Widget build(BuildContext homeScreenContext) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Top tracks of ${user.username}',
-          style: TextStyle(
-            color: textColor,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.logout,
-              color: textColor,
-            ),
-            onPressed: () => context.read<SessionCubit>().signOut(),
-          ),
-        ],
-        backgroundColor: darkGreyColor,
-        centerTitle: true,
-      ),
       body: RefreshIndicator(
         onRefresh: _pullRefresh,
         child: Column(
