@@ -31,7 +31,11 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
     SavedTracksEvent event,
   ) async* {
     if (event is SavedTracksFetched) {
-      yield await _mapSavedTracksFetchedToState(state);
+      try {
+        yield await _mapSavedTracksFetchedToState(state);
+      } catch (e) {
+        yield state.copyWith(status: TracksStatus.Failure);
+      }
     } else if (event is SavedTracksAddTrackToLibrary) {
       await spotifyRepository.addToLibrary(event.track);
       event.track.inLibrary = true;

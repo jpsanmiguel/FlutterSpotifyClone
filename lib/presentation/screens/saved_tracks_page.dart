@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/constants/enums.dart';
+import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/saved_tracks/saved_tracks_bloc.dart';
+import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/session/session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/models/User.dart';
@@ -61,7 +63,28 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                   switch (state.status) {
                     case TracksStatus.Failure:
                       return Center(
-                        child: Text('Failed to fetch tracks'),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Failed to fetch tracks'),
+                            BlocBuilder<InternetConnectionCubit,
+                                InternetConnectionState>(
+                              builder: (context, state) {
+                                if (state is InternetConnectedState) {
+                                  return ElevatedButton(
+                                    onPressed: () {
+                                      context.read<SavedTracksBloc>()
+                                        ..add(SavedTracksReset());
+                                    },
+                                    child: Text('Retry'),
+                                  );
+                                } else {
+                                  return Text(NO_INTERNET);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       );
                       break;
                     case TracksStatus.Success:
