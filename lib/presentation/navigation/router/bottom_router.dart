@@ -28,7 +28,9 @@ class BottomRouter {
         );
       case '/saved':
         return MaterialPageRoute(
-          builder: (_) => SavedTracksPage(),
+          builder: (_) => SavedTracksPage(
+            user: user,
+          ),
         );
       default:
         return null;
