@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "testAuthIdentityPool",
+    "identityPoolName": "spotifyclonea4cbdfd5_identitypool_a4cbdfd5",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "spotif2e4f13a0",
-    "userPoolName": "SpotifyClone",
+    "resourceNameTruncated": "spotifa4cbdfd5",
+    "userPoolName": "spotifyclonea4cbdfd5_userpool_a4cbdfd5",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -15,19 +15,23 @@
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
     "defaultPasswordPolicy": false,
-    "passwordPolicyMinLength": 6,
+    "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
         "email"
     ],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
-    "userpoolClientWriteAttributes": [],
-    "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "Spotif2e4f13a0_userpoolclient_lambda_role",
+    "userpoolClientWriteAttributes": [
+        "email"
+    ],
+    "userpoolClientReadAttributes": [
+        "email"
+    ],
+    "userpoolClientLambdaRole": "spotifa4cbdfd5_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "2e4f13a0",
-    "resourceName": "SpotifyClone",
+    "sharedId": "a4cbdfd5",
+    "resourceName": "spotifyclonea4cbdfd5",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -41,16 +45,12 @@
             "Arn"
         ]
     },
-    "serviceName": "Cognito",
+    "useDefault": "default",
     "usernameAttributes": [
         "email"
     ],
-    "useDefault": "manual",
-    "userPoolGroups": false,
     "userPoolGroupList": [],
-    "adminQueries": false,
-    "thirdPartyAuth": false,
-    "authProviders": [],
+    "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "dependsOn": []
 }
