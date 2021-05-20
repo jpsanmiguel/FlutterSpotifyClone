@@ -39,12 +39,6 @@ class _HomePageState extends State<HomePage> {
   int _currentTabIndex = 0;
 
   @override
-  void initState() {
-    context.read<SpotifyPlayerCubit>().listenConnectionStatus();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final titles = [
       'Top tracks of ${user.username}',
@@ -164,10 +158,6 @@ class _HomePageState extends State<HomePage> {
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
-                          } else if (state is SpotifyPlayerConnected) {
-                            context
-                                .read<SpotifyPlayerCubit>()
-                                .listenToPlayerState();
                           }
                         },
                       ),
@@ -228,7 +218,7 @@ class _HomePageState extends State<HomePage> {
         _navigatorKey.currentState.restorablePushReplacementNamed('/');
         break;
       case 1:
-        _navigatorKey.currentState.pushReplacementNamed('/saved');
+        _navigatorKey.currentState.restorablePushReplacementNamed('/saved');
         break;
     }
     setState(() {

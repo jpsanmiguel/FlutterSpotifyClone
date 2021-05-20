@@ -12,7 +12,9 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   final SpotifyRepository spotifyRepository;
 
   SpotifyPlayerCubit({@required this.spotifyRepository})
-      : super(SpotifyPlayerConnecting());
+      : super(SpotifyPlayerConnecting()) {
+    listenConnectionStatus();
+  }
 
   bool connected = false;
   Track track;
@@ -45,6 +47,7 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
   void listenToPlayerState() async {
     Stream stream = SpotifySdk.subscribePlayerState();
     stream.listen((playerState) {
+      print('player: new state player!');
       if (playerState != null && playerState is PlayerState) {
         if (playerState.track != null) {
           if (playerState.isPaused) {
@@ -63,18 +66,27 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
     });
   }
 
+  void connectToSpotifyRemote() async {
+    try {
+      await spotifyRepository.connectToSpotifyRemote();
+    } catch (e) {
+      connectToSpotifyRemote();
+    }
+  }
+
   void listenConnectionStatus() async {
-    await spotifyRepository.connectToSpotifyRemote();
+    connectToSpotifyRemote();
     Stream stream = SpotifySdk.subscribeConnectionStatus();
     stream.listen((connectionStatus) async {
       if (connectionStatus != null && connectionStatus is ConnectionStatus) {
         if (connectionStatus.connected) {
+          listenToPlayerState();
           connected = true;
           emit(SpotifyPlayerConnected());
         } else {
           connected = false;
           emit(SpotifyPlayerNotConnected());
-          await spotifyRepository.connectToSpotifyRemote();
+          connectToSpotifyRemote();
         }
       }
     });
