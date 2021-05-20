@@ -6,8 +6,8 @@ import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
+import 'package:spotify_clone/presentation/widgets/track_loader.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class TopTracksPage extends StatefulWidget {
@@ -21,9 +21,13 @@ class TopTracksPage extends StatefulWidget {
 
 class _TopTracksPageState extends State<TopTracksPage> {
   final _scrollController = ScrollController();
+  TopTracksBloc _topTracksBloc;
 
-  _TopTracksPageState() {
+  @override
+  void initState() {
+    super.initState();
     _scrollController.addListener(_onScroll);
+    _topTracksBloc = context.read<TopTracksBloc>();
   }
 
   @override
@@ -49,8 +53,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
                                 if (state is InternetConnectedState) {
                                   return ElevatedButton(
                                     onPressed: () {
-                                      context.read<TopTracksBloc>()
-                                        ..add(TopTracksReset());
+                                      _topTracksBloc..add(TopTracksReset());
                                     },
                                     child: Text('Retry'),
                                   );
@@ -73,7 +76,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
                       return ListView.builder(
                         itemBuilder: (BuildContext context, int index) {
                           return index >= length
-                              ? CircularProgressIndicator()
+                              ? TrackLoader()
                               : _buildTrackWidget(
                                   state.topTracksPagingResponse.tracks[index]);
                         },
@@ -108,15 +111,15 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   Future<void> removeFromLibrary(Track track) async {
-    context.read<TopTracksBloc>().add(
-          TopTracksRemoveTrackToLibrary(track: track),
-        );
+    _topTracksBloc.add(
+      TopTracksRemoveTrackToLibrary(track: track),
+    );
   }
 
   Future<void> addToLibrary(Track track) async {
-    context.read<TopTracksBloc>().add(
-          TopTracksAddTrackToLibrary(track: track),
-        );
+    _topTracksBloc.add(
+      TopTracksAddTrackToLibrary(track: track),
+    );
   }
 
   Future<void> play(Track track) async {
@@ -124,7 +127,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   void _onScroll() async {
-    if (_isBottom) context.read<TopTracksBloc>().add(TopTracksFetched());
+    if (_isBottom) _topTracksBloc.add(TopTracksFetched());
   }
 
   bool get _isBottom {
@@ -135,7 +138,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   Future<void> _pullRefresh() async {
-    context.read<TopTracksBloc>()..add(TopTracksReset());
+    _topTracksBloc..add(TopTracksReset());
   }
 
   @override

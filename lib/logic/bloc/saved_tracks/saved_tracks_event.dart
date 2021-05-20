@@ -18,3 +18,9 @@ class SavedTracksRemoveTrackToLibrary extends SavedTracksEvent {
 }
 
 class SavedTracksReset extends SavedTracksEvent {}
+
+class SavedTracksConnectionChanged extends SavedTracksEvent {
+  final ConnectionType connectionType;
+
+  SavedTracksConnectionChanged({@required this.connectionType});
+}
