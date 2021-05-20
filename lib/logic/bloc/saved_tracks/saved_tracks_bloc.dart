@@ -43,7 +43,8 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         yield state.copyWith();
       } else if (event is SavedTracksRemoveTrackToLibrary) {
         event.track.inLibrary = false;
-        yield state.copyWith();
+        state.savedTracksPagingResponse.tracks
+            .removeWhere((element) => element.track.id == event.track.id);
         event.track.inLibrary =
             await spotifyRepository.removeFromLibrary(event.track);
         yield state.copyWith();
