@@ -28,11 +28,10 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
             : state.status,
       );
     } else {
-      if (event is TopTracksFetched) {
+      if (event is TopTracksFetched &&
+          state.connectionType != ConnectionType.None) {
         try {
-          if (state.connectionType != ConnectionType.None) {
-            yield await _mapTopTracksFetchedToState(state);
-          }
+          yield await _mapTopTracksFetchedToState(state);
         } catch (e) {
           yield state.copyWith(status: TracksStatus.Failure);
         }
@@ -44,15 +43,14 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         event.track.inLibrary =
             await spotifyRepository.removeFromLibrary(event.track);
         yield state.copyWith();
-      } else if (event is TopTracksReset) {
-        if (state.connectionType != ConnectionType.None) {
-          yield state.copyWith(
-            hasReachedEnd: false,
-            topTracksPagingResponse: null,
-            status: TracksStatus.Initial,
-          );
-          add(TopTracksFetched());
-        }
+      } else if (event is TopTracksReset &&
+          state.connectionType != ConnectionType.None) {
+        yield state.copyWith(
+          hasReachedEnd: false,
+          topTracksPagingResponse: null,
+          status: TracksStatus.Initial,
+        );
+        add(TopTracksFetched());
       }
     }
   }

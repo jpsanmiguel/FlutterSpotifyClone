@@ -27,8 +27,9 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
             ? TracksStatus.Failure
             : state.status,
       );
-    } else if (state.connectionType != ConnectionType.None) {
-      if (event is SavedTracksFetched) {
+    } else {
+      if (event is SavedTracksFetched &&
+          state.connectionType != ConnectionType.None) {
         try {
           yield await _mapSavedTracksFetchedToState(state);
         } catch (e) {
@@ -46,7 +47,8 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         event.track.inLibrary =
             await spotifyRepository.removeFromLibrary(event.track);
         yield state.copyWith();
-      } else if (event is SavedTracksReset) {
+      } else if (event is SavedTracksReset &&
+          state.connectionType != ConnectionType.None) {
         yield state.copyWith(
           hasReachedEnd: false,
           savedTracksPagingResponse: null,
