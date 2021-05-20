@@ -22,6 +22,7 @@ class TopTracksPage extends StatefulWidget {
 class _TopTracksPageState extends State<TopTracksPage> {
   final _scrollController = ScrollController();
   TopTracksBloc _topTracksBloc;
+  bool _sendingPetition = false;
 
   @override
   void initState() {
@@ -42,29 +43,13 @@ class _TopTracksPageState extends State<TopTracksPage> {
                 builder: (context, state) {
                   switch (state.status) {
                     case TracksStatus.Failure:
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Failed to fetch tracks'),
-                            BlocBuilder<InternetConnectionCubit,
-                                InternetConnectionState>(
-                              builder: (context, state) {
-                                if (state is InternetConnectedState) {
-                                  return ElevatedButton(
-                                    onPressed: () {
-                                      _topTracksBloc..add(TopTracksReset());
-                                    },
-                                    child: Text('Retry'),
-                                  );
-                                } else {
-                                  return Text(NO_INTERNET);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      );
+                      return state.topTracksPagingResponse == null ||
+                              state.topTracksPagingResponse.tracks.isEmpty
+                          ? Center(
+                              child: _buildRetry(true),
+                            )
+                          : _buildTopTrackList(state);
+
                       break;
                     case TracksStatus.Success:
                       if (state.topTracksPagingResponse.tracks.isEmpty) {
@@ -72,17 +57,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
                           child: Text('No tracks'),
                         );
                       }
-                      int length = state.topTracksPagingResponse.tracks.length;
-                      return ListView.builder(
-                        itemBuilder: (BuildContext context, int index) {
-                          return index >= length
-                              ? TrackLoader()
-                              : _buildTrackWidget(
-                                  state.topTracksPagingResponse.tracks[index]);
-                        },
-                        itemCount: state.hasReachedEnd ? length : length + 1,
-                        controller: _scrollController,
-                      );
+                      return _buildTopTrackList(state);
+                      break;
                     default:
                       return Center(
                         child: CircularProgressIndicator(),
@@ -97,6 +73,21 @@ class _TopTracksPageState extends State<TopTracksPage> {
     );
   }
 
+  Widget _buildTopTrackList(TopTracksState state) {
+    int length = state.topTracksPagingResponse.tracks.length;
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        return index >= length
+            ? state.status == TracksStatus.Failure && !state.hasReachedEnd
+                ? _buildRetry(state.topTracksPagingResponse.tracks.isEmpty)
+                : TrackLoader()
+            : _buildTrackWidget(state.topTracksPagingResponse.tracks[index]);
+      },
+      itemCount: state.hasReachedEnd ? length : length + 1,
+      controller: _scrollController,
+    );
+  }
+
   TrackWidget _buildTrackWidget(Track track) {
     return TrackWidget(
       backgroundColor: blackColor,
@@ -107,6 +98,33 @@ class _TopTracksPageState extends State<TopTracksPage> {
       track: track,
       loading: false,
       isPlaying: false,
+    );
+  }
+
+  Widget _buildRetry(bool emptyList) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Failed to fetch tracks'),
+          BlocBuilder<InternetConnectionCubit, InternetConnectionState>(
+            builder: (context, state) {
+              if (state is InternetConnectedState) {
+                return ElevatedButton(
+                  onPressed: () {
+                    _topTracksBloc
+                      ..add(emptyList ? TopTracksReset() : TopTracksFetched());
+                  },
+                  child: Text('Retry'),
+                );
+              } else {
+                return Text(PLEASE_CHECK_INTERNET);
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -127,7 +145,13 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   void _onScroll() async {
-    if (_isBottom) _topTracksBloc.add(TopTracksFetched());
+    if (_isBottom && !_sendingPetition) {
+      _topTracksBloc.add(TopTracksFetched());
+      _sendingPetition = true;
+      Future.delayed(Duration(milliseconds: 1000), () {
+        _sendingPetition = false;
+      });
+    }
   }
 
   bool get _isBottom {

@@ -4,6 +4,7 @@ import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/saved_tracks/saved_tracks_bloc.dart';
+import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
@@ -71,8 +72,12 @@ class _HomePageState extends State<HomePage> {
           if (state is InternetConnectedState) {
             context.read<SavedTracksBloc>().add(SavedTracksConnectionChanged(
                 connectionType: state.connectionType));
+            context.read<TopTracksBloc>().add(TopTracksConnectionChanged(
+                connectionType: state.connectionType));
           } else if (state is InternetDisconnectedState) {
             context.read<SavedTracksBloc>().add(SavedTracksConnectionChanged(
+                connectionType: ConnectionType.None));
+            context.read<TopTracksBloc>().add(TopTracksConnectionChanged(
                 connectionType: ConnectionType.None));
           }
         },

@@ -18,3 +18,9 @@ class TopTracksRemoveTrackToLibrary extends TopTracksEvent {
 }
 
 class TopTracksReset extends TopTracksEvent {}
+
+class TopTracksConnectionChanged extends TopTracksEvent {
+  final ConnectionType connectionType;
+
+  TopTracksConnectionChanged({@required this.connectionType});
+}

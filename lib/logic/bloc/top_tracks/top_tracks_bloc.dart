@@ -20,26 +20,40 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
   Stream<TopTracksState> mapEventToState(
     TopTracksEvent event,
   ) async* {
-    if (event is TopTracksFetched) {
-      try {
-        yield await _mapTopTracksFetchedToState(state);
-      } catch (e) {
-        yield state.copyWith(status: TracksStatus.Failure);
-      }
-    } else if (event is TopTracksAddTrackToLibrary) {
-      event.track.inLibrary = await spotifyRepository.addToLibrary(event.track);
-      yield state.copyWith();
-    } else if (event is TopTracksRemoveTrackToLibrary) {
-      event.track.inLibrary =
-          await spotifyRepository.removeFromLibrary(event.track);
-      yield state.copyWith();
-    } else if (event is TopTracksReset) {
+    if (event is TopTracksConnectionChanged) {
       yield state.copyWith(
-        hasReachedEnd: false,
-        topTracksPagingResponse: null,
-        status: TracksStatus.Initial,
+        connectionType: event.connectionType,
+        status: event.connectionType == ConnectionType.None
+            ? TracksStatus.Failure
+            : state.status,
       );
-      add(TopTracksFetched());
+    } else {
+      if (event is TopTracksFetched) {
+        try {
+          if (state.connectionType != ConnectionType.None) {
+            yield await _mapTopTracksFetchedToState(state);
+          }
+        } catch (e) {
+          yield state.copyWith(status: TracksStatus.Failure);
+        }
+      } else if (event is TopTracksAddTrackToLibrary) {
+        event.track.inLibrary =
+            await spotifyRepository.addToLibrary(event.track);
+        yield state.copyWith();
+      } else if (event is TopTracksRemoveTrackToLibrary) {
+        event.track.inLibrary =
+            await spotifyRepository.removeFromLibrary(event.track);
+        yield state.copyWith();
+      } else if (event is TopTracksReset) {
+        if (state.connectionType != ConnectionType.None) {
+          yield state.copyWith(
+            hasReachedEnd: false,
+            topTracksPagingResponse: null,
+            status: TracksStatus.Initial,
+          );
+          add(TopTracksFetched());
+        }
+      }
     }
   }
 
@@ -53,7 +67,8 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         return state.copyWith(
           status: TracksStatus.Success,
           topTracksPagingResponse: topTracksPagingResponse,
-          hasReachedEnd: topTracksPagingResponse.next == null,
+          hasReachedEnd: topTracksPagingResponse.total ==
+              topTracksPagingResponse.tracks.length,
         );
       }
       final topTracksPagingResponse = await spotifyRepository
@@ -65,11 +80,6 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         final tracks = state.topTracksPagingResponse.tracks;
         tracks.addAll(topTracksPagingResponse.tracks);
         allTopTracksPagingResponse.tracks = tracks;
-
-        print('prevNext: ${state.topTracksPagingResponse.next}');
-        print('follNext: ${topTracksPagingResponse.next}');
-        print('finalNext: ${allTopTracksPagingResponse.next}');
-
         return state.copyWith(
           status: TracksStatus.Success,
           topTracksPagingResponse: allTopTracksPagingResponse,

@@ -28,15 +28,17 @@ class NetworkService {
       var decodeJson = jsonDecode(response.body);
       TopTracksPagingResponse tracksPagingResponse =
           TopTracksPagingResponse.fromJson(decodeJson);
-      await checkUserTopTracksInSavedTracks(tracksPagingResponse);
-      return tracksPagingResponse;
+      var finalTopTracksPagingResponse =
+          await _checkUserTopTracksInSavedTracks(tracksPagingResponse);
+      return finalTopTracksPagingResponse;
     } catch (e) {
       return null;
     }
   }
 
-  Future<TopTracksPagingResponse> checkUserTopTracksInSavedTracks(
-      TopTracksPagingResponse topTracksPagingResponse) async {
+  Future<TopTracksPagingResponse> _checkUserTopTracksInSavedTracks(
+    TopTracksPagingResponse topTracksPagingResponse,
+  ) async {
     try {
       final token = await getToken();
       final songIds =
@@ -48,11 +50,14 @@ class NetworkService {
         },
       );
       var decodeJson = jsonDecode(response.body);
-      topTracksPagingResponse.tracks.asMap().forEach((index, element) {
+      var finalTopTracksPagingResponse = topTracksPagingResponse;
+      finalTopTracksPagingResponse.tracks.asMap().forEach((index, element) {
         element.inLibrary = (decodeJson[index] as bool);
       });
-      print(decodeJson);
-    } catch (e) {}
+      return finalTopTracksPagingResponse;
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<SavedTracksPagingResponse> fetchUserSavedTracks(String nextUrl) async {
