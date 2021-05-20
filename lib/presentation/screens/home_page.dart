@@ -37,11 +37,15 @@ class _HomePageState extends State<HomePage> {
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   int _currentTabIndex = 0;
-  bool loading = false;
+
+  @override
+  void initState() {
+    context.read<SpotifyPlayerCubit>().listenConnectionStatus();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<SpotifyPlayerCubit>(context).connectToSpotifyRemote();
     final titles = [
       'Top tracks of ${user.username}',
       'Saved tracks of ${user.username}',
@@ -117,21 +121,11 @@ class _HomePageState extends State<HomePage> {
                       ),
                       BlocConsumer<SpotifyPlayerCubit, SpotifyPlayerState>(
                         builder: (context, state) {
-                          if (state is SpotifyPlayerInitial) {
-                            return Container();
-                          } else if (state is SpotifyPlayerConnecting) {
-                            return Container();
-                          } else if (state is SpotifyPlayerConnected) {
-                            BlocProvider.of<SpotifyPlayerCubit>(context)
-                                .listenToPlayerState();
-                            return Container(
-                              height: 50.0,
-                              decoration: BoxDecoration(
-                                color: blackColor,
-                              ),
-                              child: Center(
-                                child: Text('Connected!'),
-                              ),
+                          if (state is SpotifyPlayerConnecting) {
+                            return TrackWidget(
+                              backgroundColor: darkGreyColor,
+                              loading: true,
+                              isPlaying: true,
                             );
                           } else if (state is SpotifyPlayerPlaying) {
                             return TrackWidget(
@@ -165,23 +159,15 @@ class _HomePageState extends State<HomePage> {
                         },
                         listener: (context, state) {
                           if (state is SpotifyPlayerError) {
-                            loading = false;
                             final snackBar = SnackBar(
                               content: Text(state.error),
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
-                          } else if (state is SpotifyPlayerLoading) {
-                            loading = true;
-                            Future.delayed(Duration(seconds: 5), () {
-                              if (loading) {
-                                BlocProvider.of<SpotifyPlayerCubit>(context)
-                                    .errorPlayingTrack(
-                                        'Error reproduciendo...');
-                              }
-                            });
-                          } else {
-                            loading = false;
+                          } else if (state is SpotifyPlayerConnected) {
+                            context
+                                .read<SpotifyPlayerCubit>()
+                                .listenToPlayerState();
                           }
                         },
                       ),
@@ -198,11 +184,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> pause(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).pause(track);
+    BlocProvider.of<SpotifyPlayerCubit>(context).pause();
   }
 
   Future<void> resume(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).resume(track);
+    BlocProvider.of<SpotifyPlayerCubit>(context).resume();
   }
 
   Widget _bottomNavigationBar() {
