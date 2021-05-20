@@ -43,7 +43,8 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                 builder: (context, state) {
                   switch (state.status) {
                     case TracksStatus.Failure:
-                      return state.savedTracksPagingResponse.tracks.isEmpty
+                      return state.savedTracksPagingResponse == null ||
+                              state.savedTracksPagingResponse.tracks.isEmpty
                           ? Center(
                               child: _buildRetry(true),
                             )
