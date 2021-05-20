@@ -32,6 +32,7 @@ class AuthSessionCubit extends Cubit<AuthSessionState> {
           username: 'User-${UUID()}',
         );
       }
+      print('username: ${user.id}');
       emit(AuthenticatedSessionState(user: user));
     } on Exception {
       emit(UnautheticatedSessionState());

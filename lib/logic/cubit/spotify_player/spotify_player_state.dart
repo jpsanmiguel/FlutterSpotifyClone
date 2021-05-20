@@ -3,8 +3,6 @@ part of 'spotify_player_cubit.dart';
 @immutable
 abstract class SpotifyPlayerState {}
 
-class SpotifyPlayerInitial extends SpotifyPlayerState {}
-
 class SpotifyPlayerConnecting extends SpotifyPlayerState {}
 
 class SpotifyPlayerError extends SpotifyPlayerState {

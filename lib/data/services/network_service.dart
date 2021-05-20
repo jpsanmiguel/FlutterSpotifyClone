@@ -104,11 +104,9 @@ class NetworkService {
     await (await getSharedPreferences()).remove('token');
   }
 
-  Future<bool> connectToSpotifyRemote() async {
-    var connected = await SpotifySdk.connectToSpotifyRemote(
+  Future connectToSpotifyRemote() async {
+    await SpotifySdk.connectToSpotifyRemote(
         clientId: clientId, redirectUrl: redirectUrl);
-
-    return connected;
   }
 
   Future play(Track track) async {
