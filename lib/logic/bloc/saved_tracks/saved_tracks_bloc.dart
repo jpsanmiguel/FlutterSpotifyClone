@@ -22,7 +22,9 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
   ) async* {
     if (event is SavedTracksFetched) {
       try {
-        yield await _mapSavedTracksFetchedToState(state);
+        if (state.connectionType != ConnectionType.None) {
+          yield await _mapSavedTracksFetchedToState(state);
+        }
       } catch (e) {
         yield state.copyWith(status: TracksStatus.Failure);
       }
@@ -44,6 +46,13 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         status: TracksStatus.Initial,
       );
       add(SavedTracksFetched());
+    } else if (event is SavedTracksConnectionChanged) {
+      yield state.copyWith(
+        connectionType: event.connectionType,
+        status: event.connectionType == ConnectionType.None
+            ? TracksStatus.Failure
+            : state.status,
+      );
     }
   }
 
