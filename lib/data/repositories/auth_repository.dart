@@ -1,6 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/utils/functions.dart';
 
 class AuthRepository {
   Future<String> _getUserIdFromAttributes() async {
@@ -11,13 +12,20 @@ class AuthRepository {
           .value;
       return userId;
     } catch (e) {
-      throw e;
+      final userId = (await getSharedPreferences()).getString('userId');
+      if (userId != null) {
+        return userId;
+      } else {
+        throw e;
+      }
     }
   }
 
   Future<String> attemptAutoLogin() async {
     try {
-      final session = await Amplify.Auth.fetchAuthSession();
+      final session = await Amplify.Auth.fetchAuthSession(
+        options: CognitoSessionOptions(getAWSCredentials: false),
+      );
 
       return session.isSignedIn ? (await _getUserIdFromAttributes()) : null;
     } catch (e) {
@@ -34,8 +42,9 @@ class AuthRepository {
         username: email.trim(),
         password: password.trim(),
       );
-
-      return result.isSignedIn ? (await _getUserIdFromAttributes()) : null;
+      final userId = (await _getUserIdFromAttributes());
+      (await getSharedPreferences()).setString('userId', userId);
+      return result.isSignedIn ? userId : null;
     } catch (e) {
       throw e;
     }
