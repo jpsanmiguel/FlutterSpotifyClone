@@ -9,31 +9,28 @@ import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/models/ModelProvider.dart';
-import 'package:spotify_clone/presentation/navigation/router/bottom_router.dart';
+import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
+import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({
     Key key,
-    @required this.bottomRouter,
     @required this.user,
   }) : super(key: key);
 
-  final BottomRouter bottomRouter;
   final User user;
 
   @override
   _HomePageState createState() => _HomePageState(
-        bottomRouter: bottomRouter,
         user: user,
       );
 }
 
 class _HomePageState extends State<HomePage> {
-  final BottomRouter bottomRouter;
   final User user;
 
-  _HomePageState({this.bottomRouter, this.user});
+  _HomePageState({this.user});
 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   int _currentTabIndex = 0;
@@ -82,10 +79,17 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Expanded(
-              child: Navigator(
-                key: _navigatorKey,
-                onGenerateRoute: bottomRouter.onGenerateRoute,
+              child: IndexedStack(
+                index: _currentTabIndex,
+                children: [
+                  TopTracksPage(),
+                  SavedTracksPage(),
+                ],
               ),
+              // child: Navigator(
+              //   key: _navigatorKey,
+              //   onGenerateRoute: bottomRouter.onGenerateRoute,
+              // ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -213,14 +217,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   _onTap(int tabIndex) {
-    switch (tabIndex) {
-      case 0:
-        _navigatorKey.currentState.restorablePushReplacementNamed('/');
-        break;
-      case 1:
-        _navigatorKey.currentState.restorablePushReplacementNamed('/saved');
-        break;
-    }
     setState(() {
       _currentTabIndex = tabIndex;
     });
