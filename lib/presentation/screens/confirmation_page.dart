@@ -72,6 +72,7 @@ class ConfirmationPage extends StatelessWidget {
                 ConfirmationCodeChanged(code: code),
               ),
           validator: state.validateCode,
+          keyboardType: TextInputType.number,
         );
       },
     );

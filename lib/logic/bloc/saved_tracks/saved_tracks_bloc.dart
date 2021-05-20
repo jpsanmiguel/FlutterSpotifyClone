@@ -20,39 +20,40 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
   Stream<SavedTracksState> mapEventToState(
     SavedTracksEvent event,
   ) async* {
-    if (event is SavedTracksFetched) {
-      try {
-        if (state.connectionType != ConnectionType.None) {
-          yield await _mapSavedTracksFetchedToState(state);
-        }
-      } catch (e) {
-        yield state.copyWith(status: TracksStatus.Failure);
-      }
-    } else if (event is SavedTracksAddTrackToLibrary) {
-      event.track.inLibrary = true;
-      yield state.copyWith();
-      event.track.inLibrary = await spotifyRepository.addToLibrary(event.track);
-      yield state.copyWith();
-    } else if (event is SavedTracksRemoveTrackToLibrary) {
-      event.track.inLibrary = false;
-      yield state.copyWith();
-      event.track.inLibrary =
-          await spotifyRepository.removeFromLibrary(event.track);
-      yield state.copyWith();
-    } else if (event is SavedTracksReset) {
-      yield state.copyWith(
-        hasReachedEnd: false,
-        savedTracksPagingResponse: null,
-        status: TracksStatus.Initial,
-      );
-      add(SavedTracksFetched());
-    } else if (event is SavedTracksConnectionChanged) {
+    if (event is SavedTracksConnectionChanged) {
       yield state.copyWith(
         connectionType: event.connectionType,
         status: event.connectionType == ConnectionType.None
             ? TracksStatus.Failure
             : state.status,
       );
+    } else if (state.connectionType != ConnectionType.None) {
+      if (event is SavedTracksFetched) {
+        try {
+          yield await _mapSavedTracksFetchedToState(state);
+        } catch (e) {
+          yield state.copyWith(status: TracksStatus.Failure);
+        }
+      } else if (event is SavedTracksAddTrackToLibrary) {
+        event.track.inLibrary = true;
+        yield state.copyWith();
+        event.track.inLibrary =
+            await spotifyRepository.addToLibrary(event.track);
+        yield state.copyWith();
+      } else if (event is SavedTracksRemoveTrackToLibrary) {
+        event.track.inLibrary = false;
+        yield state.copyWith();
+        event.track.inLibrary =
+            await spotifyRepository.removeFromLibrary(event.track);
+        yield state.copyWith();
+      } else if (event is SavedTracksReset) {
+        yield state.copyWith(
+          hasReachedEnd: false,
+          savedTracksPagingResponse: null,
+          status: TracksStatus.Initial,
+        );
+        add(SavedTracksFetched());
+      }
     }
   }
 
