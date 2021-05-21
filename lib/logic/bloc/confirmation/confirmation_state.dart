@@ -15,7 +15,7 @@ class ConfirmationState {
   }) {
     return ConfirmationState(
       code: code ?? this.code,
-      formSubmissionState: formSubmissionState ?? this.formSubmissionState,
+      formSubmissionState: formSubmissionState,
     );
   }
 
