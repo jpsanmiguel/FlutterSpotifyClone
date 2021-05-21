@@ -82,7 +82,10 @@ class ConfirmationPage extends StatelessWidget {
     return BlocBuilder<ConfirmationBloc, ConfirmationState>(
       builder: (context, state) {
         return state.formSubmissionState is FormSubmissionSubmitting
-            ? CircularProgressIndicator()
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(),
+              )
             : ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
