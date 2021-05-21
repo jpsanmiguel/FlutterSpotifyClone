@@ -24,3 +24,5 @@ class TopTracksConnectionChanged extends TopTracksEvent {
 
   TopTracksConnectionChanged({@required this.connectionType});
 }
+
+class TopTracksScrollTop extends TopTracksEvent {}

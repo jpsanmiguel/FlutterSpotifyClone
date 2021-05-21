@@ -51,6 +51,10 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
           status: TracksStatus.Initial,
         );
         add(TopTracksFetched());
+      } else if (event is TopTracksScrollTop) {
+        yield state.copyWith(
+          scrollToTop: true,
+        );
       }
     }
   }

@@ -217,8 +217,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   _onTap(int tabIndex) {
-    setState(() {
-      _currentTabIndex = tabIndex;
-    });
+    if (_currentTabIndex == tabIndex) {
+      if (tabIndex == 0) {
+        context.read<TopTracksBloc>().add(TopTracksScrollTop());
+      } else {
+        context.read<SavedTracksBloc>().add(SavedTracksScrollTop());
+      }
+    } else {
+      setState(() {
+        _currentTabIndex = tabIndex;
+      });
+    }
   }
 }

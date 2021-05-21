@@ -36,37 +36,50 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _pullRefresh,
-        child: Column(
-          children: [
-            Expanded(
-              child: BlocBuilder<SavedTracksBloc, SavedTracksState>(
-                builder: (context, state) {
-                  switch (state.status) {
-                    case TracksStatus.Failure:
-                      return state.savedTracksPagingResponse == null ||
-                              state.savedTracksPagingResponse.tracks.isEmpty
-                          ? Center(
-                              child: _buildRetry(true),
-                            )
-                          : _buildSavedTrackList(state);
+        child: BlocListener<SavedTracksBloc, SavedTracksState>(
+          listener: (context, state) {
+            if (state.scrollToTop) {
+              _scrollController.animateTo(
+                _scrollController.position.minScrollExtent,
+                duration: Duration(
+                  milliseconds: 500,
+                ),
+                curve: Curves.fastOutSlowIn,
+              );
+            }
+          },
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<SavedTracksBloc, SavedTracksState>(
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case TracksStatus.Failure:
+                        return state.savedTracksPagingResponse == null ||
+                                state.savedTracksPagingResponse.tracks.isEmpty
+                            ? Center(
+                                child: _buildRetry(true),
+                              )
+                            : _buildSavedTrackList(state);
 
-                      break;
-                    case TracksStatus.Success:
-                      if (state.savedTracksPagingResponse.tracks.isEmpty) {
+                        break;
+                      case TracksStatus.Success:
+                        if (state.savedTracksPagingResponse.tracks.isEmpty) {
+                          return Center(
+                            child: Text('No tracks'),
+                          );
+                        }
+                        return _buildSavedTrackList(state);
+                      default:
                         return Center(
-                          child: Text('No tracks'),
+                          child: CircularProgressIndicator(),
                         );
-                      }
-                      return _buildSavedTrackList(state);
-                    default:
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                  }
-                },
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
