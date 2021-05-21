@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
-import 'package:spotify_clone/data/models/auth_credentials.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
