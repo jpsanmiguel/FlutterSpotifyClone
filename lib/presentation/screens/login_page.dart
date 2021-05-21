@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/logic/bloc/login/login_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
+import 'package:spotify_clone/utils/functions.dart';
 
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -35,8 +37,7 @@ class LoginPage extends StatelessWidget {
       listener: (context, state) {
         final formSubmissionState = state.formSubmissionState;
         if (formSubmissionState is FormSubmissionFailed) {
-          _showExceptionSnackBar(
-              context, formSubmissionState.exception.toString());
+          showSnackBar(context, formSubmissionState.exception.toString());
         }
       },
       child: Form(
@@ -62,7 +63,7 @@ class LoginPage extends StatelessWidget {
         return TextFormField(
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.email),
-            labelText: 'Correo',
+            labelText: email,
             border: UnderlineInputBorder(
               borderSide: BorderSide(
                 color: whiteColor,
@@ -89,7 +90,7 @@ class LoginPage extends StatelessWidget {
             prefixIcon: Icon(
               Icons.lock,
             ),
-            labelText: 'Contraseña',
+            labelText: password,
           ),
           onChanged: (password) => context.read<LoginBloc>().add(
                 LoginPasswordChanged(password: password),
@@ -117,7 +118,7 @@ class LoginPage extends StatelessWidget {
                         );
                   }
                 },
-                child: Text('Iniciar sesión'),
+                child: Text(log_in),
               );
       },
     );
@@ -136,10 +137,10 @@ class LoginPage extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '¿No tienes una cuenta? ',
+                  text: dont_have_account,
                 ),
                 TextSpan(
-                  text: 'Regístrate acá',
+                  text: sign_up_here,
                   style: TextStyle(
                     color: greenColor,
                     fontWeight: FontWeight.bold,
@@ -149,10 +150,5 @@ class LoginPage extends StatelessWidget {
             ),
           )),
     );
-  }
-
-  void _showExceptionSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

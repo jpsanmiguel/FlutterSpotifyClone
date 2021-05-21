@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/logic/bloc/signup/sign_up_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
+import 'package:spotify_clone/utils/functions.dart';
 
 class SignUpPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -37,8 +39,7 @@ class SignUpPage extends StatelessWidget {
       listener: (context, state) {
         final formSubmissionState = state.formSubmissionState;
         if (formSubmissionState is FormSubmissionFailed) {
-          _showExceptionSnackBar(
-              context, formSubmissionState.exception.toString());
+          showSnackBar(context, formSubmissionState.exception.toString());
         }
       },
       child: Form(
@@ -65,7 +66,7 @@ class SignUpPage extends StatelessWidget {
         return TextFormField(
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.email),
-            labelText: 'Correo',
+            labelText: email,
             border: UnderlineInputBorder(
               borderSide: BorderSide(
                 color: whiteColor,
@@ -92,7 +93,7 @@ class SignUpPage extends StatelessWidget {
             prefixIcon: Icon(
               Icons.lock,
             ),
-            labelText: 'Contraseña',
+            labelText: password,
           ),
           onChanged: (password) => context.read<SignUpBloc>().add(
                 SignUpPasswordChanged(password: password),
@@ -110,7 +111,7 @@ class SignUpPage extends StatelessWidget {
         return TextFormField(
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.perm_identity),
-            labelText: 'Usuario',
+            labelText: user,
             border: UnderlineInputBorder(
               borderSide: BorderSide(
                 color: whiteColor,
@@ -144,7 +145,7 @@ class SignUpPage extends StatelessWidget {
                         );
                   }
                 },
-                child: Text('Registrarse'),
+                child: Text(sign_up),
               );
       },
     );
@@ -163,10 +164,10 @@ class SignUpPage extends StatelessWidget {
             ),
             children: [
               TextSpan(
-                text: '¿Ya tienes una cuenta? ',
+                text: have_account,
               ),
               TextSpan(
-                text: 'Inicia sesión acá',
+                text: log_in_here,
                 style: TextStyle(
                   color: greenColor,
                   fontWeight: FontWeight.bold,
@@ -177,10 +178,5 @@ class SignUpPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _showExceptionSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

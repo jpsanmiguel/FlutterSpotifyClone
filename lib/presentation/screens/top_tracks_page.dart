@@ -66,7 +66,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
                       case TracksStatus.Success:
                         if (state.topTracksPagingResponse.tracks.isEmpty) {
                           return Center(
-                            child: Text('No tracks'),
+                            child: Text(no_tracks),
                           );
                         }
                         return _buildTopTrackList(state);
@@ -121,7 +121,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Failed to fetch tracks'),
+          Text(failed_to_fetch_tracks),
           BlocBuilder<InternetConnectionCubit, InternetConnectionState>(
             builder: (context, state) {
               if (state is InternetConnectedState) {
@@ -130,10 +130,10 @@ class _TopTracksPageState extends State<TopTracksPage> {
                     _topTracksBloc
                       ..add(emptyList ? TopTracksReset() : TopTracksFetched());
                   },
-                  child: Text('Retry'),
+                  child: Text(retry),
                 );
               } else {
-                return Text(PLEASE_CHECK_INTERNET);
+                return Text(please_check_internet);
               }
             },
           ),
@@ -155,7 +155,6 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   Future<void> play(Track track) async {
-    // BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
     context.read<SpotifyPlayerBloc>().add(SpotifyPlayerPlay(track: track));
   }
 

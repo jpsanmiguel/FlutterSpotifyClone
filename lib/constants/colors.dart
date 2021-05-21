@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spotify_clone/utils/color_generator.dart';
+import 'package:spotify_clone/utils/functions.dart';
 
 MaterialColor blackColor = createMaterialColor(Color(0xFF191919));
 MaterialColor blackColorOpacity = createMaterialColor(Color(0x80191919));

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/amplifyconfiguration.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/data/services/network_service.dart';
@@ -61,17 +62,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Spotify Clone',
+      title: app_title,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         focusColor: greenColor,
         primarySwatch: greenColor,
         scaffoldBackgroundColor: blackColor,
@@ -82,11 +74,9 @@ class _MyAppState extends State<MyApp> {
         inputDecorationTheme: InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: lightGreyColor),
-            //  when the TextFormField in unfocused
           ),
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: greenColor),
-            //  when the TextFormField in focused
           ),
           border: UnderlineInputBorder(),
         ),
@@ -102,10 +92,6 @@ class _MyAppState extends State<MyApp> {
       home: _finishedConfiguring
           ? MultiBlocProvider(
               providers: [
-                // BlocProvider(
-                //   create: (context) => SpotifyPlayerCubit(
-                //       spotifyRepository: context.read<SpotifyRepository>()),
-                // ),
                 BlocProvider(
                   create: (context) => AuthSessionCubit(
                     authRepository: context.read<AuthRepository>(),
@@ -138,23 +124,6 @@ class _MyAppState extends State<MyApp> {
               ),
             )
           : SplashPage(),
-      // home: MultiBlocProvider(
-      //   providers: [
-      //     BlocProvider.value(
-      //       value: topTracksCubit,
-      //     ),
-      //     BlocProvider.value(
-      //       value: savedTracksCubit,
-      //     ),
-      //     BlocProvider.value(value: spotifyConnectionCubit)
-      //   ],
-      //   child: LoginPage(
-      //     authRepository: authRepository,
-      //   ),
-      //   // child: HomePage(
-      //   //   appRouter: appRouter,
-      //   // ),
-      // ),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/constants/constants.dart';
 import 'package:spotify_clone/utils/functions.dart';
 
 class AuthRepository {
@@ -12,7 +13,7 @@ class AuthRepository {
           .value;
       return userId;
     } catch (e) {
-      final userId = (await getSharedPreferences()).getString('userId');
+      final userId = (await getSharedPreferences()).getString(USER_ID);
       if (userId != null) {
         return userId;
       } else {
@@ -43,7 +44,7 @@ class AuthRepository {
         password: password.trim(),
       );
       final userId = (await _getUserIdFromAttributes());
-      (await getSharedPreferences()).setString('userId', userId);
+      (await getSharedPreferences()).setString(USER_ID, userId);
       return result.isSignedIn ? userId : null;
     } catch (e) {
       throw e;

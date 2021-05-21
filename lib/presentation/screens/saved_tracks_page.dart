@@ -66,7 +66,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                       case TracksStatus.Success:
                         if (state.savedTracksPagingResponse.tracks.isEmpty) {
                           return Center(
-                            child: Text('No tracks'),
+                            child: Text(no_tracks),
                           );
                         }
                         return _buildSavedTrackList(state);
@@ -121,7 +121,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Failed to fetch tracks'),
+          Text(failed_to_fetch_tracks),
           BlocBuilder<InternetConnectionCubit, InternetConnectionState>(
             builder: (context, state) {
               if (state is InternetConnectedState) {
@@ -132,10 +132,10 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                           ? SavedTracksReset()
                           : SavedTracksFetched());
                   },
-                  child: Text('Retry'),
+                  child: Text(retry),
                 );
               } else {
-                return Text(PLEASE_CHECK_INTERNET);
+                return Text(please_check_internet);
               }
             },
           ),
@@ -145,7 +145,6 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
   }
 
   Future<void> play(Track track) async {
-    // BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
     context.read<SpotifyPlayerBloc>().add(SpotifyPlayerPlay(track: track));
   }
 

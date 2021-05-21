@@ -23,11 +23,13 @@ class ConfirmationBloc extends Bloc<ConfirmationEvent, ConfirmationState> {
     ConfirmationEvent event,
   ) async* {
     if (event is ConfirmationCodeChanged) {
-      yield state.copyWith(code: event.code);
-
-      // Form submitted
+      yield state.copyWith(
+        code: event.code,
+      );
     } else if (event is ConfirmationSubmitted) {
-      yield state.copyWith(formSubmissionState: FormSubmissionSubmitting());
+      yield state.copyWith(
+        formSubmissionState: FormSubmissionSubmitting(),
+      );
 
       try {
         await authRepository.confirmSignUp(
@@ -44,9 +46,13 @@ class ConfirmationBloc extends Bloc<ConfirmationEvent, ConfirmationState> {
 
         authCubit.launchSession(credentials);
 
-        yield state.copyWith(formSubmissionState: FormSubmissionSuccess());
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionSuccess(),
+        );
       } catch (e) {
-        yield state.copyWith(formSubmissionState: FormSubmissionFailed(e));
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionFailed(e),
+        );
       }
     }
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/constants/enums.dart';
+import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/saved_tracks/saved_tracks_bloc.dart';
 import 'package:spotify_clone/logic/bloc/spotify_player/spotify_player_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
 import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
+import 'package:spotify_clone/utils/functions.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({
@@ -32,14 +34,13 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState({this.user});
 
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   int _currentTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final titles = [
-      'Top tracks of ${user.username}',
-      'Saved tracks of ${user.username}',
+      '$top_tracks_of_title${user.username}',
+      '$saved_tracks_of_title${user.username}',
     ];
 
     return Scaffold(
@@ -65,15 +66,9 @@ class _HomePageState extends State<HomePage> {
       body: BlocListener<InternetConnectionCubit, InternetConnectionState>(
         listener: (context, state) {
           if (state is InternetConnectedState) {
-            context.read<SavedTracksBloc>().add(SavedTracksConnectionChanged(
-                connectionType: state.connectionType));
-            context.read<TopTracksBloc>().add(TopTracksConnectionChanged(
-                connectionType: state.connectionType));
+            _addConnectionChanged(state.connectionType);
           } else if (state is InternetDisconnectedState) {
-            context.read<SavedTracksBloc>().add(SavedTracksConnectionChanged(
-                connectionType: ConnectionType.None));
-            context.read<TopTracksBloc>().add(TopTracksConnectionChanged(
-                connectionType: ConnectionType.None));
+            _addConnectionChanged(ConnectionType.None);
           }
         },
         child: Column(
@@ -86,10 +81,6 @@ class _HomePageState extends State<HomePage> {
                   SavedTracksPage(),
                 ],
               ),
-              // child: Navigator(
-              //   key: _navigatorKey,
-              //   onGenerateRoute: bottomRouter.onGenerateRoute,
-              // ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -105,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                             return Container(
                               margin: EdgeInsets.all(4.0),
                               child: Text(
-                                'No internet connection!',
+                                no_internet,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 14.0,
@@ -177,11 +168,7 @@ class _HomePageState extends State<HomePage> {
                                 .read<SpotifyPlayerBloc>()
                                 .add(SpotifyPlayerConnect());
                           } else if (state.error != null) {
-                            final snackBar = SnackBar(
-                              content: Text(state.error),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
+                            showSnackBar(context, state.error);
                           } else {
                             ScaffoldMessenger.of(context)
                                 .removeCurrentSnackBar();
@@ -200,13 +187,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _addConnectionChanged(ConnectionType connectionType) {
+    context.read<SavedTracksBloc>().add(
+          SavedTracksConnectionChanged(connectionType: connectionType),
+        );
+    context.read<TopTracksBloc>().add(
+          TopTracksConnectionChanged(connectionType: connectionType),
+        );
+  }
+
   Future<void> pause(Track track) async {
-    // BlocProvider.of<SpotifyPlayerCubit>(context).pause();
     context.read<SpotifyPlayerBloc>().add(SpotifyPlayerPause(track: track));
   }
 
   Future<void> resume(Track track) async {
-    // BlocProvider.of<SpotifyPlayerCubit>(context).resume();
     context.read<SpotifyPlayerBloc>().add(SpotifyPlayerResume());
   }
 
@@ -228,11 +222,11 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.thumb_up),
-            label: "Top tracks",
+            label: top_tracks,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: "Saved tracks",
+            label: saved_tracks,
           )
         ],
         onTap: _onTap,

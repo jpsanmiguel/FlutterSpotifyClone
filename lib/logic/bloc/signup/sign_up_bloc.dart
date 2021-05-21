@@ -25,13 +25,21 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   @override
   Stream<SignUpState> mapEventToState(SignUpEvent event) async* {
     if (event is SignUpEmailChanged) {
-      yield state.copyWith(email: event.email);
+      yield state.copyWith(
+        email: event.email,
+      );
     } else if (event is SignUpPasswordChanged) {
-      yield state.copyWith(password: event.password);
+      yield state.copyWith(
+        password: event.password,
+      );
     } else if (event is SignUpUsernameChanged) {
-      yield state.copyWith(username: event.username);
+      yield state.copyWith(
+        username: event.username,
+      );
     } else if (event is SignUpSubmitted) {
-      yield state.copyWith(formSubmissionState: FormSubmissionSubmitting());
+      yield state.copyWith(
+        formSubmissionState: FormSubmissionSubmitting(),
+      );
 
       try {
         await authRepository.signUp(
@@ -46,9 +54,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           password: state.password,
         );
 
-        yield state.copyWith(formSubmissionState: FormSubmissionSuccess());
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionSuccess(),
+        );
       } catch (e) {
-        yield state.copyWith(formSubmissionState: FormSubmissionFailed(e));
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionFailed(e),
+        );
       }
     }
   }

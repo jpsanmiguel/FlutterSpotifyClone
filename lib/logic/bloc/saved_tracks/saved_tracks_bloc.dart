@@ -33,11 +33,12 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         try {
           yield await _mapSavedTracksFetchedToState(state);
         } catch (e) {
-          yield state.copyWith(status: TracksStatus.Failure);
+          yield state.copyWith(
+            status: TracksStatus.Failure,
+          );
         }
       } else if (event is SavedTracksAddTrackToLibrary) {
         event.track.inLibrary = true;
-        yield state.copyWith();
         event.track.inLibrary =
             await spotifyRepository.addToLibrary(event.track);
         yield state.copyWith();
@@ -80,16 +81,14 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
       final savedTracksPagingResponse = await spotifyRepository
           .fetchUserSavedTracks(nextUrl: state.savedTracksPagingResponse.next);
       if (savedTracksPagingResponse.tracks.isEmpty) {
-        return state.copyWith(hasReachedEnd: true);
+        return state.copyWith(
+          hasReachedEnd: true,
+        );
       } else {
         final allSavedTracksPagingResponse = savedTracksPagingResponse;
         final tracks = state.savedTracksPagingResponse.tracks;
         tracks.addAll(savedTracksPagingResponse.tracks);
         allSavedTracksPagingResponse.tracks = tracks;
-
-        print('prevNext: ${state.savedTracksPagingResponse.next}');
-        print('follNext: ${savedTracksPagingResponse.next}');
-        print('finalNext: ${allSavedTracksPagingResponse.next}');
 
         return state.copyWith(
           status: TracksStatus.Success,
@@ -98,7 +97,9 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         );
       }
     } on Exception {
-      return state.copyWith(status: TracksStatus.Failure);
+      return state.copyWith(
+        status: TracksStatus.Failure,
+      );
     }
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/logic/bloc/confirmation/confirmation_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
+import 'package:spotify_clone/utils/functions.dart';
 
 class ConfirmationPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -34,8 +36,10 @@ class ConfirmationPage extends StatelessWidget {
       listener: (context, state) {
         final formSubmissionState = state.formSubmissionState;
         if (formSubmissionState is FormSubmissionFailed) {
-          _showExceptionSnackBar(
-              context, formSubmissionState.exception.toString());
+          showSnackBar(
+            context,
+            formSubmissionState.exception.toString(),
+          );
         }
       },
       child: Form(
@@ -60,7 +64,7 @@ class ConfirmationPage extends StatelessWidget {
         return TextFormField(
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.person),
-            labelText: 'Código confirmación',
+            labelText: verification_code,
             border: UnderlineInputBorder(
               borderSide: BorderSide(
                 color: whiteColor,
@@ -94,14 +98,9 @@ class ConfirmationPage extends StatelessWidget {
                         );
                   }
                 },
-                child: Text('Registrarse'),
+                child: Text(register),
               );
       },
     );
-  }
-
-  void _showExceptionSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
