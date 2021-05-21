@@ -15,7 +15,7 @@ import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
-import 'package:spotify_clone/models/ModelProvider.dart';
+import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
 import 'package:spotify_clone/presentation/navigation/app_navigator.dart';
 import 'package:spotify_clone/presentation/screens/splash_page.dart';
 
