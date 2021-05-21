@@ -15,3 +15,17 @@ enum TracksStatus {
   Success,
   Failure,
 }
+
+enum SpotifyPlayerConnectionStatus {
+  Connecting,
+  Connected,
+  Disconnected,
+  Failed,
+}
+
+enum SpotifyPlayerReproductionStatus {
+  Playing,
+  Paused,
+  Loading,
+  None,
+}

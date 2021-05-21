@@ -5,8 +5,8 @@ import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/saved_tracks/saved_tracks_bloc.dart';
+import 'package:spotify_clone/logic/bloc/spotify_player/spotify_player_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_loader.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
@@ -111,6 +111,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
       track: track,
       loading: false,
       isPlaying: false,
+      errorPlaying: false,
     );
   }
 
@@ -144,7 +145,8 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
   }
 
   Future<void> play(Track track) async {
-    context.read<SpotifyPlayerCubit>().play(track);
+    // BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
+    context.read<SpotifyPlayerBloc>().add(SpotifyPlayerPlay(track: track));
   }
 
   Future<void> removeFromLibrary(Track track) async {

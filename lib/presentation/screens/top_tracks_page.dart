@@ -4,9 +4,9 @@ import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/constants/strings.dart';
 import 'package:spotify_clone/data/models/track.dart';
+import 'package:spotify_clone/logic/bloc/spotify_player/spotify_player_bloc.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/presentation/widgets/track_loader.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
 
@@ -111,6 +111,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
       track: track,
       loading: false,
       isPlaying: false,
+      errorPlaying: false,
     );
   }
 
@@ -154,7 +155,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
   }
 
   Future<void> play(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
+    // BlocProvider.of<SpotifyPlayerCubit>(context).play(track);
+    context.read<SpotifyPlayerBloc>().add(SpotifyPlayerPlay(track: track));
   }
 
   void _onScroll() async {

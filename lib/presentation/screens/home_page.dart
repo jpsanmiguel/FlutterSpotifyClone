@@ -4,10 +4,10 @@ import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/logic/bloc/saved_tracks/saved_tracks_bloc.dart';
+import 'package:spotify_clone/logic/bloc/spotify_player/spotify_player_bloc.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/logic/cubit/spotify_player/spotify_player_cubit.dart';
 import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
 import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
@@ -117,25 +117,9 @@ class _HomePageState extends State<HomePage> {
                           }
                         },
                       ),
-                      BlocConsumer<SpotifyPlayerCubit, SpotifyPlayerState>(
+                      BlocConsumer<SpotifyPlayerBloc, SpotifyPlayerState>(
                         builder: (context, state) {
-                          if (state is SpotifyPlayerConnecting) {
-                            return TrackWidget(
-                              backgroundColor: darkGreyColor,
-                              loading: true,
-                              isPlaying: true,
-                            );
-                          } else if (state is SpotifyPlayerPlaying) {
-                            return TrackWidget(
-                              backgroundColor: darkGreyColor,
-                              icon: Icons.pause,
-                              iconColor: whiteColor,
-                              onIconPressed: pause,
-                              track: state.track,
-                              loading: false,
-                              isPlaying: true,
-                            );
-                          } else if (state is SpotifyPlayerPaused) {
+                          if (state.error != null) {
                             return TrackWidget(
                               backgroundColor: darkGreyColor,
                               icon: Icons.play_arrow,
@@ -144,24 +128,63 @@ class _HomePageState extends State<HomePage> {
                               track: state.track,
                               loading: false,
                               isPlaying: true,
+                              errorPlaying: true,
                             );
-                          } else if (state is SpotifyPlayerLoading) {
+                          } else if (state.connectionStatus ==
+                                  SpotifyPlayerConnectionStatus.Connecting ||
+                              state.reproductionStatus ==
+                                  SpotifyPlayerReproductionStatus.Loading) {
                             return TrackWidget(
                               backgroundColor: darkGreyColor,
                               loading: true,
                               isPlaying: true,
+                              errorPlaying: false,
+                            );
+                          } else if (state.reproductionStatus ==
+                              SpotifyPlayerReproductionStatus.Playing) {
+                            return TrackWidget(
+                              backgroundColor: darkGreyColor,
+                              icon: Icons.pause,
+                              iconColor: whiteColor,
+                              onIconPressed: pause,
+                              track: state.track,
+                              loading: false,
+                              isPlaying: true,
+                              errorPlaying: false,
+                            );
+                          } else if (state.reproductionStatus ==
+                              SpotifyPlayerReproductionStatus.Paused) {
+                            return TrackWidget(
+                              backgroundColor: darkGreyColor,
+                              icon: Icons.play_arrow,
+                              iconColor: whiteColor,
+                              onIconPressed: resume,
+                              track: state.track,
+                              loading: false,
+                              isPlaying: true,
+                              errorPlaying: false,
                             );
                           } else {
                             return Container();
                           }
                         },
                         listener: (context, state) {
-                          if (state is SpotifyPlayerError) {
+                          if (state.connectionStatus ==
+                              SpotifyPlayerConnectionStatus.Disconnected) {
+                            ScaffoldMessenger.of(context)
+                                .removeCurrentSnackBar();
+                            context
+                                .read<SpotifyPlayerBloc>()
+                                .add(SpotifyPlayerConnect());
+                          } else if (state.error != null) {
                             final snackBar = SnackBar(
                               content: Text(state.error),
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .removeCurrentSnackBar();
                           }
                         },
                       ),
@@ -178,11 +201,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> pause(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).pause();
+    // BlocProvider.of<SpotifyPlayerCubit>(context).pause();
+    context.read<SpotifyPlayerBloc>().add(SpotifyPlayerPause(track: track));
   }
 
   Future<void> resume(Track track) async {
-    BlocProvider.of<SpotifyPlayerCubit>(context).resume();
+    // BlocProvider.of<SpotifyPlayerCubit>(context).resume();
+    context.read<SpotifyPlayerBloc>().add(SpotifyPlayerResume());
   }
 
   Widget _bottomNavigationBar() {
