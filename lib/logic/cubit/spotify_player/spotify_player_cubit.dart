@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
-import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
@@ -13,11 +13,29 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
 
   SpotifyPlayerCubit({@required this.spotifyRepository})
       : super(SpotifyPlayerConnecting()) {
-    listenConnectionStatus();
+    connectToSpotifyRemote();
   }
 
   bool connected = false;
   Track track;
+
+  void connectToSpotifyRemote() async {
+    if (!connected) {
+      emit(SpotifyPlayerConnecting());
+      try {
+        connected = await spotifyRepository.connectToSpotifyRemote();
+        if (connected) {
+          listenToPlayerState();
+          emit(SpotifyPlayerConnected());
+        } else {
+          emit(SpotifyPlayerError(
+              error: 'No se pudo conectar al reproductor de Spotify.'));
+        }
+      } on PlatformException catch (e) {
+        emit(SpotifyPlayerError(error: e.message));
+      }
+    }
+  }
 
   void play(Track track) async {
     if (connected) {
@@ -66,31 +84,31 @@ class SpotifyPlayerCubit extends Cubit<SpotifyPlayerState> {
     });
   }
 
-  void connectToSpotifyRemote() async {
-    try {
-      await spotifyRepository.connectToSpotifyRemote();
-    } catch (e) {
-      connectToSpotifyRemote();
-    }
-  }
+  // void connectToSpotifyRemote() async {
+  //   try {
+  //     await spotifyRepository.connectToSpotifyRemote();
+  //   } catch (e) {
+  //     connectToSpotifyRemote();
+  //   }
+  // }
 
-  void listenConnectionStatus() async {
-    connectToSpotifyRemote();
-    Stream stream = SpotifySdk.subscribeConnectionStatus();
-    stream.listen((connectionStatus) async {
-      if (connectionStatus != null && connectionStatus is ConnectionStatus) {
-        if (connectionStatus.connected) {
-          listenToPlayerState();
-          connected = true;
-          emit(SpotifyPlayerConnected());
-        } else {
-          connected = false;
-          emit(SpotifyPlayerNotConnected());
-          connectToSpotifyRemote();
-        }
-      }
-    });
-  }
+  // void listenConnectionStatus() async {
+  //   connectToSpotifyRemote();
+  //   Stream stream = SpotifySdk.subscribeConnectionStatus();
+  //   stream.listen((connectionStatus) async {
+  //     if (connectionStatus != null && connectionStatus is ConnectionStatus) {
+  //       if (connectionStatus.connected) {
+  //         listenToPlayerState();
+  //         connected = true;
+  //         emit(SpotifyPlayerConnected());
+  //       } else {
+  //         connected = false;
+  //         emit(SpotifyPlayerNotConnected());
+  //         connectToSpotifyRemote();
+  //       }
+  //     }
+  //   });
+  // }
 
   void errorPlayingTrack(String error) {
     emit(SpotifyPlayerError(error: error));

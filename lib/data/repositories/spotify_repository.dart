@@ -35,7 +35,7 @@ class SpotifyRepository {
     await networkService.getToken();
   }
 
-  Future<void> connectToSpotifyRemote() async {
+  Future<bool> connectToSpotifyRemote() async {
     return await networkService.connectToSpotifyRemote();
   }
 
