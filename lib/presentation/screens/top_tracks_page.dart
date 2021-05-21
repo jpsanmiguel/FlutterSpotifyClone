@@ -36,38 +36,51 @@ class _TopTracksPageState extends State<TopTracksPage> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _pullRefresh,
-        child: Column(
-          children: [
-            Expanded(
-              child: BlocBuilder<TopTracksBloc, TopTracksState>(
-                builder: (context, state) {
-                  switch (state.status) {
-                    case TracksStatus.Failure:
-                      return state.topTracksPagingResponse == null ||
-                              state.topTracksPagingResponse.tracks.isEmpty
-                          ? Center(
-                              child: _buildRetry(true),
-                            )
-                          : _buildTopTrackList(state);
+        child: BlocListener<TopTracksBloc, TopTracksState>(
+          listener: (context, state) {
+            if (state.scrollToTop) {
+              _scrollController.animateTo(
+                _scrollController.position.minScrollExtent,
+                duration: Duration(
+                  milliseconds: 500,
+                ),
+                curve: Curves.fastOutSlowIn,
+              );
+            }
+          },
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<TopTracksBloc, TopTracksState>(
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case TracksStatus.Failure:
+                        return state.topTracksPagingResponse == null ||
+                                state.topTracksPagingResponse.tracks.isEmpty
+                            ? Center(
+                                child: _buildRetry(true),
+                              )
+                            : _buildTopTrackList(state);
 
-                      break;
-                    case TracksStatus.Success:
-                      if (state.topTracksPagingResponse.tracks.isEmpty) {
+                        break;
+                      case TracksStatus.Success:
+                        if (state.topTracksPagingResponse.tracks.isEmpty) {
+                          return Center(
+                            child: Text('No tracks'),
+                          );
+                        }
+                        return _buildTopTrackList(state);
+                        break;
+                      default:
                         return Center(
-                          child: Text('No tracks'),
+                          child: CircularProgressIndicator(),
                         );
-                      }
-                      return _buildTopTrackList(state);
-                      break;
-                    default:
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                  }
-                },
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -56,6 +56,10 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
           status: TracksStatus.Initial,
         );
         add(SavedTracksFetched());
+      } else if (event is SavedTracksScrollTop) {
+        yield state.copyWith(
+          scrollToTop: true,
+        );
       }
     }
   }

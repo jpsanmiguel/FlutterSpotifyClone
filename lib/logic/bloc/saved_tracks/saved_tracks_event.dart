@@ -24,3 +24,5 @@ class SavedTracksConnectionChanged extends SavedTracksEvent {
 
   SavedTracksConnectionChanged({@required this.connectionType});
 }
+
+class SavedTracksScrollTop extends SavedTracksEvent {}
