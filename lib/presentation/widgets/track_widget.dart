@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/constants/strings.dart' as strings;
 import 'package:spotify_clone/data/models/track.dart';
 
 class TrackWidget extends StatelessWidget {
@@ -60,7 +61,7 @@ class TrackWidget extends StatelessWidget {
                   children: [
                     Container(
                       child: Text(
-                        loading ? 'Cargando...' : '${track.name}',
+                        loading ? strings.loading : '${track.name}',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 16.0,
@@ -69,7 +70,7 @@ class TrackWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      loading ? 'Cargando...' : '${track.getArtistsNames()}',
+                      loading ? strings.loading : '${track.getArtistsNames()}',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: 12.0,

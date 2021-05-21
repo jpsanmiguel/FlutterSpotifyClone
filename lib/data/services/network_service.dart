@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotify_clone/constants/constants.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 import 'package:spotify_clone/data/response/top_tracks_paging_response.dart';
@@ -9,7 +10,6 @@ import 'package:spotify_clone/utils/functions.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 
 class NetworkService {
-  final _baseUrl = 'https://api.spotify.com/v1/';
   static const clientId = '407d613826f145328e1d271f7efc7ac5';
   static const redirectUrl = 'http://example.com/callback/';
 
@@ -19,8 +19,7 @@ class NetworkService {
     try {
       final token = await getToken();
       final response = await get(
-        Uri.parse(nextUrl ??
-            "${_baseUrl}me/top/tracks?time_range=short_term&limit=50"),
+        Uri.parse(nextUrl ?? TOP_TRACKS_DEFAULT_URL),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -44,7 +43,7 @@ class NetworkService {
       final songIds =
           topTracksPagingResponse.tracks.map((track) => track.id).join(",");
       final response = await get(
-        Uri.parse("${_baseUrl}me/tracks/contains?ids=$songIds"),
+        Uri.parse("$TRACKS_IN_LIBRARY_BASE_URL$songIds"),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -64,7 +63,7 @@ class NetworkService {
     try {
       final token = await getToken();
       final response = await get(
-        Uri.parse(nextUrl ?? "${_baseUrl}me/tracks?limit=50"),
+        Uri.parse(nextUrl ?? SAVED_TRACKS_DEFAULT_URL),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -89,19 +88,19 @@ class NetworkService {
             'user-top-read, '
             'playlist-modify-public,user-read-currently-playing');
 
-    await (await getSharedPreferences()).setString('token', token);
+    await (await getSharedPreferences()).setString(TOKEN, token);
     return token;
   }
 
   Future<String> getToken() async {
-    String token = (await getSharedPreferences()).getString('token') ??
+    String token = (await getSharedPreferences()).getString(TOKEN) ??
         await getSpotifyAuthenticationToken();
     print('TOKEN: $token');
     return token;
   }
 
   Future resetToken() async {
-    await (await getSharedPreferences()).remove('token');
+    await (await getSharedPreferences()).remove(TOKEN);
   }
 
   Future<bool> connectToSpotifyRemote() async {

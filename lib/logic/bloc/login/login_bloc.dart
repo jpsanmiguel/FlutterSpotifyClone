@@ -22,11 +22,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     if (event is LoginEmailChanged) {
-      yield state.copyWith(email: event.email);
+      yield state.copyWith(
+        email: event.email,
+      );
     } else if (event is LoginPasswordChanged) {
-      yield state.copyWith(password: event.password);
+      yield state.copyWith(
+        password: event.password,
+      );
     } else if (event is LoginSubmitted) {
-      yield state.copyWith(formSubmissionState: FormSubmissionSubmitting());
+      yield state.copyWith(
+        formSubmissionState: FormSubmissionSubmitting(),
+      );
 
       try {
         final userId = await authRepository.login(
@@ -41,9 +47,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           ),
         );
 
-        yield state.copyWith(formSubmissionState: FormSubmissionSuccess());
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionSuccess(),
+        );
       } catch (e) {
-        yield state.copyWith(formSubmissionState: FormSubmissionFailed(e));
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionFailed(e),
+        );
       }
     }
   }

@@ -33,11 +33,14 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         try {
           yield await _mapTopTracksFetchedToState(state);
         } catch (e) {
-          yield state.copyWith(status: TracksStatus.Failure);
+          yield state.copyWith(
+            status: TracksStatus.Failure,
+          );
         }
       } else if (event is TopTracksAddTrackToLibrary) {
-        event.track.inLibrary =
-            await spotifyRepository.addToLibrary(event.track);
+        event.track.inLibrary = await spotifyRepository.addToLibrary(
+          event.track,
+        );
         yield state.copyWith();
       } else if (event is TopTracksRemoveTrackToLibrary) {
         event.track.inLibrary =
@@ -76,7 +79,9 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
       final topTracksPagingResponse = await spotifyRepository
           .fetchUserTopTracks(nextUrl: state.topTracksPagingResponse.next);
       if (topTracksPagingResponse.tracks.isEmpty) {
-        return state.copyWith(hasReachedEnd: true);
+        return state.copyWith(
+          hasReachedEnd: true,
+        );
       } else {
         final allTopTracksPagingResponse = topTracksPagingResponse;
         final tracks = state.topTracksPagingResponse.tracks;
@@ -89,7 +94,9 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         );
       }
     } on Exception {
-      return state.copyWith(status: TracksStatus.Failure);
+      return state.copyWith(
+        status: TracksStatus.Failure,
+      );
     }
   }
 }

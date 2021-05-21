@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
@@ -41,44 +42,32 @@ class SpotifyPlayerBloc extends Bloc<SpotifyPlayerEvent, SpotifyPlayerState> {
         reproductionStatus: event.reproductionStatus,
       );
     } else if (event is SpotifyPlayerPlay) {
-      if (state.connectionStatus == SpotifyPlayerConnectionStatus.Connected) {
-        actualTrack = event.track;
-        var beforePlayerState = actualPlayerState;
-        await spotifyRepository.play(event.track);
-        if (beforePlayerState.track == null &&
-            actualPlayerState.track == null) {
-          add(SpotifyPlayerError(error: 'Error reproduciendo la canción'));
-        }
-        Future.delayed(Duration(seconds: 5), () {
-          if (actualPlayerState.track == null &&
-              actualTrack.id == event.track.id) {
-            add(SpotifyPlayerError(error: 'Error reproduciendo la canción'));
-          }
-        });
-      } else {
+      try {
+        await _play(event.track);
+      } on PlatformException {
         yield state.copyWith(
           connectionStatus: SpotifyPlayerConnectionStatus.Disconnected,
         );
       }
     } else if (event is SpotifyPlayerPause) {
-      if (state.connectionStatus == SpotifyPlayerConnectionStatus.Connected) {
+      try {
         await spotifyRepository.pause();
-      } else {
+      } on PlatformException {
         yield state.copyWith(
           connectionStatus: SpotifyPlayerConnectionStatus.Disconnected,
         );
       }
     } else if (event is SpotifyPlayerResume) {
-      if (state.connectionStatus == SpotifyPlayerConnectionStatus.Connected) {
+      try {
         await spotifyRepository.resume();
-        yield state.copyWith(
-          reproductionStatus: SpotifyPlayerReproductionStatus.Playing,
-        );
-      } else {
+      } on PlatformException {
         yield state.copyWith(
           connectionStatus: SpotifyPlayerConnectionStatus.Disconnected,
         );
       }
+      yield state.copyWith(
+        reproductionStatus: SpotifyPlayerReproductionStatus.Playing,
+      );
     } else if (event is SpotifyPlayerLoading) {
       yield state.copyWith(
         reproductionStatus: SpotifyPlayerReproductionStatus.Loading,
@@ -98,6 +87,20 @@ class SpotifyPlayerBloc extends Bloc<SpotifyPlayerEvent, SpotifyPlayerState> {
         );
       }
     }
+  }
+
+  Future _play(Track track) async {
+    actualTrack = track;
+    var beforePlayerState = actualPlayerState;
+    await spotifyRepository.play(track);
+    if (beforePlayerState.track == null && actualPlayerState.track == null) {
+      add(SpotifyPlayerError(error: 'Error reproduciendo la canción'));
+    }
+    Future.delayed(Duration(seconds: 5), () {
+      if (actualPlayerState.track == null && actualTrack.id == track.id) {
+        add(SpotifyPlayerError(error: 'Error reproduciendo la canción'));
+      }
+    });
   }
 
   void listenToPlayerState() async {

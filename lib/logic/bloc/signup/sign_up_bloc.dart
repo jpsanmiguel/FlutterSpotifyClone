@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
-import 'package:spotify_clone/data/models/auth_credentials.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
@@ -25,13 +24,21 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   @override
   Stream<SignUpState> mapEventToState(SignUpEvent event) async* {
     if (event is SignUpEmailChanged) {
-      yield state.copyWith(email: event.email);
+      yield state.copyWith(
+        email: event.email,
+      );
     } else if (event is SignUpPasswordChanged) {
-      yield state.copyWith(password: event.password);
+      yield state.copyWith(
+        password: event.password,
+      );
     } else if (event is SignUpUsernameChanged) {
-      yield state.copyWith(username: event.username);
+      yield state.copyWith(
+        username: event.username,
+      );
     } else if (event is SignUpSubmitted) {
-      yield state.copyWith(formSubmissionState: FormSubmissionSubmitting());
+      yield state.copyWith(
+        formSubmissionState: FormSubmissionSubmitting(),
+      );
 
       try {
         await authRepository.signUp(
@@ -46,9 +53,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           password: state.password,
         );
 
-        yield state.copyWith(formSubmissionState: FormSubmissionSuccess());
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionSuccess(),
+        );
       } catch (e) {
-        yield state.copyWith(formSubmissionState: FormSubmissionFailed(e));
+        yield state.copyWith(
+          formSubmissionState: FormSubmissionFailed(e),
+        );
       }
     }
   }
