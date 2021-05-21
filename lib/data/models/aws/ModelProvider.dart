@@ -16,9 +16,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'User.dart';
+import '../aws/User.dart';
 
-export 'User.dart';
+export '../aws/User.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override

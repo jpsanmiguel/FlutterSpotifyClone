@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
-import 'package:spotify_clone/models/ModelProvider.dart';
+import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
 
 part 'auth_session_state.dart';
 

@@ -1,5 +1,5 @@
 import 'package:amplify_flutter/amplify.dart';
-import 'package:spotify_clone/models/ModelProvider.dart';
+import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
 
 class DataRepository {
   Future<User> getUserById(String userId) async {
