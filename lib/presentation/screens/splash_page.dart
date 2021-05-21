@@ -7,7 +7,10 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       // child: CircularProgressIndicator(),
-      child: Image.asset('assets/images/logo.png'),
+      child: Padding(
+        padding: const EdgeInsets.all(104.0),
+        child: Image.asset('assets/images/logo.png'),
+      ),
     );
   }
 }
