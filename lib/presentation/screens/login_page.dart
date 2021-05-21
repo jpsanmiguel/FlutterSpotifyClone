@@ -105,7 +105,10 @@ class LoginPage extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return state.formSubmissionState is FormSubmissionSubmitting
-            ? CircularProgressIndicator()
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(),
+              )
             : ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState.validate()) {

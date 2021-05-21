@@ -36,8 +36,8 @@ class LoginState {
   }
 
   String validatePassword(String password) {
-    if (password.length < 6) {
-      return 'La contraseña debe ser de 6 o más caracteres';
+    if (password.length < 8) {
+      return 'La contraseña debe ser de 8 o más caracteres';
     }
     return null;
   }
