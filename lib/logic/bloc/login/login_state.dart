@@ -19,7 +19,7 @@ class LoginState {
     return LoginState(
       email: email ?? this.email,
       password: password ?? this.password,
-      formSubmissionState: formSubmissionState ?? this.formSubmissionState,
+      formSubmissionState: formSubmissionState,
     );
   }
 

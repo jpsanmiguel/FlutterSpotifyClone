@@ -23,7 +23,7 @@ class SignUpState {
       email: email ?? this.email,
       password: password ?? this.password,
       username: username ?? this.username,
-      formSubmissionState: formSubmissionState ?? this.formSubmissionState,
+      formSubmissionState: formSubmissionState,
     );
   }
 
