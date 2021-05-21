@@ -43,6 +43,8 @@ class Track {
   }
 
   Track.fromSpotifySdkTrack(Spotify.Track track) {
+    var uriParts = track.uri.split(':');
+    id = uriParts[uriParts.length - 1];
     album = AlbumSimplified.fromSpotifySdkAlbum(
         track.album, getImageUrlFromUri(track.imageUri.raw));
     artists = <Artist>[];

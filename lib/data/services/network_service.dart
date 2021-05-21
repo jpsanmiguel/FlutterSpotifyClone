@@ -110,6 +110,7 @@ class NetworkService {
   }
 
   Future play(Track track) async {
+    print(track.uri);
     return await SpotifySdk.play(spotifyUri: track.uri);
   }
 

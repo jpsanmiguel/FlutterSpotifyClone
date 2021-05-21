@@ -11,6 +11,7 @@ class TrackWidget extends StatelessWidget {
   final Function onIconPressed;
   final bool loading;
   final bool isPlaying;
+  final bool errorPlaying;
 
   const TrackWidget({
     Key key,
@@ -22,6 +23,7 @@ class TrackWidget extends StatelessWidget {
     this.onIconPressed,
     this.loading,
     this.isPlaying,
+    this.errorPlaying,
   }) : super(key: key);
 
   @override
@@ -78,18 +80,20 @@ class TrackWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: InkWell(
-                onTap: () {
-                  if (onIconPressed != null) onIconPressed(track);
-                },
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                ),
-              ),
-            ),
+            !errorPlaying
+                ? Expanded(
+                    flex: 1,
+                    child: InkWell(
+                      onTap: () {
+                        if (onIconPressed != null) onIconPressed(track);
+                      },
+                      child: Icon(
+                        icon,
+                        color: iconColor,
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
