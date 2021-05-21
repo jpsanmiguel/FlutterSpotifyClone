@@ -98,7 +98,7 @@ class ConfirmationPage extends StatelessWidget {
                         );
                   }
                 },
-                child: Text(register),
+                child: Text(sign_up),
               );
       },
     );
