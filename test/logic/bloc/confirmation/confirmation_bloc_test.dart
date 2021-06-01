@@ -2,12 +2,12 @@ import 'package:bloc_test/bloc_test.dart' as blocTest;
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
-import 'package:spotify_clone/data/repositories/auth_repository_presenter.dart';
+import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/logic/bloc/confirmation/confirmation_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
 
-class MockAuthRepository extends Mock implements AuthRepositoryPresenter {}
+class MockAuthRepository extends Mock implements AuthRepository {}
 
 void main() {
   MockAuthRepository mockAuthRepository;
