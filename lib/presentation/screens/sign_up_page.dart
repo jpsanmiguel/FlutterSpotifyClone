@@ -35,26 +35,18 @@ class SignUpPage extends StatelessWidget {
   }
 
   Widget _signUpForm() {
-    return BlocListener<SignUpBloc, SignUpState>(
-      listener: (context, state) {
-        final formSubmissionState = state.formSubmissionState;
-        if (formSubmissionState is FormSubmissionFailed) {
-          showSnackBar(context, formSubmissionState.exception.toString());
-        }
-      },
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 36.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _usernameField(),
-              _emailField(),
-              _passwordField(),
-              _signUpButton(),
-            ],
-          ),
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 36.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _usernameField(),
+            _emailField(),
+            _passwordField(),
+            _signUpButton(),
+          ],
         ),
       ),
     );

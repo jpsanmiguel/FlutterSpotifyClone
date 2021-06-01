@@ -3,8 +3,9 @@ import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
 import 'package:spotify_clone/constants/constants.dart';
 import 'package:spotify_clone/utils/functions.dart';
+import 'package:spotify_clone/data/repositories/auth_repository_presenter.dart';
 
-class AuthRepository {
+class AuthRepository implements AuthRepositoryPresenter {
   Future<String> _getUserIdFromAttributes() async {
     try {
       final attributes = await Amplify.Auth.fetchUserAttributes();
@@ -22,6 +23,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<String> attemptAutoLogin() async {
     try {
       final session = await Amplify.Auth.fetchAuthSession(
@@ -34,6 +36,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<String> login({
     @required String email,
     @required String password,
@@ -51,6 +54,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<bool> signUp({
     @required String email,
     @required String password,
@@ -74,6 +78,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<bool> confirmSignUp({
     @required String email,
     @required String confirmationCode,
@@ -89,6 +94,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> signOut() async {
     await Amplify.Auth.signOut();
   }

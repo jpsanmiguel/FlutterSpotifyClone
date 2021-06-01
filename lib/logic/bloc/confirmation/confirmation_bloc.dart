@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:spotify_clone/data/repositories/auth_repository.dart';
+
+import 'package:spotify_clone/data/repositories/auth_repository_presenter.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
 
@@ -10,7 +12,7 @@ part 'confirmation_event.dart';
 part 'confirmation_state.dart';
 
 class ConfirmationBloc extends Bloc<ConfirmationEvent, ConfirmationState> {
-  final AuthRepository authRepository;
+  final AuthRepositoryPresenter authRepository;
   final AuthCubit authCubit;
 
   ConfirmationBloc({
@@ -49,9 +51,9 @@ class ConfirmationBloc extends Bloc<ConfirmationEvent, ConfirmationState> {
         yield state.copyWith(
           formSubmissionState: FormSubmissionSuccess(),
         );
-      } catch (e) {
+      } on Exception {
         yield state.copyWith(
-          formSubmissionState: FormSubmissionFailed(e),
+          formSubmissionState: FormSubmissionFailed(),
         );
       }
     }

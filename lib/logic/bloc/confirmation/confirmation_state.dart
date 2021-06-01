@@ -1,6 +1,6 @@
 part of 'confirmation_bloc.dart';
 
-class ConfirmationState {
+class ConfirmationState extends Equatable {
   final String code;
   final FormSubmissionState formSubmissionState;
 
@@ -14,9 +14,8 @@ class ConfirmationState {
     FormSubmissionState formSubmissionState,
   }) {
     return ConfirmationState(
-      code: code ?? this.code,
-      formSubmissionState: formSubmissionState,
-    );
+        code: code ?? this.code,
+        formSubmissionState: formSubmissionState ?? this.formSubmissionState);
   }
 
   String validateCode(String code) {
@@ -25,4 +24,7 @@ class ConfirmationState {
     }
     return null;
   }
+
+  @override
+  List<Object> get props => [code, formSubmissionState];
 }
