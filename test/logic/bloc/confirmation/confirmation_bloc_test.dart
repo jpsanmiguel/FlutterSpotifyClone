@@ -6,7 +6,7 @@ import 'package:spotify_clone/logic/bloc/confirmation/confirmation_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
 
-import '../mocks/mock_auth_repository.dart';
+import '../../../mocks/mock_auth_repository.dart';
 
 void main() {
   MockAuthRepository mockAuthRepository;

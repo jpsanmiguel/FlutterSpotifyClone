@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:spotify_clone/logic/bloc/login/login_bloc.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
 
-import '../mocks/mock_auth_cubit.dart';
-import '../mocks/mock_auth_repository.dart';
+import '../../../mocks/mock_auth_cubit.dart';
+import '../../../mocks/mock_auth_repository.dart';
 
 void main() {
   MockAuthRepository mockAuthRepository;
