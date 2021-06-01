@@ -32,27 +32,16 @@ class ConfirmationPage extends StatelessWidget {
   }
 
   Widget _confirmationForm() {
-    return BlocListener<ConfirmationBloc, ConfirmationState>(
-      listener: (context, state) {
-        final formSubmissionState = state.formSubmissionState;
-        if (formSubmissionState is FormSubmissionFailed) {
-          showSnackBar(
-            context,
-            formSubmissionState.exception.toString(),
-          );
-        }
-      },
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 36.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _codeField(),
-              _confirmButton(),
-            ],
-          ),
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 36.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _codeField(),
+            _confirmButton(),
+          ],
         ),
       ),
     );
