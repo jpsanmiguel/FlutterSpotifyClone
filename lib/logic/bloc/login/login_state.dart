@@ -1,6 +1,6 @@
 part of 'login_bloc.dart';
 
-class LoginState {
+class LoginState extends Equatable {
   final String email;
   final String password;
   final FormSubmissionState formSubmissionState;
@@ -19,7 +19,7 @@ class LoginState {
     return LoginState(
       email: email ?? this.email,
       password: password ?? this.password,
-      formSubmissionState: formSubmissionState,
+      formSubmissionState: formSubmissionState ?? this.formSubmissionState,
     );
   }
 
@@ -41,4 +41,7 @@ class LoginState {
     }
     return null;
   }
+
+  @override
+  List<Object> get props => [email, password, formSubmissionState];
 }
