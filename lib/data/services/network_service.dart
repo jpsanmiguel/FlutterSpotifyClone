@@ -59,7 +59,8 @@ class NetworkService {
     }
   }
 
-  Future<SavedTracksPagingResponse> fetchUserSavedTracks(String nextUrl) async {
+  Future<SavedTracksPagingResponse> fetchUserSavedTracks(
+      {String nextUrl}) async {
     try {
       final token = await getToken();
       final response = await get(

@@ -19,13 +19,23 @@ class SpotifyRepository {
     return response;
   }
 
-  Future<SavedTracksPagingResponse> fetchUserSavedTracks(
-      {String nextUrl}) async {
+  Future<SavedTracksPagingResponse> fetchUserSavedTracks() async {
     SavedTracksPagingResponse response =
-        await networkService.fetchUserSavedTracks(nextUrl);
+        await networkService.fetchUserSavedTracks();
     if (response.error != null) {
       await getSpotifyAuthenticationToken();
-      response = await networkService.fetchUserSavedTracks(nextUrl);
+      response = await networkService.fetchUserSavedTracks();
+    }
+    return response;
+  }
+
+  Future<SavedTracksPagingResponse> fetchMoreUserSavedTracks(
+      {String nextUrl}) async {
+    SavedTracksPagingResponse response =
+        await networkService.fetchUserSavedTracks(nextUrl: nextUrl);
+    if (response.error != null) {
+      await getSpotifyAuthenticationToken();
+      response = await networkService.fetchUserSavedTracks(nextUrl: nextUrl);
     }
     return response;
   }

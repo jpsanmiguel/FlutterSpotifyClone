@@ -4,6 +4,11 @@ class Artist {
   String name;
   String uri;
 
+  Artist({
+    this.name,
+    this.uri,
+  });
+
   Artist.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     uri = json['uri'];

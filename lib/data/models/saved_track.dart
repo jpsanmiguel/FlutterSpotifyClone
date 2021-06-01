@@ -1,8 +1,9 @@
 import 'dart:core';
 
+import 'package:equatable/equatable.dart';
 import 'package:spotify_clone/data/models/track.dart';
 
-class SavedTrack {
+class SavedTrack extends Equatable {
   String addedAt;
   Track track;
 
@@ -15,4 +16,7 @@ class SavedTrack {
       track.inLibrary = true;
     }
   }
+
+  @override
+  List<Object> get props => [addedAt, track];
 }

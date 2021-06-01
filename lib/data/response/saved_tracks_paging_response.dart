@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:spotify_clone/data/models/error.dart';
 import 'package:spotify_clone/data/models/saved_track.dart';
 
-class SavedTracksPagingResponse {
+class SavedTracksPagingResponse extends Equatable {
   List<SavedTrack> tracks;
   int total;
   int limit;
@@ -34,4 +35,8 @@ class SavedTracksPagingResponse {
     previous = json['previous'];
     next = json['next'];
   }
+
+  @override
+  List<Object> get props =>
+      [tracks, total, limit, offset, previous, next, error];
 }

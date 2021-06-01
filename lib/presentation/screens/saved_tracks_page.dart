@@ -128,9 +128,8 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
                 return ElevatedButton(
                   onPressed: () {
                     _savedTracksBloc
-                      ..add(emptyList
-                          ? SavedTracksReset()
-                          : SavedTracksFetched());
+                      ..add(
+                          emptyList ? SavedTracksReset() : SavedTracksFetch());
                   },
                   child: Text(retry),
                 );
@@ -162,7 +161,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
 
   void _onScroll() async {
     if (_isBottom && !_sendingPetition) {
-      _savedTracksBloc.add(SavedTracksFetched());
+      _savedTracksBloc.add(SavedTracksFetch());
       _sendingPetition = true;
       Future.delayed(Duration(milliseconds: 1000), () {
         _sendingPetition = false;

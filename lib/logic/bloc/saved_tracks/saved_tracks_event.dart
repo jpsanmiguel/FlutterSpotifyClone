@@ -3,7 +3,7 @@ part of 'saved_tracks_bloc.dart';
 @immutable
 abstract class SavedTracksEvent {}
 
-class SavedTracksFetched extends SavedTracksEvent {}
+class SavedTracksFetch extends SavedTracksEvent {}
 
 class SavedTracksAddTrackToLibrary extends SavedTracksEvent {
   final Track track;

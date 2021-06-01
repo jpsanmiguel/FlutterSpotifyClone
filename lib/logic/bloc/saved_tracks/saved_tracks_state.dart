@@ -1,6 +1,6 @@
 part of 'saved_tracks_bloc.dart';
 
-class SavedTracksState {
+class SavedTracksState extends Equatable {
   final TracksStatus status;
   final SavedTracksPagingResponse savedTracksPagingResponse;
   final bool hasReachedEnd;
@@ -12,7 +12,7 @@ class SavedTracksState {
     this.savedTracksPagingResponse,
     this.hasReachedEnd = false,
     this.connectionType,
-    this.scrollToTop,
+    this.scrollToTop = false,
   });
 
   SavedTracksState copyWith({
@@ -31,4 +31,13 @@ class SavedTracksState {
       scrollToTop: scrollToTop ?? false,
     );
   }
+
+  @override
+  List<Object> get props => [
+        status,
+        savedTracksPagingResponse,
+        hasReachedEnd,
+        connectionType,
+        scrollToTop,
+      ];
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
@@ -28,7 +29,7 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
             : state.status,
       );
     } else {
-      if (event is SavedTracksFetched &&
+      if (event is SavedTracksFetch &&
           state.connectionType != ConnectionType.None) {
         try {
           yield await _mapSavedTracksFetchedToState(state);
@@ -56,7 +57,7 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
           savedTracksPagingResponse: null,
           status: TracksStatus.Initial,
         );
-        add(SavedTracksFetched());
+        add(SavedTracksFetch());
       } else if (event is SavedTracksScrollTop) {
         yield state.copyWith(
           scrollToTop: true,
@@ -78,8 +79,9 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
           hasReachedEnd: savedTracksPagingResponse.next == null,
         );
       }
-      final savedTracksPagingResponse = await spotifyRepository
-          .fetchUserSavedTracks(nextUrl: state.savedTracksPagingResponse.next);
+      final savedTracksPagingResponse =
+          await spotifyRepository.fetchMoreUserSavedTracks(
+              nextUrl: state.savedTracksPagingResponse.next);
       if (savedTracksPagingResponse.tracks.isEmpty) {
         return state.copyWith(
           hasReachedEnd: true,

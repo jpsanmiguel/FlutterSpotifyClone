@@ -1,11 +1,12 @@
 import 'dart:core';
 
+import 'package:equatable/equatable.dart';
 import 'package:spotify_clone/data/models/album_simplified.dart';
 import 'package:spotify_clone/data/models/artist.dart';
 import 'package:spotify_clone/utils/functions.dart';
 import 'package:spotify_sdk/models/track.dart' as Spotify;
 
-class Track {
+class Track extends Equatable {
   String id;
   AlbumSimplified album;
   List<Artist> artists;
@@ -53,4 +54,7 @@ class Track {
     name = track.name;
     uri = track.uri;
   }
+
+  @override
+  List<Object> get props => [id, album, artists, name, uri, inLibrary];
 }
