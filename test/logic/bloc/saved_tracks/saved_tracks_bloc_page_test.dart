@@ -63,7 +63,7 @@ void main() {
     );
   });
 
-  group('Request initial tracks', () {
+  group('Request initial tracks with more to load', () {
     final savedTracksPagingResponse =
         randomSavedTracksPagingResponseWithNTracks(
       size: 2,
@@ -88,6 +88,53 @@ void main() {
           status: TracksStatus.Success,
           savedTracksPagingResponse: savedTracksPagingResponse,
           hasReachedEnd: false,
+        ),
+      ],
+    );
+
+    blocTest.blocTest(
+      'Failure',
+      build: () {
+        when(mockSpotifyRepository.fetchUserSavedTracks())
+            .thenThrow(Exception());
+        return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
+      },
+      act: (bloc) {
+        bloc..add(SavedTracksFetch());
+      },
+      expect: () => [
+        SavedTracksState(
+          status: TracksStatus.Failure,
+        ),
+      ],
+    );
+  });
+
+  group('Request initial tracks without more to load', () {
+    final savedTracksPagingResponse =
+        randomSavedTracksPagingResponseWithNTracks(
+      size: 2,
+      isFinal: true,
+      isInitial: true,
+      tracksInLibrary: true,
+    );
+    blocTest.blocTest(
+      'Success',
+      build: () {
+        when(mockSpotifyRepository.fetchUserSavedTracks())
+            .thenAnswer((_) async {
+          return savedTracksPagingResponse;
+        });
+        return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
+      },
+      act: (bloc) {
+        bloc..add(SavedTracksFetch());
+      },
+      expect: () => [
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: savedTracksPagingResponse,
+          hasReachedEnd: true,
         ),
       ],
     );
@@ -193,6 +240,9 @@ void main() {
       isInitial: true,
       tracksInLibrary: false,
     );
+    final finalSavedTracksPagingResponse =
+        initialSavedTracksPagingResponse.copyWith();
+    finalSavedTracksPagingResponse.tracks[0].track.inLibrary = true;
     blocTest.blocTest(
       'Success',
       build: () {
@@ -323,6 +373,66 @@ void main() {
           status: TracksStatus.Success,
           removedTrackFromLibrary: false,
           savedTracksPagingResponse: initialSavedTracksPagingResponse,
+        ),
+      ],
+    );
+  });
+
+  group('Reset saved tracks', () {
+    SavedTracksPagingResponse initialSavedTracksPagingResponse =
+        randomSavedTracksPagingResponseWithNTracks(
+      size: 2,
+      isFinal: false,
+      isInitial: true,
+      tracksInLibrary: true,
+    );
+    blocTest.blocTest(
+      'Success',
+      build: () {
+        when(mockSpotifyRepository.fetchUserSavedTracks())
+            .thenAnswer((_) async => initialSavedTracksPagingResponse);
+        return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
+      },
+      act: (bloc) {
+        bloc..add(SavedTracksFetch())..add(SavedTracksReset());
+      },
+      expect: () => [
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+        ),
+        SavedTracksState(
+          status: TracksStatus.Initial,
+          savedTracksPagingResponse: SavedTracksPagingResponse(),
+        ),
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+        ),
+      ],
+    );
+
+    blocTest.blocTest(
+      'Failure',
+      build: () {
+        when(mockSpotifyRepository.fetchUserSavedTracks())
+            .thenThrow(Exception());
+        return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
+      },
+      act: (bloc) {
+        bloc..add(SavedTracksFetch())..add(SavedTracksReset());
+      },
+      expect: () => [
+        SavedTracksState(
+          status: TracksStatus.Failure,
+        ),
+        SavedTracksState(
+          status: TracksStatus.Initial,
+          savedTracksPagingResponse: SavedTracksPagingResponse(),
+        ),
+        SavedTracksState(
+          status: TracksStatus.Failure,
+          savedTracksPagingResponse: SavedTracksPagingResponse(),
         ),
       ],
     );

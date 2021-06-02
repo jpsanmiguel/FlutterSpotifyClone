@@ -41,10 +41,7 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         }
       } else if (event is SavedTracksAddTrackToLibrary) {
         try {
-          event.track.inLibrary = true;
-          event.track.inLibrary =
-              await spotifyRepository.addToLibrary(event.track);
-          yield state.copyWith(addedTrackToLibrary: true);
+          yield await addTrackToLibrary(event, state);
         } on Exception {
           yield state.copyWith(addedTrackToLibrary: false);
         }
@@ -54,7 +51,7 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
           state.connectionType != ConnectionType.None) {
         yield state.copyWith(
           hasReachedEnd: false,
-          savedTracksPagingResponse: null,
+          savedTracksPagingResponse: SavedTracksPagingResponse(),
           status: TracksStatus.Initial,
         );
         add(SavedTracksFetch());
@@ -105,8 +102,28 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
     }
   }
 
+  Future<SavedTracksState> addTrackToLibrary(
+    SavedTracksAddTrackToLibrary event,
+    SavedTracksState state,
+  ) async {
+    try {
+      event.track.inLibrary = true;
+      final prevSavedTracksPagingResponse =
+          state.savedTracksPagingResponse.copyWith();
+      event.track.inLibrary = await spotifyRepository.addToLibrary(event.track);
+      return state.copyWith(
+        addedTrackToLibrary: true,
+        savedTracksPagingResponse: prevSavedTracksPagingResponse,
+      );
+    } on Exception {
+      return state.copyWith(addedTrackToLibrary: false);
+    }
+  }
+
   Future<SavedTracksState> removeTrackFromLibrary(
-      SavedTracksRemoveTrackToLibrary event, SavedTracksState state) async {
+    SavedTracksRemoveTrackToLibrary event,
+    SavedTracksState state,
+  ) async {
     try {
       event.track.inLibrary = false;
       final prevSavedTracksPagingResponse =
