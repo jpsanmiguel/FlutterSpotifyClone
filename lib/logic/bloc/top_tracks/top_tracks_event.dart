@@ -3,7 +3,7 @@ part of 'top_tracks_bloc.dart';
 @immutable
 abstract class TopTracksEvent {}
 
-class TopTracksFetched extends TopTracksEvent {}
+class TopTracksFetch extends TopTracksEvent {}
 
 class TopTracksAddTrackToLibrary extends TopTracksEvent {
   final Track track;

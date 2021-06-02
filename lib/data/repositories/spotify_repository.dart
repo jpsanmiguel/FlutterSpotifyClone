@@ -9,12 +9,23 @@ class SpotifyRepository {
 
   SpotifyRepository({@required this.networkService}) : super();
 
-  Future<TopTracksPagingResponse> fetchUserTopTracks({String nextUrl}) async {
+  Future<TopTracksPagingResponse> fetchUserTopTracks() async {
     TopTracksPagingResponse response =
-        await networkService.fetchUserTopTracks(nextUrl);
+        await networkService.fetchUserTopTracks();
     if (response.error != null) {
       await getSpotifyAuthenticationToken();
-      response = await networkService.fetchUserTopTracks(nextUrl);
+      response = await networkService.fetchUserTopTracks();
+    }
+    return response;
+  }
+
+  Future<TopTracksPagingResponse> fetchMoreUserTopTracks(
+      {String nextUrl}) async {
+    TopTracksPagingResponse response =
+        await networkService.fetchUserTopTracks(nextUrl: nextUrl);
+    if (response.error != null) {
+      await getSpotifyAuthenticationToken();
+      response = await networkService.fetchUserTopTracks(nextUrl: nextUrl);
     }
     return response;
   }

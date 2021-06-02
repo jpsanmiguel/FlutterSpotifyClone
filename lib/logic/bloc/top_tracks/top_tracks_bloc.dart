@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/constants/enums.dart';
 import 'package:spotify_clone/data/models/track.dart';
@@ -28,7 +29,7 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
             : state.status,
       );
     } else {
-      if (event is TopTracksFetched &&
+      if (event is TopTracksFetch &&
           state.connectionType != ConnectionType.None) {
         try {
           yield await _mapTopTracksFetchedToState(state);
@@ -38,22 +39,21 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
           );
         }
       } else if (event is TopTracksAddTrackToLibrary) {
-        event.track.inLibrary = await spotifyRepository.addToLibrary(
-          event.track,
-        );
-        yield state.copyWith();
+        try {
+          yield await addTrackToLibrary(event, state);
+        } on Exception {
+          yield state.copyWith(addedTrackToLibrary: false);
+        }
       } else if (event is TopTracksRemoveTrackToLibrary) {
-        event.track.inLibrary =
-            await spotifyRepository.removeFromLibrary(event.track);
-        yield state.copyWith();
+        yield await removeTrackFromLibrary(event, state);
       } else if (event is TopTracksReset &&
           state.connectionType != ConnectionType.None) {
         yield state.copyWith(
           hasReachedEnd: false,
-          topTracksPagingResponse: null,
+          topTracksPagingResponse: TopTracksPagingResponse(),
           status: TracksStatus.Initial,
         );
-        add(TopTracksFetched());
+        add(TopTracksFetch());
       } else if (event is TopTracksScrollTop) {
         yield state.copyWith(
           scrollToTop: true,
@@ -72,12 +72,11 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         return state.copyWith(
           status: TracksStatus.Success,
           topTracksPagingResponse: topTracksPagingResponse,
-          hasReachedEnd: topTracksPagingResponse.total ==
-              topTracksPagingResponse.tracks.length,
+          hasReachedEnd: topTracksPagingResponse.next == null,
         );
       }
       final topTracksPagingResponse = await spotifyRepository
-          .fetchUserTopTracks(nextUrl: state.topTracksPagingResponse.next);
+          .fetchMoreUserTopTracks(nextUrl: state.topTracksPagingResponse.next);
       if (topTracksPagingResponse.tracks.isEmpty) {
         return state.copyWith(
           hasReachedEnd: true,
@@ -97,6 +96,46 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
       return state.copyWith(
         status: TracksStatus.Failure,
       );
+    }
+  }
+
+  Future<TopTracksState> addTrackToLibrary(
+    TopTracksAddTrackToLibrary event,
+    TopTracksState state,
+  ) async {
+    try {
+      event.track.inLibrary = true;
+      final prevTopTracksPagingResponse =
+          state.topTracksPagingResponse.copyWith();
+      event.track.inLibrary = await spotifyRepository.addToLibrary(event.track);
+      return state.copyWith(
+        addedTrackToLibrary: true,
+        topTracksPagingResponse: prevTopTracksPagingResponse,
+      );
+    } on Exception {
+      return state.copyWith(addedTrackToLibrary: false);
+    }
+  }
+
+  Future<TopTracksState> removeTrackFromLibrary(
+    TopTracksRemoveTrackToLibrary event,
+    TopTracksState state,
+  ) async {
+    try {
+      event.track.inLibrary = false;
+      final prevTopTracksPagingResponse =
+          state.topTracksPagingResponse.copyWith();
+      final actualTracks = <Track>[...prevTopTracksPagingResponse.tracks];
+      actualTracks.removeWhere((element) => element.id == event.track.id);
+      event.track.inLibrary =
+          await spotifyRepository.removeFromLibrary(event.track);
+      prevTopTracksPagingResponse.tracks = actualTracks;
+      return state.copyWith(
+        removedTrackFromLibrary: true,
+        topTracksPagingResponse: prevTopTracksPagingResponse,
+      );
+    } on Exception {
+      return state.copyWith(removedTrackFromLibrary: false);
     }
   }
 }

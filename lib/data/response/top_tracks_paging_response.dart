@@ -1,7 +1,9 @@
+import 'package:equatable/equatable.dart';
+
 import 'package:spotify_clone/data/models/error.dart';
 import 'package:spotify_clone/data/models/track.dart';
 
-class TopTracksPagingResponse {
+class TopTracksPagingResponse extends Equatable {
   List<Track> tracks;
   int total;
   int limit;
@@ -33,5 +35,38 @@ class TopTracksPagingResponse {
     offset = json['offset'];
     previous = json['previous'];
     next = json['next'];
+  }
+
+  TopTracksPagingResponse copyWith({
+    List<Track> tracks,
+    int total,
+    int limit,
+    int offset,
+    String previous,
+    String next,
+    ErrorModel error,
+  }) {
+    return TopTracksPagingResponse(
+      tracks: tracks ?? this.tracks,
+      total: total ?? this.total,
+      limit: limit ?? this.limit,
+      offset: offset ?? this.offset,
+      previous: previous ?? this.previous,
+      next: next ?? this.next,
+      error: error ?? this.error,
+    );
+  }
+
+  @override
+  List<Object> get props {
+    return [
+      tracks,
+      total,
+      limit,
+      offset,
+      previous,
+      next,
+      error,
+    ];
   }
 }

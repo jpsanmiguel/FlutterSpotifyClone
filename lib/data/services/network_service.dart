@@ -15,7 +15,7 @@ class NetworkService {
 
   SharedPreferences prefs;
 
-  Future<TopTracksPagingResponse> fetchUserTopTracks(String nextUrl) async {
+  Future<TopTracksPagingResponse> fetchUserTopTracks({String nextUrl}) async {
     try {
       final token = await getToken();
       final response = await get(

@@ -106,7 +106,7 @@ class _MyAppState extends State<MyApp> {
                 BlocProvider(
                   create: (context) => TopTracksBloc(
                     spotifyRepository: context.read<SpotifyRepository>(),
-                  )..add(TopTracksFetched()),
+                  )..add(TopTracksFetch()),
                 ),
                 BlocProvider(
                   create: (context) => SavedTracksBloc(

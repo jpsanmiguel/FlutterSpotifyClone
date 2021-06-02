@@ -128,7 +128,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
                 return ElevatedButton(
                   onPressed: () {
                     _topTracksBloc
-                      ..add(emptyList ? TopTracksReset() : TopTracksFetched());
+                      ..add(emptyList ? TopTracksReset() : TopTracksFetch());
                   },
                   child: Text(retry),
                 );
@@ -160,7 +160,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
 
   void _onScroll() async {
     if (_isBottom && !_sendingPetition) {
-      _topTracksBloc.add(TopTracksFetched());
+      _topTracksBloc.add(TopTracksFetch());
       _sendingPetition = true;
       Future.delayed(Duration(milliseconds: 1000), () {
         _sendingPetition = false;
