@@ -1,11 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(LoginAuthState());
+  AuthCubit() : super(AuthInitial());
 
   AuthCredentials credentials;
 
