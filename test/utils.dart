@@ -8,41 +8,45 @@ import 'package:spotify_clone/data/models/saved_track.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
 
-SavedTracksPagingResponse randomSavedTracksPagingResponseWithNTracks(
-  int n,
-) {
+SavedTracksPagingResponse randomSavedTracksPagingResponseWithNTracks({
+  int size,
+  bool isInitial,
+  bool isFinal,
+  bool tracksInLibrary,
+}) {
   return SavedTracksPagingResponse(
     limit: randomInt(50),
-    next: randomAlphaNumeric(30),
+    next: isFinal ? null : randomAlphaNumeric(30),
     offset: randomInt(50),
-    previous: randomAlphaNumeric(30),
-    total: n,
-    tracks: randomSavedTracks(n),
+    previous: isInitial ? null : randomAlphaNumeric(30),
+    total: size,
+    tracks: randomSavedTracks(size: size, tracksInLibrary: tracksInLibrary),
   );
 }
 
-List<SavedTrack> randomSavedTracks(int size) {
+List<SavedTrack> randomSavedTracks({int size, bool tracksInLibrary}) {
   List<SavedTrack> savedTracks = [];
   for (var i = 0; i < size; i++) {
-    savedTracks.add(randomSavedTrack());
+    savedTracks.add(randomSavedTrack(tracksInLibrary: tracksInLibrary));
   }
   return savedTracks;
 }
 
-SavedTrack randomSavedTrack() {
+SavedTrack randomSavedTrack({bool tracksInLibrary}) {
   return SavedTrack(
     addedAt: randomAlphaNumeric(10),
-    track: randomTrack(),
+    track: randomTrack(tracksInLibrary: tracksInLibrary),
   );
 }
 
-Track randomTrack() {
+Track randomTrack({bool tracksInLibrary}) {
   return Track(
     album: randomAlbumSimplified(),
     artists: randomArtists(),
     id: randomString(6),
     name: randomString(10),
     uri: randomString(30),
+    inLibrary: tracksInLibrary,
   );
 }
 

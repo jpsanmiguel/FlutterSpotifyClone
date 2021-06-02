@@ -14,19 +14,26 @@ class Track extends Equatable {
   String uri;
   bool inLibrary = false;
 
-  Track({this.id, this.album, this.artists, this.name, this.uri});
+  Track(
+      {this.id, this.album, this.artists, this.name, this.uri, this.inLibrary});
 
-  Track.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  factory Track.fromJson(Map<String, dynamic> json) {
+    AlbumSimplified album;
+    List<Artist> artists = <Artist>[];
     if (json['album'] != null) {
       album = AlbumSimplified.fromJson(json['album']);
     }
-    artists = <Artist>[];
     if (json['artists'] != null && json['artists'].toString().isNotEmpty) {
       json['artists'].forEach((artist) => artists.add(Artist.fromJson(artist)));
     }
-    name = json['name'];
-    uri = json['uri'];
+    return Track(
+      id: json['id'],
+      album: album,
+      artists: artists,
+      name: json['name'],
+      uri: json['uri'],
+      inLibrary: false,
+    );
   }
 
   String getImageUrl() {

@@ -9,12 +9,13 @@ class SavedTrack extends Equatable {
 
   SavedTrack({this.addedAt, this.track});
 
-  SavedTrack.fromJson(Map<String, dynamic> json) {
-    addedAt = json['added_at'];
+  factory SavedTrack.fromJson(Map<String, dynamic> json) {
+    Track track;
     if (json['track'] != null) {
       track = Track.fromJson(json['track']);
       track.inLibrary = true;
     }
+    return SavedTrack(addedAt: json['added_at'], track: track);
   }
 
   @override

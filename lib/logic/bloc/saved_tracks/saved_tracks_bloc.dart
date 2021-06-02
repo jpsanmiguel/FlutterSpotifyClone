@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/constants/enums.dart';
+import 'package:spotify_clone/data/models/saved_track.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
 import 'package:spotify_clone/data/response/saved_tracks_paging_response.dart';
@@ -39,17 +40,16 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
           );
         }
       } else if (event is SavedTracksAddTrackToLibrary) {
-        event.track.inLibrary = true;
-        event.track.inLibrary =
-            await spotifyRepository.addToLibrary(event.track);
-        yield state.copyWith();
+        try {
+          event.track.inLibrary = true;
+          event.track.inLibrary =
+              await spotifyRepository.addToLibrary(event.track);
+          yield state.copyWith(addedTrackToLibrary: true);
+        } on Exception {
+          yield state.copyWith(addedTrackToLibrary: false);
+        }
       } else if (event is SavedTracksRemoveTrackToLibrary) {
-        event.track.inLibrary = false;
-        state.savedTracksPagingResponse.tracks
-            .removeWhere((element) => element.track.id == event.track.id);
-        event.track.inLibrary =
-            await spotifyRepository.removeFromLibrary(event.track);
-        yield state.copyWith();
+        yield await removeTrackFromLibrary(event, state);
       } else if (event is SavedTracksReset &&
           state.connectionType != ConnectionType.None) {
         yield state.copyWith(
@@ -102,6 +102,28 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
       return state.copyWith(
         status: TracksStatus.Failure,
       );
+    }
+  }
+
+  Future<SavedTracksState> removeTrackFromLibrary(
+      SavedTracksRemoveTrackToLibrary event, SavedTracksState state) async {
+    try {
+      event.track.inLibrary = false;
+      final prevSavedTracksPagingResponse =
+          state.savedTracksPagingResponse.copyWith();
+      final actualTracks = <SavedTrack>[
+        ...prevSavedTracksPagingResponse.tracks
+      ];
+      actualTracks.removeWhere((element) => element.track.id == event.track.id);
+      event.track.inLibrary =
+          await spotifyRepository.removeFromLibrary(event.track);
+      prevSavedTracksPagingResponse.tracks = actualTracks;
+      return state.copyWith(
+        removedTrackFromLibrary: true,
+        savedTracksPagingResponse: prevSavedTracksPagingResponse,
+      );
+    } on Exception {
+      return state.copyWith(removedTrackFromLibrary: false);
     }
   }
 }

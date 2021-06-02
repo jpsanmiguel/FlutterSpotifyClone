@@ -6,6 +6,8 @@ class SavedTracksState extends Equatable {
   final bool hasReachedEnd;
   final ConnectionType connectionType;
   final bool scrollToTop;
+  final bool addedTrackToLibrary;
+  final bool removedTrackFromLibrary;
 
   SavedTracksState({
     this.status = TracksStatus.Initial,
@@ -13,6 +15,8 @@ class SavedTracksState extends Equatable {
     this.hasReachedEnd = false,
     this.connectionType,
     this.scrollToTop = false,
+    this.addedTrackToLibrary,
+    this.removedTrackFromLibrary,
   });
 
   SavedTracksState copyWith({
@@ -21,6 +25,8 @@ class SavedTracksState extends Equatable {
     bool hasReachedEnd,
     ConnectionType connectionType,
     bool scrollToTop,
+    bool addedTrackToLibrary,
+    bool removedTrackFromLibrary,
   }) {
     return SavedTracksState(
       status: status ?? this.status,
@@ -29,6 +35,8 @@ class SavedTracksState extends Equatable {
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       connectionType: connectionType ?? this.connectionType,
       scrollToTop: scrollToTop ?? false,
+      addedTrackToLibrary: addedTrackToLibrary,
+      removedTrackFromLibrary: removedTrackFromLibrary,
     );
   }
 
@@ -39,5 +47,7 @@ class SavedTracksState extends Equatable {
         hasReachedEnd,
         connectionType,
         scrollToTop,
+        addedTrackToLibrary,
+        removedTrackFromLibrary,
       ];
 }

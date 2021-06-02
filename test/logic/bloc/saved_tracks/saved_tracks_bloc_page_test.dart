@@ -65,9 +65,14 @@ void main() {
 
   group('Request initial tracks', () {
     final savedTracksPagingResponse =
-        randomSavedTracksPagingResponseWithNTracks(10);
+        randomSavedTracksPagingResponseWithNTracks(
+      size: 2,
+      isFinal: false,
+      isInitial: true,
+      tracksInLibrary: true,
+    );
     blocTest.blocTest(
-      'Request initial tracks success',
+      'Success',
       build: () {
         when(mockSpotifyRepository.fetchUserSavedTracks())
             .thenAnswer((_) async {
@@ -88,7 +93,7 @@ void main() {
     );
 
     blocTest.blocTest(
-      'Request initial tracks failure',
+      'Failure',
       build: () {
         when(mockSpotifyRepository.fetchUserSavedTracks())
             .thenThrow(Exception());
@@ -107,11 +112,21 @@ void main() {
 
   group('Request more tracks', () {
     SavedTracksPagingResponse initialSavedTracksPagingResponse =
-        randomSavedTracksPagingResponseWithNTracks(10);
+        randomSavedTracksPagingResponseWithNTracks(
+      size: 2,
+      isFinal: false,
+      isInitial: true,
+      tracksInLibrary: true,
+    );
     SavedTracksPagingResponse moreSavedTracksPagingResponse =
-        randomSavedTracksPagingResponseWithNTracks(10);
+        randomSavedTracksPagingResponseWithNTracks(
+      size: 3,
+      isFinal: false,
+      isInitial: false,
+      tracksInLibrary: true,
+    );
     blocTest.blocTest(
-      'Request more tracks success',
+      'Success',
       build: () {
         when(mockSpotifyRepository.fetchUserSavedTracks())
             .thenAnswer((_) async {
@@ -142,7 +157,7 @@ void main() {
     );
 
     blocTest.blocTest(
-      'Request more tracks failure',
+      'Failure',
       build: () {
         when(mockSpotifyRepository.fetchUserSavedTracks())
             .thenAnswer((_) async {
@@ -172,26 +187,141 @@ void main() {
 
   group('Add track to library', () {
     SavedTracksPagingResponse initialSavedTracksPagingResponse =
-        randomSavedTracksPagingResponseWithNTracks(10);
+        randomSavedTracksPagingResponseWithNTracks(
+      size: 2,
+      isFinal: false,
+      isInitial: true,
+      tracksInLibrary: false,
+    );
     blocTest.blocTest(
-      'Add track to library success',
+      'Success',
       build: () {
         when(mockSpotifyRepository.fetchUserSavedTracks())
             .thenAnswer((_) async {
           return initialSavedTracksPagingResponse;
         });
-        when(mockSpotifyRepository.addToLibrary(any))
-            .thenAnswer((_) async => true);
+        when(mockSpotifyRepository.addToLibrary(
+          any,
+        )).thenAnswer((_) async => true);
         return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
       },
       act: (bloc) {
         bloc
           ..add(SavedTracksFetch())
-          ..add(SavedTracksAddTrackToLibrary(track: randomTrack()));
+          ..add(SavedTracksAddTrackToLibrary(
+            track: initialSavedTracksPagingResponse.tracks[0].track,
+          ));
       },
       expect: () => [
         SavedTracksState(
           status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+        ),
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+          addedTrackToLibrary: true,
+        ),
+      ],
+    );
+
+    blocTest.blocTest(
+      'Failure',
+      build: () {
+        when(mockSpotifyRepository.fetchUserSavedTracks())
+            .thenAnswer((_) async {
+          return initialSavedTracksPagingResponse;
+        });
+        when(mockSpotifyRepository.addToLibrary(any)).thenThrow(Exception());
+        return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
+      },
+      act: (bloc) {
+        bloc
+          ..add(SavedTracksFetch())
+          ..add(SavedTracksAddTrackToLibrary(
+            track: initialSavedTracksPagingResponse.tracks[0].track,
+          ));
+      },
+      expect: () => [
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+        ),
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+          addedTrackToLibrary: false,
+        ),
+      ],
+    );
+  });
+
+  group('Remove track from library', () {
+    SavedTracksPagingResponse initialSavedTracksPagingResponse =
+        randomSavedTracksPagingResponseWithNTracks(
+      size: 2,
+      isFinal: false,
+      isInitial: true,
+      tracksInLibrary: true,
+    );
+    final finalSavedTracksPagingResponse =
+        initialSavedTracksPagingResponse.copyWith();
+    finalSavedTracksPagingResponse.tracks =
+        initialSavedTracksPagingResponse.tracks.sublist(1);
+
+    blocTest.blocTest(
+      'Success',
+      build: () {
+        when(mockSpotifyRepository.fetchUserSavedTracks())
+            .thenAnswer((_) async => initialSavedTracksPagingResponse);
+        when(mockSpotifyRepository.removeFromLibrary(any))
+            .thenAnswer((_) async => false);
+        return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
+      },
+      act: (bloc) {
+        bloc
+          ..add(SavedTracksFetch())
+          ..add(SavedTracksRemoveTrackToLibrary(
+            track: initialSavedTracksPagingResponse.tracks[0].track,
+          ));
+      },
+      expect: () => [
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+        ),
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: finalSavedTracksPagingResponse,
+          removedTrackFromLibrary: true,
+        )
+      ],
+    );
+
+    blocTest.blocTest(
+      'Failure',
+      build: () {
+        when(mockSpotifyRepository.fetchUserSavedTracks())
+            .thenAnswer((_) async => initialSavedTracksPagingResponse);
+        when(mockSpotifyRepository.removeFromLibrary(any))
+            .thenThrow(Exception());
+        return SavedTracksBloc(spotifyRepository: mockSpotifyRepository);
+      },
+      act: (bloc) {
+        bloc
+          ..add(SavedTracksFetch())
+          ..add(SavedTracksRemoveTrackToLibrary(
+            track: initialSavedTracksPagingResponse.tracks[0].track,
+          ));
+      },
+      expect: () => [
+        SavedTracksState(
+          status: TracksStatus.Success,
+          savedTracksPagingResponse: initialSavedTracksPagingResponse,
+        ),
+        SavedTracksState(
+          status: TracksStatus.Success,
+          removedTrackFromLibrary: false,
           savedTracksPagingResponse: initialSavedTracksPagingResponse,
         ),
       ],
