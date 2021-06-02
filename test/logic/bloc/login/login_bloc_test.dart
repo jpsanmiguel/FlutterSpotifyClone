@@ -9,11 +9,11 @@ import '../../../mocks/mock_auth_repository.dart';
 
 void main() {
   MockAuthRepository mockAuthRepository;
-  MockAuthCubit authCubit;
+  MockAuthCubit mockAuthCubit;
 
   setUp(() {
     mockAuthRepository = MockAuthRepository();
-    authCubit = MockAuthCubit();
+    mockAuthCubit = MockAuthCubit();
   });
 
   group('Email changed', () {
@@ -21,7 +21,7 @@ void main() {
       'Changed email',
       build: () => LoginBloc(
         authRepository: mockAuthRepository,
-        authCubit: authCubit,
+        authCubit: mockAuthCubit,
       ),
       act: (bloc) {
         bloc
@@ -44,7 +44,7 @@ void main() {
       'Changed password',
       build: () => LoginBloc(
         authRepository: mockAuthRepository,
-        authCubit: authCubit,
+        authCubit: mockAuthCubit,
       ),
       act: (bloc) {
         bloc
@@ -66,11 +66,12 @@ void main() {
     blocTest.blocTest(
       'Submission success',
       build: () {
-        when(mockAuthRepository.login(email: 'email', password: 'password'))
+        when(mockAuthRepository.login(
+                email: anyNamed('email'), password: anyNamed('password')))
             .thenAnswer((_) async => '123456');
         return LoginBloc(
           authRepository: mockAuthRepository,
-          authCubit: authCubit,
+          authCubit: mockAuthCubit,
         );
       },
       act: (bloc) {
@@ -102,7 +103,7 @@ void main() {
             .thenThrow(Exception());
         return LoginBloc(
           authRepository: mockAuthRepository,
-          authCubit: authCubit,
+          authCubit: mockAuthCubit,
         );
       },
       act: (bloc) {

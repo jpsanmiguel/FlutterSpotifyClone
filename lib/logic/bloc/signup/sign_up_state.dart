@@ -1,6 +1,6 @@
 part of 'sign_up_bloc.dart';
 
-class SignUpState {
+class SignUpState extends Equatable {
   final String email;
   final String password;
   final String username;
@@ -23,7 +23,7 @@ class SignUpState {
       email: email ?? this.email,
       password: password ?? this.password,
       username: username ?? this.username,
-      formSubmissionState: formSubmissionState,
+      formSubmissionState: formSubmissionState ?? this.formSubmissionState,
     );
   }
 
@@ -52,4 +52,7 @@ class SignUpState {
     }
     return null;
   }
+
+  @override
+  List<Object> get props => [email, password, username, formSubmissionState];
 }
