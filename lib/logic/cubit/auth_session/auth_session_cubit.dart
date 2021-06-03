@@ -1,5 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
@@ -15,9 +16,7 @@ class AuthSessionCubit extends Cubit<AuthSessionState> {
   AuthSessionCubit({
     @required this.authRepository,
     @required this.dataRepository,
-  }) : super(UnkownSessionState()) {
-    attemptAutoLogin();
-  }
+  }) : super(UnkownSessionState());
 
   void attemptAutoLogin() async {
     try {
@@ -34,11 +33,11 @@ class AuthSessionCubit extends Cubit<AuthSessionState> {
       }
       emit(AuthenticatedSessionState(user: user));
     } on Exception {
-      emit(UnautheticatedSessionState());
+      emit(UnauthenticatedSessionState());
     }
   }
 
-  void showAuth() => emit(UnautheticatedSessionState());
+  void showAuth() => emit(UnauthenticatedSessionState());
 
   void showSession(AuthCredentials authCredentials) async {
     try {
@@ -58,12 +57,12 @@ class AuthSessionCubit extends Cubit<AuthSessionState> {
         ),
       );
     } catch (e) {
-      emit(UnautheticatedSessionState());
+      emit(UnauthenticatedSessionState());
     }
   }
 
   void signOut() {
     authRepository.signOut();
-    emit(UnautheticatedSessionState());
+    emit(UnauthenticatedSessionState());
   }
 }

@@ -1,4 +1,4 @@
-import 'package:bloc_test/bloc_test.dart' as blocTest;
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
@@ -26,21 +26,21 @@ void main() {
       expect(authCubit.state, AuthInitial());
     });
 
-    blocTest.blocTest(
+    blocTest(
       'Should emit LoginAuthState when showLogin function is called',
       build: () => authCubit,
       act: (cubit) => cubit.showLogin(),
       expect: () => [LoginAuthState()],
     );
 
-    blocTest.blocTest(
+    blocTest(
       'Should emit SignUpAuthState when showSignUp function is called',
       build: () => authCubit,
       act: (cubit) => cubit.showSignUp(),
       expect: () => [SignUpAuthState()],
     );
 
-    blocTest.blocTest(
+    blocTest(
       'Should emit LoggedInAuthState when launchSession function is called',
       build: () => authCubit,
       act: (cubit) => cubit.launchSession(authCredentials),
@@ -51,7 +51,7 @@ void main() {
       ],
     );
 
-    blocTest.blocTest(
+    blocTest(
       'Should emit ConfirmSignUpAuthState when showConfirmSignUp function is called',
       build: () => authCubit,
       act: (cubit) => cubit.showConfirmSignUp(

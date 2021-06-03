@@ -19,10 +19,12 @@ class AppNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthSessionCubit, AuthSessionState>(
       builder: (context, state) {
+        if (state is UnkownSessionState)
+          context.read<AuthSessionCubit>().attemptAutoLogin();
         return Navigator(
           pages: [
             if (state is UnkownSessionState) MaterialPage(child: SplashPage()),
-            if (state is UnautheticatedSessionState)
+            if (state is UnauthenticatedSessionState)
               MaterialPage(
                 child: BlocProvider(
                   create: (context) => AuthCubit(),
