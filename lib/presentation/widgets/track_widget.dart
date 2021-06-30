@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spotify_clone/constants/colors.dart';
-import 'package:spotify_clone/constants/strings.dart' as strings;
 import 'package:spotify_clone/data/models/track.dart';
+import 'package:spotify_clone/presentation/widgets/track_title_subtitle_marquee.dart';
 
 class TrackWidget extends StatelessWidget {
   final Track track;
@@ -34,13 +33,14 @@ class TrackWidget extends StatelessWidget {
         if (onItemPressed != null) onItemPressed(track);
       },
       child: Container(
+        padding: EdgeInsets.all(4.0),
+        height: 60.0,
         decoration: BoxDecoration(
           color: backgroundColor,
         ),
-        padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 8.0),
         child: Row(
           children: [
-            loading
+            loading || track == null
                 ? Padding(
                     padding: const EdgeInsets.all(6.0),
                     child: CircularProgressIndicator(),
@@ -61,36 +61,19 @@ class TrackWidget extends StatelessWidget {
                       },
                     ),
                   ),
-            Expanded(
-              flex: 6,
-              child: Container(
-                margin: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Text(
-                        loading ? strings.loading : '${track.name}',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          color: textColor,
-                        ),
+            track != null
+                ? Expanded(
+                    flex: 6,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TrackTitleSubtitleMarquee(
+                        loading: loading,
+                        title: track.name,
+                        subtitle: track.getArtistsNames(),
                       ),
                     ),
-                    Text(
-                      loading ? strings.loading : '${track.getArtistsNames()}',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: textColor.shade900,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  )
+                : Container(),
             !errorPlaying
                 ? Expanded(
                     flex: 1,
