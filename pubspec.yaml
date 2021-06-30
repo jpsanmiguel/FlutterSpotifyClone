@@ -36,6 +36,7 @@ dependencies:
   rxdart: ^0.27.0
   shared_preferences: ^2.0.5
   spotify_sdk: ^2.1.0
+  transparent_image: ^2.0.0
 
 dev_dependencies:
   flutter_test:

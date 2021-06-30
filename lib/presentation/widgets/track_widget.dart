@@ -49,6 +49,16 @@ class TrackWidget extends StatelessWidget {
                     flex: 1,
                     child: Image.network(
                       track.getImageUrl(),
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: SizedBox(
+                            height: 25.0,
+                            width: 25.0,
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      },
                     ),
                   ),
             Expanded(
