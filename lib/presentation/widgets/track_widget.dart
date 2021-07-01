@@ -41,20 +41,21 @@ class TrackWidget extends StatelessWidget {
         child: Row(
           children: [
             loading || track == null
-                ? Padding(
-                    padding: const EdgeInsets.all(6.0),
+                ? SizedBox(
+                    height: 30.0,
+                    width: 30.0,
                     child: CircularProgressIndicator(),
                   )
                 : Expanded(
                     flex: 1,
                     child: Image.network(
-                      track.getImageUrl(),
+                      "${track.getImageUrl()}",
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Center(
                           child: SizedBox(
-                            height: 25.0,
-                            width: 25.0,
+                            height: 30.0,
+                            width: 30.0,
                             child: CircularProgressIndicator(),
                           ),
                         );

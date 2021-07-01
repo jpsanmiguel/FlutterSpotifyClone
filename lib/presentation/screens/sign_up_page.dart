@@ -7,7 +7,6 @@ import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/logic/bloc/signup/sign_up_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/form_submission_state.dart';
-import 'package:spotify_clone/utils/functions.dart';
 
 class SignUpPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();

@@ -10,6 +10,7 @@ import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
 import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
+import 'package:spotify_clone/presentation/screens/profile_page.dart';
 import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
 import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
 import 'package:spotify_clone/presentation/widgets/track_widget.dart';
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
     final titles = [
       '$top_tracks_of_title${user.username}',
       '$saved_tracks_of_title${user.username}',
+      '$profile_of_title${user.username}',
     ];
 
     return Scaffold(
@@ -79,6 +81,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   TopTracksPage(),
                   SavedTracksPage(),
+                  ProfilePage(user: user),
                 ],
               ),
             ),
@@ -227,7 +230,11 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: saved_tracks,
-          )
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: profile,
+          ),
         ],
         onTap: _onTap,
         currentIndex: _currentTabIndex,
@@ -239,7 +246,7 @@ class _HomePageState extends State<HomePage> {
     if (_currentTabIndex == tabIndex) {
       if (tabIndex == 0) {
         context.read<TopTracksBloc>().add(TopTracksScrollTop());
-      } else {
+      } else if (tabIndex == 1) {
         context.read<SavedTracksBloc>().add(SavedTracksScrollTop());
       }
     } else {

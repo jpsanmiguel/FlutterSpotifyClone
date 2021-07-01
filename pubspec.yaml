@@ -28,6 +28,7 @@ dependencies:
   amplify_datastore: ^0.1.5
   amplify_flutter: ^0.1.5
   auto_size_text: ^2.1.0
+  cached_network_image: ^3.0.0
   connectivity_plus: ^1.0.1
   cupertino_icons: ^1.0.2
   equatable: ^2.0.2

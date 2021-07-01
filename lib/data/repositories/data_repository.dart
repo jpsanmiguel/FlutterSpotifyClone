@@ -27,4 +27,18 @@ class DataRepository {
       throw e;
     }
   }
+
+  Future<User> saveUser({
+    String userId,
+    String username,
+    String email,
+  }) async {
+    final updateUser = User(id: userId, username: username, email: email);
+    try {
+      await Amplify.DataStore.save(updateUser);
+      return updateUser;
+    } catch (e) {
+      throw e;
+    }
+  }
 }
