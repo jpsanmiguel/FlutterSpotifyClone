@@ -64,22 +64,6 @@ class ProfilePage extends StatelessWidget {
         ),
         BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
-            if (state.username != null) {
-              return ListTileWithIcons(
-                title: Strings.user,
-                subtitle: state.username,
-                leadingIcon: Icon(Icons.person),
-                trailingIcon: Icon(Icons.edit),
-                editingIcon: Icon(Icons.save),
-                saveFunction: saveUsername,
-                onChangedFunction: onChangedUsername,
-              );
-            }
-            return Container();
-          },
-        ),
-        BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
             if (state.email != null) {
               return ListTileWithIcons(
                 title: Strings.email,
@@ -89,6 +73,25 @@ class ProfilePage extends StatelessWidget {
                 editingIcon: Icon(Icons.save),
                 saveFunction: saveEmail,
                 onChangedFunction: onChangedEmail,
+                validateFunction: validateEmail,
+                enabled: false,
+              );
+            }
+            return Container();
+          },
+        ),
+        BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            if (state.username != null) {
+              return ListTileWithIcons(
+                title: Strings.user,
+                subtitle: state.username,
+                leadingIcon: Icon(Icons.person),
+                trailingIcon: Icon(Icons.edit),
+                editingIcon: Icon(Icons.save),
+                saveFunction: saveUsername,
+                onChangedFunction: onChangedUsername,
+                validateFunction: validateUsername,
               );
             }
             return Container();
@@ -99,28 +102,32 @@ class ProfilePage extends StatelessWidget {
   }
 
   onChangedUsername(BuildContext context, String username) {
-    print("on changed username");
     context.read<ProfileBloc>().add(
           UsernameChanged(username: username),
         );
   }
 
+  String validateUsername(ProfileState state, String username) {
+    return state.validateUsername(username);
+  }
+
   saveUsername(BuildContext context, ProfileState state) {
-    print("save username");
     context.read<ProfileBloc>().add(
           UsernameSaved(username: state.username),
         );
   }
 
   onChangedEmail(BuildContext context, String email) {
-    print("on changed email");
     context.read<ProfileBloc>().add(
           EmailChanged(email: email),
         );
   }
 
+  String validateEmail(ProfileState state, String email) {
+    return state.validateEmail(email);
+  }
+
   saveEmail(BuildContext context, ProfileState state) {
-    print("save email");
     context.read<ProfileBloc>().add(
           EmailSaved(email: state.email),
         );

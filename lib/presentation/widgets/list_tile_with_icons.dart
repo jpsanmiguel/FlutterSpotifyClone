@@ -11,6 +11,9 @@ class ListTileWithIcons extends StatefulWidget {
   final Icon editingIcon;
   final Function saveFunction;
   final Function onChangedFunction;
+  final Function validateFunction;
+
+  final bool enabled;
 
   const ListTileWithIcons({
     Key key,
@@ -21,6 +24,8 @@ class ListTileWithIcons extends StatefulWidget {
     @required this.editingIcon,
     @required this.saveFunction,
     @required this.onChangedFunction,
+    @required this.validateFunction,
+    this.enabled = true,
   }) : super(key: key);
 
   @override
@@ -32,10 +37,14 @@ class ListTileWithIcons extends StatefulWidget {
         editingIcon: editingIcon,
         saveFunction: saveFunction,
         onChangedFunction: onChangedFunction,
+        validateFunction: validateFunction,
+        enabled: enabled,
       );
 }
 
 class _ListTileWithIconsState extends State<ListTileWithIcons> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final String title;
   final String subtitle;
   final Icon leadingIcon;
@@ -43,6 +52,8 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
   final Icon editingIcon;
   final Function saveFunction;
   final Function onChangedFunction;
+  final Function validateFunction;
+  final bool enabled;
 
   var editing = false;
   var _editTextController = TextEditingController();
@@ -55,52 +66,67 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
     @required this.editingIcon,
     @required this.saveFunction,
     @required this.onChangedFunction,
+    @required this.validateFunction,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          widget.leadingIcon,
-        ],
-      ),
-      title: !editing
-          ? Text(
-              title,
-              style: TextStyle(
-                fontSize: 14.0,
-                color: textColor.shade900,
-              ),
-            )
-          : _editField(),
-      subtitle: !editing
-          ? Text(
-              _editTextController.text,
-              style: TextStyle(
-                fontSize: 16.0,
-                color: textColor,
-              ),
-            )
-          : Container(),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BlocBuilder<ProfileBloc, ProfileState>(
-            builder: (context, state) {
-              return IconButton(
-                icon: editing ? editingIcon : trailingIcon,
-                onPressed: () {
-                  if (editing) saveFunction(context, state);
-                  setState(() {
-                    editing = !editing;
-                  });
-                },
-              );
-            },
-          ),
-        ],
+    return Form(
+      key: _formKey,
+      child: ListTile(
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widget.leadingIcon,
+          ],
+        ),
+        title: !editing
+            ? Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: textColor.shade900,
+                ),
+              )
+            : _editField(),
+        subtitle: !editing
+            ? Text(
+                _editTextController.text,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: textColor,
+                ),
+              )
+            : Container(),
+        trailing: enabled
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                    builder: (context, state) {
+                      return IconButton(
+                        icon: editing ? editingIcon : trailingIcon,
+                        onPressed: () {
+                          if (editing) {
+                            if (_formKey.currentState.validate()) {
+                              saveFunction(context, state);
+                              setState(() {
+                                editing = !editing;
+                              });
+                            }
+                          } else {
+                            setState(() {
+                              editing = !editing;
+                            });
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ],
+              )
+            : null,
       ),
     );
   }
@@ -131,7 +157,7 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
             return onChangedFunction(context, text);
           },
           validator: (text) {
-            return "";
+            return validateFunction(state, text);
           },
           keyboardType: TextInputType.name,
         );
