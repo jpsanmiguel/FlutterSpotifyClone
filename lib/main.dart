@@ -12,6 +12,7 @@ import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/data/services/network_service.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
+import 'package:spotify_clone/logic/bloc/profile/profile_bloc.dart';
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
@@ -118,6 +119,11 @@ class _MyAppState extends State<MyApp> {
                     spotifyRepository: context.read<SpotifyRepository>(),
                   )..add(SpotifyPlayerConnect()),
                 ),
+                BlocProvider(
+                  create: (context) => ProfileBloc(
+                    dataRepository: context.read<DataRepository>(),
+                  ),
+                )
               ],
               child: AppNavigator(
                 spotifyRepository: context.read<SpotifyRepository>(),

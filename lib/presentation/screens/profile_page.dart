@@ -1,16 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
+import 'package:spotify_clone/logic/bloc/profile/profile_bloc.dart';
 import 'package:spotify_clone/presentation/widgets/list_tile_with_icons.dart';
 import 'package:spotify_clone/constants/strings.dart' as Strings;
 
 class ProfilePage extends StatelessWidget {
-  final User user;
-
   const ProfilePage({
     Key key,
-    @required this.user,
   }) : super(key: key);
 
   @override
@@ -63,21 +62,67 @@ class ProfilePage extends StatelessWidget {
             ],
           ),
         ),
-        ListTileWithIcons(
-          title: Strings.user,
-          subtitle: user.username,
-          leadingIcon: Icon(Icons.person),
-          trailingIcon: Icon(Icons.edit),
-          editingIcon: Icon(Icons.save),
+        BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            if (state.username != null) {
+              return ListTileWithIcons(
+                title: Strings.user,
+                subtitle: state.username,
+                leadingIcon: Icon(Icons.person),
+                trailingIcon: Icon(Icons.edit),
+                editingIcon: Icon(Icons.save),
+                saveFunction: saveUsername,
+                onChangedFunction: onChangedUsername,
+              );
+            }
+            return Container();
+          },
         ),
-        ListTileWithIcons(
-          title: Strings.email,
-          subtitle: user.email,
-          leadingIcon: Icon(Icons.email),
-          trailingIcon: Icon(Icons.edit),
-          editingIcon: Icon(Icons.save),
+        BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            if (state.email != null) {
+              return ListTileWithIcons(
+                title: Strings.email,
+                subtitle: state.email,
+                leadingIcon: Icon(Icons.email),
+                trailingIcon: Icon(Icons.edit),
+                editingIcon: Icon(Icons.save),
+                saveFunction: saveEmail,
+                onChangedFunction: onChangedEmail,
+              );
+            }
+            return Container();
+          },
         ),
       ],
     );
+  }
+
+  onChangedUsername(BuildContext context, String username) {
+    print("on changed username");
+    context.read<ProfileBloc>().add(
+          UsernameChanged(username: username),
+        );
+  }
+
+  saveUsername(BuildContext context, ProfileState state) {
+    print("save username");
+    context.read<ProfileBloc>().add(
+          UsernameSaved(username: state.username),
+        );
+  }
+
+  onChangedEmail(BuildContext context, String email) {
+    print("on changed email");
+    context.read<ProfileBloc>().add(
+          EmailChanged(email: email),
+        );
+  }
+
+  saveEmail(BuildContext context, ProfileState state) {
+    print("save email");
+    context.read<ProfileBloc>().add(
+          EmailSaved(email: state.email),
+        );
   }
 }

@@ -28,29 +28,15 @@ class SignUpState extends Equatable {
   }
 
   String validateUsername(String username) {
-    if (username.isEmpty) {
-      return 'El usuario no puede ser vacío';
-    }
-    return null;
+    return validateUsernameUtils(username);
   }
 
   String validateEmail(String email) {
-    if (email.isEmpty) {
-      return 'El correo no puede ser vacío';
-    }
-    if (!RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email)) {
-      return 'Debes ingresar un correo válido';
-    }
-    return null;
+    return validateEmailUtils(email);
   }
 
   String validatePassword(String password) {
-    if (password.length < 8) {
-      return 'La contraseña debe ser de 8 o más caracteres';
-    }
-    return null;
+    return validatePasswordUtils(password);
   }
 
   @override

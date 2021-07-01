@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "spotifyclonea4cbdfd5_identitypool_a4cbdfd5",
+    "identityPoolName": "spotifyclone1e71220c_identitypool_1e71220c",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "spotifa4cbdfd5",
-    "userPoolName": "spotifyclonea4cbdfd5_userpool_a4cbdfd5",
+    "resourceNameTruncated": "spotif1e71220c",
+    "userPoolName": "spotifyclone1e71220c_userpool_1e71220c",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "spotifa4cbdfd5_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "spotif1e71220c_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "a4cbdfd5",
-    "resourceName": "spotifyclonea4cbdfd5",
+    "sharedId": "1e71220c",
+    "resourceName": "spotifyclone1e71220c",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [

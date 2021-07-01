@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
+import 'package:spotify_clone/logic/bloc/profile/profile_bloc.dart';
 
 class ListTileWithIcons extends StatefulWidget {
   final String title;
@@ -7,6 +9,8 @@ class ListTileWithIcons extends StatefulWidget {
   final Icon leadingIcon;
   final Icon trailingIcon;
   final Icon editingIcon;
+  final Function saveFunction;
+  final Function onChangedFunction;
 
   const ListTileWithIcons({
     Key key,
@@ -15,6 +19,8 @@ class ListTileWithIcons extends StatefulWidget {
     @required this.leadingIcon,
     @required this.trailingIcon,
     @required this.editingIcon,
+    @required this.saveFunction,
+    @required this.onChangedFunction,
   }) : super(key: key);
 
   @override
@@ -24,6 +30,8 @@ class ListTileWithIcons extends StatefulWidget {
         leadingIcon: leadingIcon,
         trailingIcon: trailingIcon,
         editingIcon: editingIcon,
+        saveFunction: saveFunction,
+        onChangedFunction: onChangedFunction,
       );
 }
 
@@ -33,6 +41,8 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
   final Icon leadingIcon;
   final Icon trailingIcon;
   final Icon editingIcon;
+  final Function saveFunction;
+  final Function onChangedFunction;
 
   var editing = false;
   var _editTextController = TextEditingController();
@@ -43,6 +53,8 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
     @required this.leadingIcon,
     @required this.trailingIcon,
     @required this.editingIcon,
+    @required this.saveFunction,
+    @required this.onChangedFunction,
   });
 
   @override
@@ -65,7 +77,7 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
           : _editField(),
       subtitle: !editing
           ? Text(
-              subtitle,
+              _editTextController.text,
               style: TextStyle(
                 fontSize: 16.0,
                 color: textColor,
@@ -75,12 +87,17 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(
-            icon: editing ? editingIcon : trailingIcon,
-            onPressed: () {
-              setState(() {
-                editing = !editing;
-              });
+          BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: editing ? editingIcon : trailingIcon,
+                onPressed: () {
+                  if (editing) saveFunction(context, state);
+                  setState(() {
+                    editing = !editing;
+                  });
+                },
+              );
             },
           ),
         ],
@@ -89,38 +106,43 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
   }
 
   Widget _editField() {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: title,
-        labelStyle: TextStyle(
-          fontSize: 18.0,
-          color: textColor.shade900,
-        ),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: whiteColor,
-            width: 5.0,
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        return TextFormField(
+          decoration: InputDecoration(
+            labelText: title,
+            labelStyle: TextStyle(
+              fontSize: 18.0,
+              color: textColor.shade900,
+            ),
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: whiteColor,
+                width: 5.0,
+              ),
+            ),
           ),
-        ),
-      ),
-      controller: _editTextController,
-      style: TextStyle(
-        fontSize: 16.0,
-        color: textColor,
-      ),
-      onChanged: (text) {
-        print(text);
+          controller: _editTextController,
+          style: TextStyle(
+            fontSize: 16.0,
+            color: textColor,
+          ),
+          onChanged: (text) {
+            return onChangedFunction(context, text);
+          },
+          validator: (text) {
+            return "";
+          },
+          keyboardType: TextInputType.name,
+        );
       },
-      validator: (text) {
-        return "";
-      },
-      keyboardType: TextInputType.name,
     );
   }
 
   @override
   void initState() {
-    super.initState();
+    print("init state");
     _editTextController.text = subtitle;
+    super.initState();
   }
 }

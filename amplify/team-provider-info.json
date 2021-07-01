@@ -1,19 +1,19 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-spotifyclone-staging-200158-authRole",
-      "UnauthRoleArn": "arn:aws:iam::509911331761:role/amplify-spotifyclone-staging-200158-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::509911331761:role/amplify-spotifyclone-staging-200158-authRole",
-      "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-spotifyclone-staging-200158-deployment",
-      "UnauthRoleName": "amplify-spotifyclone-staging-200158-unauthRole",
-      "StackName": "amplify-spotifyclone-staging-200158",
-      "StackId": "arn:aws:cloudformation:us-east-2:509911331761:stack/amplify-spotifyclone-staging-200158/1184a140-b8dd-11eb-9921-0acdc8b6a9fa",
-      "AmplifyAppId": "dxmjrxsfuaeho"
+      "AuthRoleName": "amplify-spotifyclone-staging-200012-authRole",
+      "UnauthRoleArn": "arn:aws:iam::509911331761:role/amplify-spotifyclone-staging-200012-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::509911331761:role/amplify-spotifyclone-staging-200012-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-spotifyclone-staging-200012-deployment",
+      "UnauthRoleName": "amplify-spotifyclone-staging-200012-unauthRole",
+      "StackName": "amplify-spotifyclone-staging-200012",
+      "StackId": "arn:aws:cloudformation:us-east-1:509911331761:stack/amplify-spotifyclone-staging-200012/cf94b550-c24a-11eb-a5da-0adc781992e7",
+      "AmplifyAppId": "d3loohc96pyfvi"
     },
     "categories": {
       "auth": {
-        "spotifyclonea4cbdfd5": {}
+        "spotifyclone1e71220c": {}
       }
     }
   }

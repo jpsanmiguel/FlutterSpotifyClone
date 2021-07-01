@@ -35,3 +35,29 @@ MaterialColor createMaterialColor(Color color) {
   });
   return MaterialColor(color.value, swatch);
 }
+
+String validateEmailUtils(String email) {
+  if (email.isEmpty) {
+    return 'El correo no puede ser vacío';
+  }
+  if (!RegExp(
+          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+      .hasMatch(email)) {
+    return 'Debes ingresar un correo válido';
+  }
+  return null;
+}
+
+String validatePasswordUtils(String password) {
+  if (password.length < 8) {
+    return 'La contraseña debe ser de 8 o más caracteres';
+  }
+  return null;
+}
+
+String validateUsernameUtils(String username) {
+  if (username.isEmpty) {
+    return 'El usuario no puede ser vacío';
+  }
+  return null;
+}

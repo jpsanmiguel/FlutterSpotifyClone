@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/data/repositories/auth_repository.dart';
 import 'package:spotify_clone/data/repositories/spotify_repository.dart';
+import 'package:spotify_clone/logic/bloc/profile/profile_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth/auth_cubit.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/presentation/navigation/auth_navigator.dart';
@@ -21,6 +22,8 @@ class AppNavigator extends StatelessWidget {
       builder: (context, state) {
         if (state is UnkownSessionState)
           context.read<AuthSessionCubit>().attemptAutoLogin();
+        if (state is AuthenticatedSessionState)
+          context.read<ProfileBloc>().add(UserReceived(user: state.user));
         return Navigator(
           pages: [
             if (state is UnkownSessionState) MaterialPage(child: SplashPage()),

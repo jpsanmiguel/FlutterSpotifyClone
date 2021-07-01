@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   TopTracksPage(),
                   SavedTracksPage(),
-                  ProfilePage(user: user),
+                  ProfilePage(),
                 ],
               ),
             ),
