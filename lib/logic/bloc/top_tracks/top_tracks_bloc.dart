@@ -40,12 +40,38 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         }
       } else if (event is TopTracksAddTrackToLibrary) {
         try {
-          yield await addTrackToLibrary(event, state);
+          yield state.copyWith(
+            isAddingTrackToLibrary: true,
+          );
+          final prevTopTracksPagingResponse =
+              state.topTracksPagingResponse.copyWith();
+          final actualTracks = <Track>[...prevTopTracksPagingResponse.tracks];
+          event.track.inLibrary =
+              await spotifyRepository.addToLibrary(event.track);
+          prevTopTracksPagingResponse.tracks = actualTracks;
+          yield state.copyWith(
+            isAddingTrackToLibrary: false,
+          );
         } on Exception {
-          yield state.copyWith(addedTrackToLibrary: false);
+          yield state.copyWith(isRemovingTrackFromLibrary: false);
         }
-      } else if (event is TopTracksRemoveTrackToLibrary) {
-        yield await removeTrackFromLibrary(event, state);
+      } else if (event is TopTracksRemoveTrackFromLibrary) {
+        try {
+          yield state.copyWith(
+            isRemovingTrackFromLibrary: true,
+          );
+          final prevTopTracksPagingResponse =
+              state.topTracksPagingResponse.copyWith();
+          final actualTracks = <Track>[...prevTopTracksPagingResponse.tracks];
+          event.track.inLibrary =
+              await spotifyRepository.removeFromLibrary(event.track);
+          prevTopTracksPagingResponse.tracks = actualTracks;
+          yield state.copyWith(
+            isRemovingTrackFromLibrary: false,
+          );
+        } on Exception {
+          yield state.copyWith(isRemovingTrackFromLibrary: false);
+        }
       } else if (event is TopTracksReset &&
           state.connectionType != ConnectionType.None) {
         yield state.copyWith(
@@ -109,33 +135,11 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
           state.topTracksPagingResponse.copyWith();
       event.track.inLibrary = await spotifyRepository.addToLibrary(event.track);
       return state.copyWith(
-        addedTrackToLibrary: true,
+        isAddingTrackToLibrary: true,
         topTracksPagingResponse: prevTopTracksPagingResponse,
       );
     } on Exception {
-      return state.copyWith(addedTrackToLibrary: false);
-    }
-  }
-
-  Future<TopTracksState> removeTrackFromLibrary(
-    TopTracksRemoveTrackToLibrary event,
-    TopTracksState state,
-  ) async {
-    try {
-      event.track.inLibrary = false;
-      final prevTopTracksPagingResponse =
-          state.topTracksPagingResponse.copyWith();
-      final actualTracks = <Track>[...prevTopTracksPagingResponse.tracks];
-      actualTracks.removeWhere((element) => element.id == event.track.id);
-      event.track.inLibrary =
-          await spotifyRepository.removeFromLibrary(event.track);
-      prevTopTracksPagingResponse.tracks = actualTracks;
-      return state.copyWith(
-        removedTrackFromLibrary: true,
-        topTracksPagingResponse: prevTopTracksPagingResponse,
-      );
-    } on Exception {
-      return state.copyWith(removedTrackFromLibrary: false);
+      return state.copyWith(isAddingTrackToLibrary: false);
     }
   }
 }

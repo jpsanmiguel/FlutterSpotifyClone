@@ -6,8 +6,8 @@ class TopTracksState extends Equatable {
   final bool hasReachedEnd;
   final ConnectionType connectionType;
   final bool scrollToTop;
-  final bool addedTrackToLibrary;
-  final bool removedTrackFromLibrary;
+  final bool isAddingTrackToLibrary;
+  final bool isRemovingTrackFromLibrary;
 
   TopTracksState({
     this.status = TracksStatus.Initial,
@@ -15,8 +15,8 @@ class TopTracksState extends Equatable {
     this.hasReachedEnd = false,
     this.connectionType,
     this.scrollToTop = false,
-    this.addedTrackToLibrary,
-    this.removedTrackFromLibrary,
+    this.isAddingTrackToLibrary,
+    this.isRemovingTrackFromLibrary,
   });
 
   TopTracksState copyWith({
@@ -25,8 +25,8 @@ class TopTracksState extends Equatable {
     bool hasReachedEnd,
     ConnectionType connectionType,
     bool scrollToTop,
-    bool addedTrackToLibrary,
-    bool removedTrackFromLibrary,
+    bool isAddingTrackToLibrary,
+    bool isRemovingTrackFromLibrary,
   }) {
     return TopTracksState(
       status: status ?? this.status,
@@ -35,8 +35,8 @@ class TopTracksState extends Equatable {
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       connectionType: connectionType ?? this.connectionType,
       scrollToTop: scrollToTop ?? false,
-      addedTrackToLibrary: addedTrackToLibrary,
-      removedTrackFromLibrary: removedTrackFromLibrary,
+      isAddingTrackToLibrary: isAddingTrackToLibrary,
+      isRemovingTrackFromLibrary: isRemovingTrackFromLibrary,
     );
   }
 
@@ -48,8 +48,8 @@ class TopTracksState extends Equatable {
       hasReachedEnd,
       connectionType,
       scrollToTop,
-      addedTrackToLibrary,
-      removedTrackFromLibrary,
+      isAddingTrackToLibrary,
+      isRemovingTrackFromLibrary,
     ];
   }
 }

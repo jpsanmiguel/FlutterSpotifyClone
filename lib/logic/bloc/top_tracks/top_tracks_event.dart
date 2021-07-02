@@ -11,10 +11,10 @@ class TopTracksAddTrackToLibrary extends TopTracksEvent {
   TopTracksAddTrackToLibrary({@required this.track});
 }
 
-class TopTracksRemoveTrackToLibrary extends TopTracksEvent {
+class TopTracksRemoveTrackFromLibrary extends TopTracksEvent {
   final Track track;
 
-  TopTracksRemoveTrackToLibrary({@required this.track});
+  TopTracksRemoveTrackFromLibrary({@required this.track});
 }
 
 class TopTracksReset extends TopTracksEvent {}

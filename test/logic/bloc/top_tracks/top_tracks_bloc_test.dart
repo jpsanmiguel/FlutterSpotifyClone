@@ -212,7 +212,7 @@ void main() {
         TopTracksState(
           status: TracksStatus.Success,
           topTracksPagingResponse: initialTopTracksPagingResponse,
-          addedTrackToLibrary: true,
+          isAddingTrackToLibrary: true,
         ),
       ],
     );
@@ -241,7 +241,7 @@ void main() {
         TopTracksState(
           status: TracksStatus.Success,
           topTracksPagingResponse: initialTopTracksPagingResponse,
-          addedTrackToLibrary: false,
+          isAddingTrackToLibrary: false,
         ),
       ],
     );
@@ -272,7 +272,7 @@ void main() {
       act: (bloc) {
         bloc
           ..add(TopTracksFetch())
-          ..add(TopTracksRemoveTrackToLibrary(
+          ..add(TopTracksRemoveTrackFromLibrary(
             track: initialTopTracksPagingResponse.tracks[0],
           ));
       },
@@ -284,7 +284,7 @@ void main() {
         TopTracksState(
           status: TracksStatus.Success,
           topTracksPagingResponse: finalTopTracksPagingResponse,
-          removedTrackFromLibrary: true,
+          isRemovingTrackFromLibrary: true,
         )
       ],
     );
@@ -301,7 +301,7 @@ void main() {
       act: (bloc) {
         bloc
           ..add(TopTracksFetch())
-          ..add(TopTracksRemoveTrackToLibrary(
+          ..add(TopTracksRemoveTrackFromLibrary(
             track: initialTopTracksPagingResponse.tracks[0],
           ));
       },
@@ -312,7 +312,7 @@ void main() {
         ),
         TopTracksState(
           status: TracksStatus.Success,
-          removedTrackFromLibrary: false,
+          isRemovingTrackFromLibrary: false,
           topTracksPagingResponse: initialTopTracksPagingResponse,
         ),
       ],

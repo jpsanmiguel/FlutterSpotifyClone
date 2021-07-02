@@ -144,7 +144,7 @@ class _TopTracksPageState extends State<TopTracksPage> {
 
   Future<void> removeFromLibrary(Track track) async {
     _topTracksBloc.add(
-      TopTracksRemoveTrackToLibrary(track: track),
+      TopTracksRemoveTrackFromLibrary(track: track),
     );
   }
 
