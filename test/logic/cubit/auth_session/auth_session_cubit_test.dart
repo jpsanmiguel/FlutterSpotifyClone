@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart' as blocTest;
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:spotify_clone/data/models/auth_credentials.dart';
-import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
+import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 
 import '../../../mocks/mock_auth_repository.dart';
@@ -18,7 +18,7 @@ void main() {
     setUp(() {
       mockAuthRepository = MockAuthRepository();
       mockDataRepository = MockDataRepository();
-      user = User();
+      user = User(email: '', username: '');
       authCredentials = AuthCredentials(
         email: '',
         password: '',

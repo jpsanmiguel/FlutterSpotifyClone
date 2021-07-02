@@ -2,10 +2,14 @@ part of 'profile_bloc.dart';
 
 abstract class ProfileEvent {}
 
-class UserReceived extends ProfileEvent {
-  final User user;
+class ChangeImageRequest extends ProfileEvent {}
 
-  UserReceived({this.user});
+class OpenImagePicker extends ProfileEvent {}
+
+class SaveImageUrl extends ProfileEvent {
+  final String imageUrl;
+
+  SaveImageUrl({this.imageUrl});
 }
 
 class UsernameChanged extends ProfileEvent {
@@ -14,32 +18,8 @@ class UsernameChanged extends ProfileEvent {
   UsernameChanged({this.username});
 }
 
-class UsernameSaved extends ProfileEvent {
+class SaveUsername extends ProfileEvent {
   final String username;
 
-  UsernameSaved({this.username});
-}
-
-class EmailChanged extends ProfileEvent {
-  final String email;
-
-  EmailChanged({this.email});
-}
-
-class EmailSaved extends ProfileEvent {
-  final String email;
-
-  EmailSaved({this.email});
-}
-
-class ImageChanged extends ProfileEvent {
-  final String imageUrl;
-
-  ImageChanged({this.imageUrl});
-}
-
-class ImageSaved extends ProfileEvent {
-  final String imageUrl;
-
-  ImageSaved({this.imageUrl});
+  SaveUsername({this.username});
 }

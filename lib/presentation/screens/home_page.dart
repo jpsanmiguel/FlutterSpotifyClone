@@ -9,7 +9,7 @@ import 'package:spotify_clone/logic/bloc/spotify_player/spotify_player_bloc.dart
 import 'package:spotify_clone/logic/bloc/top_tracks/top_tracks_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
 import 'package:spotify_clone/logic/cubit/internet_connection/internet_connection_cubit.dart';
-import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
+import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/presentation/screens/profile_page.dart';
 import 'package:spotify_clone/presentation/screens/saved_tracks_page.dart';
 import 'package:spotify_clone/presentation/screens/top_tracks_page.dart';
@@ -19,26 +19,18 @@ import 'package:spotify_clone/utils/functions.dart';
 class HomePage extends StatefulWidget {
   HomePage({
     Key key,
-    @required this.user,
   }) : super(key: key);
 
-  final User user;
-
   @override
-  _HomePageState createState() => _HomePageState(
-        user: user,
-      );
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final User user;
-
-  _HomePageState({this.user});
-
   int _currentTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AuthSessionCubit>().currentUser;
     final titles = [
       '$top_tracks_of_title${user.username}',
       '$saved_tracks_of_title${user.username}',

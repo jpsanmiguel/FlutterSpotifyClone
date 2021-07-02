@@ -23,10 +23,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  amplify_api: ^0.1.5
-  amplify_auth_cognito: ^0.1.5
-  amplify_datastore: ^0.1.5
-  amplify_flutter: ^0.1.5
+  amplify_api: ^0.2.0
+  amplify_auth_cognito: ^0.2.0
+  amplify_datastore: ^0.2.0
+  amplify_flutter: ^0.2.0
   auto_size_text: ^2.1.0
   cached_network_image: ^3.0.0
   connectivity_plus: ^1.0.1

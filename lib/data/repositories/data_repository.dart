@@ -1,6 +1,5 @@
 import 'package:amplify_flutter/amplify.dart';
-import 'package:spotify_clone/constants/strings.dart';
-import 'package:spotify_clone/data/models/aws/ModelProvider.dart';
+import 'package:spotify_clone/models/ModelProvider.dart';
 
 class DataRepository {
   Future<User> getUserById(String userId) async {
@@ -33,15 +32,25 @@ class DataRepository {
     String userId,
     String username,
     String email,
+    String imageUrl,
   }) async {
-    final updateUser = User(id: userId, username: username, email: email);
+    final updateUser = User(
+      id: userId,
+      username: username,
+      email: email,
+      imageUrl: imageUrl,
+    );
     try {
       User oldUser = (await Amplify.DataStore.query(
         User.classType,
         where: User.ID.eq(userId),
       ))[0];
-      User newUser =
-          oldUser.copyWith(id: userId, email: email, username: username);
+      User newUser = oldUser.copyWith(
+        id: userId,
+        email: email,
+        username: username,
+        imageUrl: imageUrl,
+      );
       await Amplify.DataStore.save(newUser);
       return updateUser;
     } catch (e) {

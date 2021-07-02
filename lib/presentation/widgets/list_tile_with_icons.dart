@@ -22,9 +22,9 @@ class ListTileWithIcons extends StatefulWidget {
     @required this.leadingIcon,
     @required this.trailingIcon,
     @required this.editingIcon,
-    @required this.saveFunction,
-    @required this.onChangedFunction,
-    @required this.validateFunction,
+    this.saveFunction,
+    this.onChangedFunction,
+    this.validateFunction,
     this.enabled = true,
   }) : super(key: key);
 
@@ -64,9 +64,9 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
     @required this.leadingIcon,
     @required this.trailingIcon,
     @required this.editingIcon,
-    @required this.saveFunction,
-    @required this.onChangedFunction,
-    @required this.validateFunction,
+    this.saveFunction,
+    this.onChangedFunction,
+    this.validateFunction,
     this.enabled = true,
   });
 

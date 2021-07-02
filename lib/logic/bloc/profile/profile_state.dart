@@ -1,28 +1,29 @@
 part of 'profile_bloc.dart';
 
 class ProfileState extends Equatable {
-  final String id;
+  final User user;
   final String username;
-  final String email;
   final String imageUrl;
 
+  String get email => user.email;
+  String get id => user.id;
+
   ProfileState({
-    this.id,
-    this.username,
-    this.email,
-    this.imageUrl,
-  });
+    @required User user,
+    String username,
+    String imageUrl,
+  })  : this.user = user,
+        this.username = username,
+        this.imageUrl = imageUrl;
 
   ProfileState copyWith({
-    String id,
+    User user,
     String username,
-    String email,
     String imageUrl,
   }) {
     return ProfileState(
-      id: id ?? this.id,
+      user: user ?? this.user,
       username: username ?? this.username,
-      email: email ?? this.email,
       imageUrl: imageUrl ?? this.imageUrl,
     );
   }
@@ -31,10 +32,6 @@ class ProfileState extends Equatable {
     return validateUsernameUtils(username);
   }
 
-  String validateEmail(String email) {
-    return validateEmailUtils(email);
-  }
-
   @override
-  List<Object> get props => [id, username, email, imageUrl];
+  List<Object> get props => [user, username, imageUrl];
 }

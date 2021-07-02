@@ -22,8 +22,6 @@ class AppNavigator extends StatelessWidget {
       builder: (context, state) {
         if (state is UnkownSessionState)
           context.read<AuthSessionCubit>().attemptAutoLogin();
-        if (state is AuthenticatedSessionState)
-          context.read<ProfileBloc>().add(UserReceived(user: state.user));
         return Navigator(
           pages: [
             if (state is UnkownSessionState) MaterialPage(child: SplashPage()),
@@ -38,9 +36,7 @@ class AppNavigator extends StatelessWidget {
               ),
             if (state is AuthenticatedSessionState)
               MaterialPage(
-                child: HomePage(
-                  user: state.user,
-                ),
+                child: HomePage(),
               ),
           ],
           onPopPage: (route, result) => route.didPop(result),
