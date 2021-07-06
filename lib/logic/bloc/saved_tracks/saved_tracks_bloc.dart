@@ -59,6 +59,9 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         yield state.copyWith(
           scrollToTop: true,
         );
+        yield state.copyWith(
+          scrollToTop: false,
+        );
       }
     }
   }

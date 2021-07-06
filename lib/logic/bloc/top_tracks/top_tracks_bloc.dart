@@ -84,6 +84,9 @@ class TopTracksBloc extends Bloc<TopTracksEvent, TopTracksState> {
         yield state.copyWith(
           scrollToTop: true,
         );
+        yield state.copyWith(
+          scrollToTop: false,
+        );
       }
     }
   }
