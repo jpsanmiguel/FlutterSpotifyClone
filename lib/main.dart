@@ -119,6 +119,12 @@ class _MyAppState extends State<MyApp> {
                     spotifyRepository: context.read<SpotifyRepository>(),
                   )..add(SpotifyPlayerConnect()),
                 ),
+                BlocProvider(
+                  create: (context) => ProfileBloc(
+                    dataRepository: context.read<DataRepository>(),
+                    user: context.read<AuthSessionCubit>().currentUser,
+                  ),
+                ),
               ],
               child: AppNavigator(
                 spotifyRepository: context.read<SpotifyRepository>(),

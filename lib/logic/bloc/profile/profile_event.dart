@@ -4,7 +4,13 @@ abstract class ProfileEvent {}
 
 class ChangeImageRequest extends ProfileEvent {}
 
-class OpenImagePicker extends ProfileEvent {}
+class CloseImageModal extends ProfileEvent {}
+
+class OpenImagePicker extends ProfileEvent {
+  final ImageSource imageSource;
+
+  OpenImagePicker({this.imageSource});
+}
 
 class SaveImageUrl extends ProfileEvent {
   final String imageUrl;

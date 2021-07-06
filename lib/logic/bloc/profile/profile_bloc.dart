@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/utils/functions.dart';
@@ -12,6 +13,7 @@ part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final DataRepository dataRepository;
+  final _picker = ImagePicker();
 
   ProfileBloc({
     @required this.dataRepository,
@@ -27,7 +29,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ProfileEvent event,
   ) async* {
     if (event is ChangeImageRequest) {
+      yield state.copyWith(showImageModal: true);
+    } else if (event is CloseImageModal) {
+      yield state.copyWith(showImageModal: false);
     } else if (event is OpenImagePicker) {
+      yield state.copyWith(showImageModal: false);
+      final pickedImage = await _picker.getImage(source: event.imageSource);
+      if (pickedImage == null) return;
+      yield state.copyWith(imageUrl: pickedImage.path);
     } else if (event is SaveImageUrl) {
       yield state.copyWith(imageUrl: event.imageUrl);
     } else if (event is UsernameChanged) {
