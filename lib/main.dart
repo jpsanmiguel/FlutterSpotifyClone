@@ -2,6 +2,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,7 @@ import 'package:spotify_clone/models/ModelProvider.dart';
 import 'package:spotify_clone/presentation/navigation/app_navigator.dart';
 import 'package:spotify_clone/presentation/screens/splash_page.dart';
 
+import 'data/repositories/storage_repository.dart';
 import 'logic/bloc/saved_tracks/saved_tracks_bloc.dart';
 import 'logic/bloc/spotify_player/spotify_player_bloc.dart';
 
@@ -37,6 +39,9 @@ void main() {
           create: (context) => SpotifyRepository(
             networkService: NetworkService(),
           ),
+        ),
+        RepositoryProvider(
+          create: (context) => StorageRepository(),
         ),
       ],
       child: MyApp(),
@@ -119,12 +124,6 @@ class _MyAppState extends State<MyApp> {
                     spotifyRepository: context.read<SpotifyRepository>(),
                   )..add(SpotifyPlayerConnect()),
                 ),
-                BlocProvider(
-                  create: (context) => ProfileBloc(
-                    dataRepository: context.read<DataRepository>(),
-                    user: context.read<AuthSessionCubit>().currentUser,
-                  ),
-                ),
               ],
               child: AppNavigator(
                 spotifyRepository: context.read<SpotifyRepository>(),
@@ -140,6 +139,7 @@ class _MyAppState extends State<MyApp> {
         AmplifyAuthCognito(),
         AmplifyDataStore(modelProvider: ModelProvider.instance),
         AmplifyAPI(),
+        AmplifyStorageS3(),
       ]);
 
       await Amplify.configure(amplifyconfig);

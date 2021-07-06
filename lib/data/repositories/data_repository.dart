@@ -28,31 +28,10 @@ class DataRepository {
     }
   }
 
-  Future<User> updateUser({
-    String userId,
-    String username,
-    String email,
-    String imageUrl,
-  }) async {
-    final updateUser = User(
-      id: userId,
-      username: username,
-      email: email,
-      imageUrl: imageUrl,
-    );
+  Future<User> updateUser({User user}) async {
     try {
-      User oldUser = (await Amplify.DataStore.query(
-        User.classType,
-        where: User.ID.eq(userId),
-      ))[0];
-      User newUser = oldUser.copyWith(
-        id: userId,
-        email: email,
-        username: username,
-        imageUrl: imageUrl,
-      );
-      await Amplify.DataStore.save(newUser);
-      return updateUser;
+      await Amplify.DataStore.save(user);
+      return user;
     } catch (e) {
       throw e;
     }
