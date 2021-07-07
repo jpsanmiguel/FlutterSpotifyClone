@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/data/models/track.dart';
 import 'package:spotify_clone/presentation/widgets/track_title_subtitle_marquee.dart';
 
@@ -9,9 +10,11 @@ class TrackWidget extends StatelessWidget {
   final MaterialColor iconColor;
   final Function onItemPressed;
   final Function onIconPressed;
+  final Function addToLibrary;
+  final Function removeFromLibrary;
   final bool loading;
-  final bool isPlaying;
   final bool errorPlaying;
+  final bool isPlayer;
 
   const TrackWidget({
     Key key,
@@ -21,9 +24,11 @@ class TrackWidget extends StatelessWidget {
     this.iconColor,
     this.onItemPressed,
     this.onIconPressed,
+    this.addToLibrary,
+    this.removeFromLibrary,
     this.loading,
-    this.isPlaying,
     this.errorPlaying,
+    this.isPlayer,
   }) : super(key: key);
 
   @override
@@ -62,16 +67,34 @@ class TrackWidget extends StatelessWidget {
                       },
                     ),
                   ),
-            track != null
+            Expanded(
+              flex: 6,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                child: TrackTitleSubtitleMarquee(
+                  loading: loading,
+                  title: track != null ? track.name : "",
+                  subtitle: track != null ? track.getArtistsNames() : "",
+                ),
+              ),
+            ),
+            isPlayer
                 ? Expanded(
-                    flex: 6,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: TrackTitleSubtitleMarquee(
-                        loading: loading,
-                        title: track.name,
-                        subtitle: track.getArtistsNames(),
-                      ),
+                    flex: 1,
+                    child: InkWell(
+                      onTap: () {
+                        track.inLibrary
+                            ? removeFromLibrary(track)
+                            : addToLibrary(track);
+                      },
+                      child: track != null
+                          ? Icon(
+                              track.inLibrary
+                                  ? Icons.favorite
+                                  : Icons.favorite_border_outlined,
+                              color: greenColor,
+                            )
+                          : Container(),
                     ),
                   )
                 : Container(),

@@ -110,8 +110,8 @@ class _TopTracksPageState extends State<TopTracksPage> {
       onItemPressed: play,
       track: track,
       loading: false,
-      isPlaying: false,
       errorPlaying: false,
+      isPlayer: false,
     );
   }
 

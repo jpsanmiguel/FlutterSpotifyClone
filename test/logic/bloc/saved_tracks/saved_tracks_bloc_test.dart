@@ -331,7 +331,7 @@ void main() {
       act: (bloc) {
         bloc
           ..add(SavedTracksFetch())
-          ..add(SavedTracksRemoveTrackToLibrary(
+          ..add(SavedTracksRemoveTrackFromLibrary(
             track: initialSavedTracksPagingResponse.tracks[0].track,
           ));
       },
@@ -360,7 +360,7 @@ void main() {
       act: (bloc) {
         bloc
           ..add(SavedTracksFetch())
-          ..add(SavedTracksRemoveTrackToLibrary(
+          ..add(SavedTracksRemoveTrackFromLibrary(
             track: initialSavedTracksPagingResponse.tracks[0].track,
           ));
       },

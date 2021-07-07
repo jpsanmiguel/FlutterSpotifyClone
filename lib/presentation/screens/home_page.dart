@@ -113,7 +113,9 @@ class _HomePageState extends State<HomePage> {
                               onIconPressed: resume,
                               track: state.track,
                               loading: false,
-                              isPlaying: true,
+                              isPlayer: true,
+                              addToLibrary: addToLibrary,
+                              removeFromLibrary: removeFromLibrary,
                               errorPlaying: true,
                             );
                           } else if (state.connectionStatus ==
@@ -123,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                             return TrackWidget(
                               backgroundColor: darkGreyColor,
                               loading: true,
-                              isPlaying: true,
+                              isPlayer: true,
                               errorPlaying: false,
                             );
                           } else if (state.reproductionStatus ==
@@ -135,7 +137,9 @@ class _HomePageState extends State<HomePage> {
                               onIconPressed: pause,
                               track: state.track,
                               loading: false,
-                              isPlaying: true,
+                              isPlayer: true,
+                              addToLibrary: addToLibrary,
+                              removeFromLibrary: removeFromLibrary,
                               errorPlaying: false,
                             );
                           } else if (state.reproductionStatus ==
@@ -147,7 +151,9 @@ class _HomePageState extends State<HomePage> {
                               onIconPressed: resume,
                               track: state.track,
                               loading: false,
-                              isPlaying: true,
+                              isPlayer: true,
+                              addToLibrary: addToLibrary,
+                              removeFromLibrary: removeFromLibrary,
                               errorPlaying: false,
                             );
                           } else {
@@ -246,5 +252,23 @@ class _HomePageState extends State<HomePage> {
         _currentTabIndex = tabIndex;
       });
     }
+  }
+
+  Future<void> addToLibrary(Track track) async {
+    context.read<TopTracksBloc>().add(
+          TopTracksAddTrackToLibrary(track: track),
+        );
+    context.read<SavedTracksBloc>().add(
+          SavedTracksAddTrackToLibrary(track: track),
+        );
+  }
+
+  Future<void> removeFromLibrary(Track track) async {
+    context.read<TopTracksBloc>().add(
+          TopTracksRemoveTrackFromLibrary(track: track),
+        );
+    context.read<SavedTracksBloc>().add(
+          SavedTracksRemoveTrackFromLibrary(track: track),
+        );
   }
 }

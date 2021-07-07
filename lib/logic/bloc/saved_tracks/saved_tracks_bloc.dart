@@ -45,7 +45,7 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
         } on Exception {
           yield state.copyWith(addedTrackToLibrary: false);
         }
-      } else if (event is SavedTracksRemoveTrackToLibrary) {
+      } else if (event is SavedTracksRemoveTrackFromLibrary) {
         yield await removeTrackFromLibrary(event, state);
       } else if (event is SavedTracksReset &&
           state.connectionType != ConnectionType.None) {
@@ -124,7 +124,7 @@ class SavedTracksBloc extends Bloc<SavedTracksEvent, SavedTracksState> {
   }
 
   Future<SavedTracksState> removeTrackFromLibrary(
-    SavedTracksRemoveTrackToLibrary event,
+    SavedTracksRemoveTrackFromLibrary event,
     SavedTracksState state,
   ) async {
     try {

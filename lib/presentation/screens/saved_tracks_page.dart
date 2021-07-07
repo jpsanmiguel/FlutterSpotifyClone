@@ -110,8 +110,8 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
       onItemPressed: play,
       track: track,
       loading: false,
-      isPlaying: false,
       errorPlaying: false,
+      isPlayer: false,
     );
   }
 
@@ -149,7 +149,7 @@ class _SavedTracksPageState extends State<SavedTracksPage> {
 
   Future<void> removeFromLibrary(Track track) async {
     _savedTracksBloc.add(
-      SavedTracksRemoveTrackToLibrary(track: track),
+      SavedTracksRemoveTrackFromLibrary(track: track),
     );
   }
 

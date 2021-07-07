@@ -11,10 +11,10 @@ class SavedTracksAddTrackToLibrary extends SavedTracksEvent {
   SavedTracksAddTrackToLibrary({@required this.track});
 }
 
-class SavedTracksRemoveTrackToLibrary extends SavedTracksEvent {
+class SavedTracksRemoveTrackFromLibrary extends SavedTracksEvent {
   final Track track;
 
-  SavedTracksRemoveTrackToLibrary({@required this.track});
+  SavedTracksRemoveTrackFromLibrary({@required this.track});
 }
 
 class SavedTracksReset extends SavedTracksEvent {}

@@ -38,7 +38,7 @@ class SpotifyPlayerBloc extends Bloc<SpotifyPlayerEvent, SpotifyPlayerState> {
       );
     } else if (event is SpotifyPlayerConnected) {
       yield state.copyWith(
-        track: event.track,
+        track: actualTrack ?? event.track,
         reproductionStatus: event.reproductionStatus,
       );
     } else if (event is SpotifyPlayerPlay) {
