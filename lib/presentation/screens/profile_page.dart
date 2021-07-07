@@ -10,7 +10,7 @@ import 'package:spotify_clone/data/repositories/data_repository.dart';
 import 'package:spotify_clone/data/repositories/storage_repository.dart';
 import 'package:spotify_clone/logic/bloc/profile/profile_bloc.dart';
 import 'package:spotify_clone/logic/cubit/auth_session/auth_session_cubit.dart';
-import 'package:spotify_clone/presentation/widgets/list_tile_with_icons.dart';
+import 'package:spotify_clone/presentation/widgets/list_tile_with_text_field.dart';
 import 'package:spotify_clone/constants/strings.dart' as Strings;
 
 class ProfilePage extends StatelessWidget {
@@ -98,7 +98,7 @@ class ProfilePage extends StatelessWidget {
           BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
               if (state.user.email != null) {
-                return ListTileWithIcons(
+                return ListTileWithTextField(
                   title: Strings.email,
                   subtitle: state.email,
                   leadingIcon: Icon(Icons.email),
@@ -113,7 +113,7 @@ class ProfilePage extends StatelessWidget {
           BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
               if (state.user.username != null) {
-                return ListTileWithIcons(
+                return ListTileWithTextField(
                   title: Strings.user,
                   subtitle: state.username,
                   leadingIcon: Icon(Icons.person),

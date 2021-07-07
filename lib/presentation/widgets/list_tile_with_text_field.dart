@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_clone/constants/colors.dart';
 import 'package:spotify_clone/logic/bloc/profile/profile_bloc.dart';
 
-class ListTileWithIcons extends StatefulWidget {
+class ListTileWithTextField extends StatefulWidget {
   final String title;
   final String subtitle;
   final Icon leadingIcon;
@@ -15,7 +15,7 @@ class ListTileWithIcons extends StatefulWidget {
 
   final bool enabled;
 
-  const ListTileWithIcons({
+  const ListTileWithTextField({
     Key key,
     @required this.title,
     @required this.subtitle,
@@ -29,7 +29,7 @@ class ListTileWithIcons extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ListTileWithIconsState createState() => _ListTileWithIconsState(
+  _ListTileWithTextFieldState createState() => _ListTileWithTextFieldState(
         title: title,
         subtitle: subtitle,
         leadingIcon: leadingIcon,
@@ -42,7 +42,7 @@ class ListTileWithIcons extends StatefulWidget {
       );
 }
 
-class _ListTileWithIconsState extends State<ListTileWithIcons> {
+class _ListTileWithTextFieldState extends State<ListTileWithTextField> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final String title;
@@ -58,7 +58,7 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
   var editing = false;
   var _editTextController = TextEditingController();
 
-  _ListTileWithIconsState({
+  _ListTileWithTextFieldState({
     @required this.title,
     @required this.subtitle,
     @required this.leadingIcon,
