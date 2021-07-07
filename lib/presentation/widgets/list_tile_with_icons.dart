@@ -135,6 +135,8 @@ class _ListTileWithIconsState extends State<ListTileWithIcons> {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         return TextFormField(
+          textCapitalization: TextCapitalization.words,
+          autofocus: true,
           decoration: InputDecoration(
             labelText: title,
             labelStyle: TextStyle(

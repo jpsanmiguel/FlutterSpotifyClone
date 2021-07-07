@@ -100,6 +100,7 @@ class SignUpPage extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.perm_identity),
             labelText: user,
