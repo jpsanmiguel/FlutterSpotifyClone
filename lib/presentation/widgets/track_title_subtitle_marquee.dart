@@ -39,13 +39,15 @@ class TrackTitleSubtitleMarquee extends StatelessWidget {
               ),
               // overflow: TextOverflow.ellipsis,
               overflowReplacement: Marquee(
+                fadingEdgeEndFraction: 0.1,
+                showFadingOnlyWhenScrolling: false,
                 text: loading ? strings.loading : title,
                 style: TextStyle(
                   fontSize: titleTextSize,
                   color: textColor,
                 ),
                 scrollAxis: Axis.horizontal,
-                velocity: 50.0,
+                velocity: 45.0,
                 blankSpace: 60.0,
                 startAfter: Duration(seconds: 2),
                 pauseAfterRound: Duration(seconds: 5),
@@ -66,13 +68,15 @@ class TrackTitleSubtitleMarquee extends StatelessWidget {
               ),
               // overflow: TextOverflow.ellipsis,
               overflowReplacement: Marquee(
+                fadingEdgeEndFraction: 0.1,
+                showFadingOnlyWhenScrolling: false,
                 text: loading ? strings.loading : subtitle,
                 style: TextStyle(
                   fontSize: artistsTextSize,
                   color: textColor.shade900,
                 ),
                 scrollAxis: Axis.horizontal,
-                velocity: 50.0,
+                velocity: 45.0,
                 blankSpace: 60.0,
                 startAfter: Duration(seconds: 2),
                 pauseAfterRound: Duration(seconds: 5),
